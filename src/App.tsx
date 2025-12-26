@@ -133,18 +133,18 @@ function Header({ showLogin, setShowLogin }: { showLogin?: boolean; setShowLogin
   };
 
   return (
-    <header className="bg-gradient-to-r from-[#8A1538] via-[#9A2545] to-[#A5763F] text-white shadow-2xl border-b-2 md:border-b-4 border-amber-400" dir="rtl">
+    <header className="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-700 text-white shadow-2xl border-b-2 md:border-b-4 border-blue-400" dir="rtl">
       <div className="container mx-auto px-3 py-3 md:px-4 md:py-4">
         <div className="flex items-center justify-between gap-2">
           <div className="flex items-center">
             {user ? (
               <div className="flex items-center gap-2 bg-white/15 backdrop-blur-md px-2 py-1.5 md:px-4 md:py-2 rounded-lg shadow-lg border border-white/20">
-                <div className="w-7 h-7 md:w-9 md:h-9 rounded-full bg-gradient-to-br from-amber-400 to-yellow-500 flex items-center justify-center shadow-lg">
-                  <User className="w-4 h-4 md:w-5 md:h-5 text-[#8A1538]" />
+                <div className="w-7 h-7 md:w-9 md:h-9 rounded-full bg-gradient-to-br from-blue-400 to-blue-500 flex items-center justify-center shadow-lg">
+                  <User className="w-4 h-4 md:w-5 md:h-5 text-white" />
                 </div>
                 <div className="hidden sm:block">
                   <p className="font-black text-xs md:text-sm leading-tight">{user.full_name}</p>
-                  <p className="text-[10px] md:text-xs text-amber-200 font-semibold">{getRoleName(user.role)}</p>
+                  <p className="text-[10px] md:text-xs text-blue-200 font-semibold">{getRoleName(user.role)}</p>
                 </div>
               </div>
             ) : (
@@ -183,7 +183,7 @@ function BottomNav({ currentSection, setCurrentSection }: { currentSection: stri
   ];
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-white border-t-2 md:border-t-4 border-[#8A1538] shadow-2xl z-40" dir="rtl">
+    <nav className="fixed bottom-0 left-0 right-0 bg-white border-t-2 md:border-t-4 border-blue-600 shadow-2xl z-40" dir="rtl">
       <div className="container mx-auto px-1">
         <div className="grid grid-cols-4 gap-0.5">
           {navItems.map(item => (
@@ -192,8 +192,8 @@ function BottomNav({ currentSection, setCurrentSection }: { currentSection: stri
               onClick={() => setCurrentSection(item.id)}
               className={`flex flex-col items-center justify-center py-2 transition-all ${
                 currentSection === item.id
-                  ? 'text-[#8A1538] bg-amber-50'
-                  : 'text-gray-600 hover:text-[#8A1538] hover:bg-amber-50/50'
+                  ? 'text-blue-600 bg-amber-50'
+                  : 'text-gray-600 hover:text-blue-600 hover:bg-amber-50/50'
               }`}
             >
               <item.icon className={`w-5 h-5 md:w-6 md:h-6 mb-0.5 ${currentSection === item.id ? 'scale-110' : ''} transition-transform`} />
@@ -342,10 +342,10 @@ function LoginModal({ showLogin, setShowLogin }: { showLogin: boolean; setShowLo
         </button>
 
         <div className="text-center mb-4">
-          <div className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br from-[#8A1538] to-[#A5763F] rounded-full mb-3">
+          <div className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br from-blue-600 to-blue-500 rounded-full mb-3">
             {isRegisterMode ? <User className="w-6 h-6 text-white" /> : <LogIn className="w-6 h-6 text-white" />}
           </div>
-          <h2 className="text-xl font-black text-[#8A1538] mb-1">
+          <h2 className="text-xl font-black text-blue-600 mb-1">
             {isRegisterMode ? 'إنشاء حساب جديد' : 'تسجيل الدخول'}
           </h2>
           <p className="text-sm text-gray-600">
@@ -365,12 +365,12 @@ function LoginModal({ showLogin, setShowLogin }: { showLogin: boolean; setShowLo
               <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8A1538]" placeholder="••••••••" required dir="ltr" />
             </div>
 
-            <button type="submit" disabled={loading} className="w-full bg-gradient-to-r from-[#8A1538] to-[#A5763F] text-white py-2.5 rounded-lg font-bold hover:shadow-lg transition disabled:opacity-50 text-sm">
+            <button type="submit" disabled={loading} className="w-full bg-gradient-to-r from-blue-600 to-blue-500 text-white py-2.5 rounded-lg font-bold hover:shadow-lg transition disabled:opacity-50 text-sm">
               {loading ? 'جارٍ تسجيل الدخول...' : 'تسجيل الدخول'}
             </button>
 
             <div className="text-center pt-2">
-              <button type="button" onClick={() => setIsRegisterMode(true)} className="text-[#8A1538] font-bold text-sm hover:underline">
+              <button type="button" onClick={() => setIsRegisterMode(true)} className="text-blue-600 font-bold text-sm hover:underline">
                 ليس لديك حساب؟ سجل الآن
               </button>
             </div>
@@ -426,12 +426,12 @@ function LoginModal({ showLogin, setShowLogin }: { showLogin: boolean; setShowLo
               <input type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8A1538]" placeholder="••••••••" required minLength={6} dir="ltr" />
             </div>
 
-            <button type="submit" disabled={loading} className="w-full bg-gradient-to-r from-[#8A1538] to-[#A5763F] text-white py-2.5 rounded-lg font-bold hover:shadow-lg transition disabled:opacity-50 text-sm">
+            <button type="submit" disabled={loading} className="w-full bg-gradient-to-r from-blue-600 to-blue-500 text-white py-2.5 rounded-lg font-bold hover:shadow-lg transition disabled:opacity-50 text-sm">
               {loading ? 'جارٍ إنشاء الحساب...' : 'إنشاء حساب'}
             </button>
 
             <div className="text-center pt-2">
-              <button type="button" onClick={() => setIsRegisterMode(false)} className="text-[#8A1538] font-bold text-sm hover:underline">
+              <button type="button" onClick={() => setIsRegisterMode(false)} className="text-blue-600 font-bold text-sm hover:underline">
                 لديك حساب بالفعل؟ سجل دخول
               </button>
             </div>
@@ -440,7 +440,7 @@ function LoginModal({ showLogin, setShowLogin }: { showLogin: boolean; setShowLo
 
         {!isRegisterMode && (
           <div className="mt-4 p-3 bg-amber-50 rounded-lg border border-amber-200">
-            <h3 className="font-bold text-[#8A1538] mb-2 text-xs">حسابات تجريبية:</h3>
+            <h3 className="font-bold text-blue-600 mb-2 text-xs">حسابات تجريبية:</h3>
             <div className="text-[10px] space-y-0.5 text-gray-700">
               <p><strong>طالب:</strong> student@test.com</p>
               <p><strong>معلم:</strong> teacher@test.com</p>
@@ -482,7 +482,7 @@ function MainApp() {
 
   if (user?.role === 'teacher') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-amber-50 to-stone-50">
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-slate-50">
         <Header />
         <div className="pb-20">
           <TeacherDashboard />
@@ -493,7 +493,7 @@ function MainApp() {
 
   if (user?.role === 'admin') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-amber-50 to-stone-50">
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-slate-50">
         <Header />
         <div className="pb-20">
           <AdminDashboard />
@@ -503,7 +503,7 @@ function MainApp() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-stone-50">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-slate-50">
       <Header showLogin={showLogin} setShowLogin={setShowLogin} />
       <LoginModal showLogin={showLogin} setShowLogin={setShowLogin} />
 
@@ -536,12 +536,12 @@ function HomePage({ setCurrentSection }: { setCurrentSection: (section: string) 
   return (
     <div className="container mx-auto px-3 py-6" dir="rtl">
       <div className="text-center mb-6">
-        <h1 className="text-2xl md:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#8A1538] via-[#9A2545] to-[#A5763F] mb-2 drop-shadow-sm">مرحباً بك في منصة المواهب</h1>
+        <h1 className="text-2xl md:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-blue-500 to-blue-400 mb-2 drop-shadow-sm">مرحباً بك في منصة المواهب</h1>
         <p className="text-sm md:text-lg text-gray-700 font-semibold mb-4">اكتشف مواهبك، سجل في المسابقات، واحتفل بالإنجازات</p>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-3 gap-3 max-w-4xl mx-auto mb-6">
-        <button onClick={() => setCurrentSection('talents')} className="group relative rounded-2xl shadow-lg active:scale-95 transition-all duration-300 overflow-hidden h-32 md:h-40 bg-gradient-to-br from-amber-400 via-yellow-400 to-orange-400">
+        <button onClick={() => setCurrentSection('talents')} className="group relative rounded-2xl shadow-lg active:scale-95 transition-all duration-300 overflow-hidden h-32 md:h-40 bg-gradient-to-br from-orange-600 to-orange-500">
           <div className="absolute inset-0 bg-gradient-to-t from-black/5 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300"></div>
           <div className="relative z-10 h-full flex flex-col items-center justify-center p-3">
             <div className="w-10 h-10 mb-2 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-md transform group-active:scale-110 transition-all duration-300 p-2">
@@ -552,7 +552,7 @@ function HomePage({ setCurrentSection }: { setCurrentSection: (section: string) 
           </div>
         </button>
 
-        <button onClick={() => setCurrentSection('announcements')} className="group relative rounded-2xl shadow-lg active:scale-95 transition-all duration-300 overflow-hidden h-32 md:h-40 bg-gradient-to-br from-blue-400 via-cyan-400 to-teal-400">
+        <button onClick={() => setCurrentSection('announcements')} className="group relative rounded-2xl shadow-lg active:scale-95 transition-all duration-300 overflow-hidden h-32 md:h-40 bg-gradient-to-br from-green-700 to-green-600">
           <div className="absolute inset-0 bg-gradient-to-t from-black/5 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300"></div>
           <div className="relative z-10 h-full flex flex-col items-center justify-center p-3">
             <div className="w-10 h-10 mb-2 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-md transform group-active:scale-110 transition-all duration-300 p-2">
@@ -563,7 +563,7 @@ function HomePage({ setCurrentSection }: { setCurrentSection: (section: string) 
           </div>
         </button>
 
-        <button onClick={() => setCurrentSection('honors')} className="group relative rounded-2xl shadow-lg active:scale-95 transition-all duration-300 overflow-hidden h-32 md:h-40 col-span-2 md:col-span-1 bg-gradient-to-br from-purple-400 via-pink-400 to-rose-400">
+        <button onClick={() => setCurrentSection('honors')} className="group relative rounded-2xl shadow-lg active:scale-95 transition-all duration-300 overflow-hidden h-32 md:h-40 col-span-2 md:col-span-1 bg-gradient-to-br from-purple-600 to-purple-500">
           <div className="absolute inset-0 bg-gradient-to-t from-black/5 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300"></div>
           <div className="relative z-10 h-full flex flex-col items-center justify-center p-3">
             <div className="w-10 h-10 mb-2 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-md transform group-active:scale-110 transition-all duration-300 p-2">
@@ -575,7 +575,7 @@ function HomePage({ setCurrentSection }: { setCurrentSection: (section: string) 
         </button>
       </div>
 
-      <div className="mt-6 bg-gradient-to-r from-[#8A1538] to-[#A5763F] rounded-2xl shadow-lg p-4 md:p-6 text-center text-white max-w-4xl mx-auto">
+      <div className="mt-6 bg-gradient-to-r from-blue-600 to-blue-500 rounded-2xl shadow-lg p-4 md:p-6 text-center text-white max-w-4xl mx-auto">
         <h2 className="text-lg md:text-2xl font-black mb-2">ابدأ رحلتك الآن</h2>
         <p className="text-sm md:text-lg mb-3">استخدم الشريط السفلي للتنقل بين الأقسام</p>
         <div className="flex items-center justify-center gap-2 md:gap-4 text-amber-300">
@@ -622,29 +622,29 @@ const getIconImage = (iconNameOrArabic: string) => {
   return map[iconNameOrArabic] || map[(iconNameOrArabic || '').trim()] || 'https://img.icons8.com/color/96/star--v1.png';
 };
   const colorSchemes = [
-    { gradient: 'from-blue-400 via-cyan-400 to-emerald-400', name: 'رياضية' },
-    { gradient: 'from-purple-400 via-pink-400 to-rose-400', name: 'فنية' },
-    { gradient: 'from-amber-400 via-yellow-300 to-orange-200', name: 'أدبية' },
-    { gradient: 'from-blue-600 via-cyan-500 to-teal-400', name: 'علمية' },
-    { gradient: 'from-gray-400 via-slate-400 to-sky-300', name: 'تقنية' }
+    { gradient: 'from-orange-600 to-orange-500', name: 'رياضية' },
+    { gradient: 'from-green-700 to-green-600', name: 'فنية' },
+    { gradient: 'from-blue-600 to-blue-500', name: 'أدبية' },
+    { gradient: 'from-purple-600 to-purple-500', name: 'علمية' },
+    { gradient: 'from-blue-500 to-blue-400', name: 'تقنية' }
   ];
 
-  if (loading) return <div className="flex items-center justify-center min-h-screen"><div className="animate-spin rounded-full h-16 w-16 border-4 border-[#8A1538] border-t-transparent"></div></div>;
+  if (loading) return <div className="flex items-center justify-center min-h-screen"><div className="animate-spin rounded-full h-16 w-16 border-4 border-blue-600 border-t-transparent"></div></div>;
 
   return (
     <div className="container mx-auto px-3 py-6" dir="rtl">
       <div className="text-center mb-6">
         {user && (
           <div className="inline-block mb-4">
-            <div className="bg-gradient-to-r from-[#8A1538] via-[#9A2545] to-[#A5763F] text-white px-4 py-2 md:px-6 md:py-3 rounded-xl shadow-lg">
+            <div className="bg-gradient-to-r from-blue-600 to-blue-500 text-white px-4 py-2 md:px-6 md:py-3 rounded-xl shadow-lg">
               <p className="text-sm md:text-lg font-black drop-shadow-md">مرحباً {user.full_name}</p>
             </div>
           </div>
         )}
-        <h1 className="text-2xl md:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#8A1538] via-[#9A2545] to-[#A5763F] mb-2 drop-shadow-sm">اكتشف موهبتك</h1>
+        <h1 className="text-2xl md:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-blue-500 to-blue-400 mb-2 drop-shadow-sm">اكتشف موهبتك</h1>
         <p className="text-sm md:text-lg text-gray-700 font-semibold mb-4">نور مستقبلك بموهبتك الفريدة</p>
         {user && (
-          <button onClick={() => setPage('mypage')} className="inline-flex items-center gap-2 bg-gradient-to-r from-[#8A1538] to-[#A5763F] text-white px-4 py-2 md:px-6 md:py-3 rounded-xl font-bold shadow-lg active:scale-95 transition-all text-sm md:text-base">
+          <button onClick={() => setPage('mypage')} className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-blue-500 text-white px-4 py-2 md:px-6 md:py-3 rounded-xl font-bold shadow-lg active:scale-95 transition-all text-sm md:text-base">
             <FileText className="w-4 h-4 md:w-5 md:h-5" />
             <span>صفحتي</span>
           </button>
@@ -687,25 +687,25 @@ function SubcategoriesPage({ categoryId, setPage, setSelectedSubcategory }: any)
   }, [categoryId]);
 
   const subColors = [
-    'from-rose-400 to-pink-400',
-    'from-blue-400 to-cyan-400',
-    'from-emerald-400 to-teal-400',
-    'from-amber-400 to-yellow-400',
-    'from-purple-400 to-pink-400',
-    'from-sky-400 to-blue-400',
-    'from-orange-400 to-red-400',
-    'from-teal-400 to-cyan-400'
+    'from-orange-600 to-orange-500',
+    'from-green-700 to-green-600',
+    'from-blue-600 to-blue-500',
+    'from-purple-600 to-purple-500',
+    'from-blue-500 to-blue-400',
+    'from-orange-600 to-orange-500',
+    'from-green-700 to-green-600',
+    'from-blue-600 to-blue-500'
   ];
 
   return (
     <div className="container mx-auto px-3 py-6" dir="rtl">
-      <button onClick={() => setPage('talents')} className="flex items-center gap-2 bg-gradient-to-r from-[#8A1538] to-[#A5763F] text-white px-4 py-2 md:px-6 md:py-3 rounded-xl font-bold mb-6 shadow-lg active:scale-95 transition-all text-sm md:text-base">
+      <button onClick={() => setPage('talents')} className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-blue-500 text-white px-4 py-2 md:px-6 md:py-3 rounded-xl font-bold mb-6 shadow-lg active:scale-95 transition-all text-sm md:text-base">
         <ArrowRight className="w-4 h-4 md:w-5 md:h-5" />
         <span>العودة للأقسام</span>
       </button>
 
       <div className="text-center mb-6">
-        <h1 className="text-2xl md:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#8A1538] via-[#9A2545] to-[#A5763F] mb-2 drop-shadow-sm">{category?.name_ar}</h1>
+        <h1 className="text-2xl md:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-blue-500 to-blue-400 mb-2 drop-shadow-sm">{category?.name_ar}</h1>
         <p className="text-sm md:text-lg text-gray-700 font-semibold">اختر التخصص المناسب لموهبتك</p>
       </div>
 
@@ -735,11 +735,11 @@ function RegisterPage({ categoryId, subcategoryId, setPage }: any) {
   if (!user) {
     return (
       <div className="container mx-auto px-4 py-16" dir="rtl">
-        <div className="max-w-md mx-auto bg-white rounded-3xl shadow-2xl p-12 text-center border-t-4 border-[#8A1538]">
-          <LogIn className="w-16 h-16 text-[#8A1538] mx-auto mb-6" />
+        <div className="max-w-md mx-auto bg-white rounded-3xl shadow-2xl p-12 text-center border-t-4 border-blue-600">
+          <LogIn className="w-16 h-16 text-blue-600 mx-auto mb-6" />
           <h2 className="text-3xl font-black text-gray-800 mb-4">يجب تسجيل الدخول</h2>
           <p className="text-gray-600 mb-8">لتسجيل موهبتك، يرجى تسجيل الدخول أولاً</p>
-          <button onClick={() => setPage('talents')} className="bg-gradient-to-r from-[#8A1538] to-[#A5763F] text-white px-8 py-3 rounded-xl font-bold shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all">
+          <button onClick={() => setPage('talents')} className="bg-gradient-to-r from-blue-600 to-blue-500 text-white px-8 py-3 rounded-xl font-bold shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all">
             العودة للأقسام
           </button>
         </div>
@@ -784,13 +784,13 @@ function RegisterPage({ categoryId, subcategoryId, setPage }: any) {
 
   return (
     <div className="container mx-auto px-4 py-12" dir="rtl">
-      <button onClick={() => setPage('subcategories')} className="flex items-center gap-3 bg-white text-[#8A1538] hover:text-white hover:bg-gradient-to-r hover:from-[#8A1538] hover:to-[#A5763F] px-6 py-3 rounded-xl font-bold mb-8 shadow-lg hover:shadow-xl transition-all transform hover:scale-105 border-2 border-[#8A1538]">
+      <button onClick={() => setPage('subcategories')} className="flex items-center gap-3 bg-white text-blue-600 hover:text-white hover:bg-gradient-to-r hover:from-[#8A1538] hover:to-[#A5763F] px-6 py-3 rounded-xl font-bold mb-8 shadow-lg hover:shadow-xl transition-all transform hover:scale-105 border-2 border-blue-600">
         <ArrowRight className="w-5 h-5" />
         <span>العودة</span>
       </button>
 
-      <div className="max-w-2xl mx-auto bg-white rounded-3xl shadow-2xl p-8 border-t-4 border-[#8A1538]">
-        <h1 className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#8A1538] to-[#A5763F] mb-8 text-center">نموذج تسجيل الموهبة</h1>
+      <div className="max-w-2xl mx-auto bg-white rounded-3xl shadow-2xl p-8 border-t-4 border-blue-600">
+        <h1 className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-blue-500 mb-8 text-center">نموذج تسجيل الموهبة</h1>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -825,12 +825,12 @@ function RegisterPage({ categoryId, subcategoryId, setPage }: any) {
 
           <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
             <label className="flex items-start gap-3 cursor-pointer">
-              <input type="checkbox" checked={form.consent_guardian} onChange={(e) => setForm({ ...form, consent_guardian: e.target.checked })} className="mt-1 w-5 h-5 text-[#8A1538]" required />
+              <input type="checkbox" checked={form.consent_guardian} onChange={(e) => setForm({ ...form, consent_guardian: e.target.checked })} className="mt-1 w-5 h-5 text-blue-600" required />
               <span className="text-gray-700"><strong>موافقة ولي الأمر:</strong> أقر بأن ولي أمري على علم بتسجيل هذه الموهبة ويوافق على المشاركة *</span>
             </label>
           </div>
 
-          <button type="submit" disabled={loading || !form.consent_guardian} className="w-full bg-gradient-to-r from-[#8A1538] to-[#A5763F] text-white py-4 rounded-xl font-black text-lg hover:shadow-xl transition disabled:opacity-50">
+          <button type="submit" disabled={loading || !form.consent_guardian} className="w-full bg-gradient-to-r from-blue-600 to-blue-500 text-white py-4 rounded-xl font-black text-lg hover:shadow-xl transition disabled:opacity-50">
             {loading ? 'جارٍ التسجيل...' : 'تسجيل الموهبة'}
           </button>
         </form>
@@ -874,26 +874,26 @@ function MyPage({ setPage }: any) {
     });
   }, [user]);
 
-  if (loading) return <div className="flex items-center justify-center min-h-screen"><div className="animate-spin rounded-full h-16 w-16 border-4 border-[#8A1538] border-t-transparent"></div></div>;
+  if (loading) return <div className="flex items-center justify-center min-h-screen"><div className="animate-spin rounded-full h-16 w-16 border-4 border-blue-600 border-t-transparent"></div></div>;
 
   return (
     <div className="container mx-auto px-4 py-12" dir="rtl">
-      <button onClick={() => setPage('talents')} className="flex items-center gap-3 bg-white text-[#8A1538] hover:text-white hover:bg-gradient-to-r hover:from-[#8A1538] hover:to-[#A5763F] px-6 py-3 rounded-xl font-bold mb-8 shadow-lg hover:shadow-xl transition-all transform hover:scale-105 border-2 border-[#8A1538]">
+      <button onClick={() => setPage('talents')} className="flex items-center gap-3 bg-white text-blue-600 hover:text-white hover:bg-gradient-to-r hover:from-[#8A1538] hover:to-[#A5763F] px-6 py-3 rounded-xl font-bold mb-8 shadow-lg hover:shadow-xl transition-all transform hover:scale-105 border-2 border-blue-600">
         <ArrowRight className="w-5 h-5" />
         <span>العودة</span>
       </button>
 
       <div className="text-center mb-12">
-        <h1 className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#8A1538] to-[#A5763F] mb-4">صفحتي</h1>
+        <h1 className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-blue-500 mb-4">صفحتي</h1>
         <p className="text-xl text-gray-700 font-semibold">مواهبك المسجلة وحالة الطلبات</p>
       </div>
 
       {talents.length === 0 ? (
-        <div className="bg-white rounded-3xl shadow-2xl p-16 text-center border-t-4 border-[#8A1538] max-w-2xl mx-auto">
+        <div className="bg-white rounded-3xl shadow-2xl p-16 text-center border-t-4 border-blue-600 max-w-2xl mx-auto">
           <FileText className="w-24 h-24 text-gray-400 mx-auto mb-6" />
           <h2 className="text-3xl font-black text-gray-800 mb-4">لم تسجل أي موهبة بعد</h2>
           <p className="text-gray-600 mb-8 text-lg">ابدأ رحلتك في اكتشاف مواهبك الآن</p>
-          <button onClick={() => setPage('talents')} className="bg-gradient-to-r from-[#8A1538] to-[#A5763F] text-white px-10 py-4 rounded-xl font-black text-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all">
+          <button onClick={() => setPage('talents')} className="bg-gradient-to-r from-blue-600 to-blue-500 text-white px-10 py-4 rounded-xl font-black text-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all">
             سجّل موهبتك الآن
           </button>
         </div>
@@ -903,7 +903,7 @@ function MyPage({ setPage }: any) {
             <div key={t.id} className={`bg-white rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 p-6 border-r-8 ${t.status === 'approved' ? 'border-green-500' : t.status === 'rejected' ? 'border-red-500' : 'border-yellow-500'} transform hover:-translate-y-1`}>
               <div className="flex justify-between items-start mb-4">
                 <div>
-                  <h3 className="text-2xl font-black text-[#8A1538] mb-1">{t.subcategory_name}</h3>
+                  <h3 className="text-2xl font-black text-blue-600 mb-1">{t.subcategory_name}</h3>
                   <p className="text-gray-600 font-semibold">{t.category_name}</p>
                 </div>
                 <span className={`px-4 py-2 rounded-xl font-bold shadow-md text-sm ${t.status === 'approved' ? 'bg-green-100 text-green-800' : t.status === 'rejected' ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800'}`}>
@@ -911,9 +911,9 @@ function MyPage({ setPage }: any) {
                 </span>
               </div>
               <div className="space-y-2">
-                <p className="flex items-center gap-2"><strong className="text-[#8A1538]">المستوى:</strong> <span className="font-semibold">{t.proficiency}</span></p>
-                <p className="flex items-center gap-2"><strong className="text-[#8A1538]">سنوات الخبرة:</strong> <span className="font-semibold">{t.years_of_experience}</span></p>
-                <p className="flex items-center gap-2 text-sm"><strong className="text-[#8A1538]">التاريخ:</strong> <span className="font-semibold">{new Date(t.created_at).toLocaleDateString('ar-SA')}</span></p>
+                <p className="flex items-center gap-2"><strong className="text-blue-600">المستوى:</strong> <span className="font-semibold">{t.proficiency}</span></p>
+                <p className="flex items-center gap-2"><strong className="text-blue-600">سنوات الخبرة:</strong> <span className="font-semibold">{t.years_of_experience}</span></p>
+                <p className="flex items-center gap-2 text-sm"><strong className="text-blue-600">التاريخ:</strong> <span className="font-semibold">{new Date(t.created_at).toLocaleDateString('ar-SA')}</span></p>
               </div>
             </div>
           ))}
@@ -993,17 +993,17 @@ function AnnouncementsPage() {
     }
   };
 
-  if (loading) return <div className="flex items-center justify-center min-h-screen"><div className="animate-spin rounded-full h-16 w-16 border-4 border-[#8A1538] border-t-transparent"></div></div>;
+  if (loading) return <div className="flex items-center justify-center min-h-screen"><div className="animate-spin rounded-full h-16 w-16 border-4 border-blue-600 border-t-transparent"></div></div>;
 
   return (
     <div className="container mx-auto px-4 py-12" dir="rtl">
-      <button onClick={() => window.location.href = '/'} className="flex items-center gap-3 bg-white text-[#8A1538] hover:text-white hover:bg-gradient-to-r hover:from-[#8A1538] hover:to-[#A5763F] px-6 py-3 rounded-xl font-bold mb-8 shadow-lg hover:shadow-xl transition-all transform hover:scale-105 border-2 border-[#8A1538]">
+      <button onClick={() => window.location.href = '/'} className="flex items-center gap-3 bg-white text-blue-600 hover:text-white hover:bg-gradient-to-r hover:from-[#8A1538] hover:to-[#A5763F] px-6 py-3 rounded-xl font-bold mb-8 shadow-lg hover:shadow-xl transition-all transform hover:scale-105 border-2 border-blue-600">
         <ArrowRight className="w-5 h-5" />
         <span>العودة للرئيسية</span>
       </button>
 
       <div className="text-center mb-12">
-        <h1 className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#8A1538] to-[#A5763F] mb-4">الإعلانات والمسابقات</h1>
+        <h1 className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-blue-500 mb-4">الإعلانات والمسابقات</h1>
         <p className="text-xl text-gray-700 font-semibold">تابع آخر الأخبار والمسابقات</p>
       </div>
 
@@ -1034,7 +1034,7 @@ function AnnouncementsPage() {
               {announcement.registration_open && announcement.type === 'competition' && (
                 <button
                   onClick={() => setSelectedAnnouncement(announcement)}
-                  className="w-full bg-gradient-to-r from-[#8A1538] to-[#A5763F] text-white py-3 rounded-lg font-bold hover:shadow-lg transition"
+                  className="w-full bg-gradient-to-r from-blue-600 to-blue-500 text-white py-3 rounded-lg font-bold hover:shadow-lg transition"
                 >
                   سجّل الآن
                 </button>
@@ -1047,7 +1047,7 @@ function AnnouncementsPage() {
       {selectedAnnouncement && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4" onClick={() => setSelectedAnnouncement(null)}>
           <div className="bg-white rounded-3xl shadow-2xl w-full max-w-md p-8" onClick={(e) => e.stopPropagation()} dir="rtl">
-            <h2 className="text-2xl font-black text-[#8A1538] mb-4">التسجيل في {selectedAnnouncement.title}</h2>
+            <h2 className="text-2xl font-black text-blue-600 mb-4">التسجيل في {selectedAnnouncement.title}</h2>
             <div className="space-y-4">
               <div>
                 <label className="block text-gray-700 font-semibold mb-2">ملاحظات (اختياري)</label>
@@ -1064,7 +1064,7 @@ function AnnouncementsPage() {
                 <button
                   onClick={() => handleRegister(selectedAnnouncement.id)}
                   disabled={registering}
-                  className="flex-1 bg-gradient-to-r from-[#8A1538] to-[#A5763F] text-white py-3 rounded-lg font-bold disabled:opacity-50"
+                  className="flex-1 bg-gradient-to-r from-blue-600 to-blue-500 text-white py-3 rounded-lg font-bold disabled:opacity-50"
                 >
                   {registering ? 'جارٍ التسجيل...' : 'تأكيد التسجيل'}
                 </button>
@@ -1111,17 +1111,17 @@ function HonorsPage() {
     };
   }, []);
 
-  if (loading) return <div className="flex items-center justify-center min-h-screen"><div className="animate-spin rounded-full h-16 w-16 border-4 border-[#8A1538] border-t-transparent"></div></div>;
+  if (loading) return <div className="flex items-center justify-center min-h-screen"><div className="animate-spin rounded-full h-16 w-16 border-4 border-blue-600 border-t-transparent"></div></div>;
 
   return (
     <div className="container mx-auto px-4 py-12" dir="rtl">
-      <button onClick={() => window.location.href = '/'} className="flex items-center gap-3 bg-white text-[#8A1538] hover:text-white hover:bg-gradient-to-r hover:from-[#8A1538] hover:to-[#A5763F] px-6 py-3 rounded-xl font-bold mb-8 shadow-lg hover:shadow-xl transition-all transform hover:scale-105 border-2 border-[#8A1538]">
+      <button onClick={() => window.location.href = '/'} className="flex items-center gap-3 bg-white text-blue-600 hover:text-white hover:bg-gradient-to-r hover:from-[#8A1538] hover:to-[#A5763F] px-6 py-3 rounded-xl font-bold mb-8 shadow-lg hover:shadow-xl transition-all transform hover:scale-105 border-2 border-blue-600">
         <ArrowRight className="w-5 h-5" />
         <span>العودة للرئيسية</span>
       </button>
 
       <div className="text-center mb-12">
-        <h1 className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#8A1538] to-[#A5763F] mb-4">التكريمات</h1>
+        <h1 className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-blue-500 mb-4">التكريمات</h1>
         <p className="text-xl text-gray-700 font-semibold">إنجازاتنا وتكريماتنا</p>
       </div>
 
@@ -1244,11 +1244,11 @@ function TeacherDashboard() {
   return (
     <div className="container mx-auto px-4 py-12" dir="rtl">
       <div className="text-center mb-8">
-        <h1 className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#8A1538] to-[#A5763F] mb-4">لوحة المعلم</h1>
+        <h1 className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-blue-500 mb-4">لوحة المعلم</h1>
         <p className="text-lg text-gray-600 font-semibold">مشاهدة طلبات الطلاب والإحصائيات</p>
       </div>
 
-      <div className="bg-white rounded-2xl shadow-xl p-6 mb-6 border-t-4 border-[#8A1538]">
+      <div className="bg-white rounded-2xl shadow-xl p-6 mb-6 border-t-4 border-blue-600">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
           <div className="relative">
             <Search className="absolute right-3 top-3 text-gray-400 w-5 h-5" />
@@ -1263,15 +1263,15 @@ function TeacherDashboard() {
             {categories.map(c => <option key={c.id} value={c.name_ar}>{c.name_ar}</option>)}
           </select>
         </div>
-        <button onClick={() => setShowModal(true)} className="flex items-center gap-2 bg-gradient-to-r from-[#8A1538] to-[#A5763F] text-white px-6 py-3 rounded-lg font-bold">
+        <button onClick={() => setShowModal(true)} className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-blue-500 text-white px-6 py-3 rounded-lg font-bold">
           <Plus className="w-5 h-5" />
           اقتراح موهبة جديدة
         </button>
       </div>
 
-      <div className="bg-white rounded-2xl shadow-xl overflow-x-auto border-t-4 border-[#8A1538]">
+      <div className="bg-white rounded-2xl shadow-xl overflow-x-auto border-t-4 border-blue-600">
         <table className="w-full">
-          <thead className="bg-gradient-to-r from-[#8A1538] to-[#A5763F] text-white">
+          <thead className="bg-gradient-to-r from-blue-600 to-blue-500 text-white">
             <tr>
               <th className="px-4 py-3 text-right text-sm">الطالب</th>
               <th className="px-4 py-3 text-right text-sm">الصف</th>
@@ -1312,7 +1312,7 @@ function TeacherDashboard() {
       {showModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={() => setShowModal(false)}>
           <div className="bg-white rounded-2xl p-8 max-w-md w-full" onClick={(e) => e.stopPropagation()}>
-            <h2 className="text-2xl font-bold text-[#8A1538] mb-6">اقتراح موهبة جديدة</h2>
+            <h2 className="text-2xl font-bold text-blue-600 mb-6">اقتراح موهبة جديدة</h2>
             <div className="space-y-4">
               <select value={newSub.categoryId} onChange={(e) => setNewSub({ ...newSub, categoryId: e.target.value })} className="w-full px-4 py-3 border rounded-lg">
                 <option value="">اختر القسم</option>
@@ -1321,7 +1321,7 @@ function TeacherDashboard() {
               <input type="text" value={newSub.name} onChange={(e) => setNewSub({ ...newSub, name: e.target.value })} className="w-full px-4 py-3 border rounded-lg" placeholder="اسم التخصص" />
               <div className="flex gap-4">
                 <button onClick={() => setShowModal(false)} className="flex-1 bg-gray-200 py-3 rounded-lg font-bold">إلغاء</button>
-                <button onClick={handleSuggest} className="flex-1 bg-gradient-to-r from-[#8A1538] to-[#A5763F] text-white py-3 rounded-lg font-bold">إرسال</button>
+                <button onClick={handleSuggest} className="flex-1 bg-gradient-to-r from-blue-600 to-blue-500 text-white py-3 rounded-lg font-bold">إرسال</button>
               </div>
             </div>
           </div>
@@ -1604,7 +1604,7 @@ function AdminDashboard() {
   return (
     <div className="container mx-auto px-4 py-12" dir="rtl">
       <div className="text-center mb-8">
-        <h1 className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#8A1538] to-[#A5763F] mb-4">لوحة الإدارة</h1>
+        <h1 className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-blue-500 mb-4">لوحة الإدارة</h1>
         <p className="text-lg text-gray-600 font-semibold">مشاهدة جميع الطلبات والإحصائيات</p>
       </div>
 
@@ -1617,7 +1617,7 @@ function AdminDashboard() {
           { key: 'honors', label: 'إدارة التكريمات' },
           { key: 'settings', label: 'إعدادات التطبيق' }
         ].map(t => (
-          <button key={t.key} onClick={() => setTab(t.key as any)} className={`px-6 py-3 rounded-xl font-black transition-all whitespace-nowrap shadow-lg transform hover:scale-105 ${tab === t.key ? 'bg-gradient-to-r from-[#8A1538] to-[#A5763F] text-white shadow-xl' : 'bg-white text-gray-700 hover:bg-gray-50'}`}>
+          <button key={t.key} onClick={() => setTab(t.key as any)} className={`px-6 py-3 rounded-xl font-black transition-all whitespace-nowrap shadow-lg transform hover:scale-105 ${tab === t.key ? 'bg-gradient-to-r from-blue-600 to-blue-500 text-white shadow-xl' : 'bg-white text-gray-700 hover:bg-gray-50'}`}>
             {t.label}
           </button>
         ))}
@@ -1647,14 +1647,14 @@ function AdminDashboard() {
       )}
 
       {tab === 'requests' && (
-        <div className="bg-white rounded-2xl shadow-xl p-6 border-t-4 border-[#8A1538]">
+        <div className="bg-white rounded-2xl shadow-xl p-6 border-t-4 border-blue-600">
           <button onClick={exportCSV} className="mb-4 flex items-center gap-2 bg-green-500 text-white px-6 py-3 rounded-lg font-bold hover:bg-green-600">
             <Download className="w-5 h-5" />
             تصدير CSV
           </button>
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-gradient-to-r from-[#8A1538] to-[#A5763F] text-white">
+              <thead className="bg-gradient-to-r from-blue-600 to-blue-500 text-white">
                 <tr>
                   <th className="px-4 py-3 text-right text-sm">الطالب</th>
                   <th className="px-4 py-3 text-right text-sm">القسم</th>
@@ -1700,7 +1700,7 @@ function AdminDashboard() {
               setNewAnnouncement({ title: '', description: '', type: 'announcement', image_url: '', registration_open: false, end_date: '' });
               setShowAnnouncementModal(true);
             }}
-            className="flex items-center gap-2 bg-gradient-to-r from-[#8A1538] to-[#A5763F] text-white px-6 py-3 rounded-lg font-bold shadow-lg hover:shadow-xl"
+            className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-blue-500 text-white px-6 py-3 rounded-lg font-bold shadow-lg hover:shadow-xl"
           >
             <Plus className="w-5 h-5" />
             إضافة إعلان جديد
@@ -1754,7 +1754,7 @@ function AdminDashboard() {
               setNewHonor({ title: '', description: '', image_url: '', video_url: '', media_type: 'image', honor_date: '' });
               setShowHonorModal(true);
             }}
-            className="flex items-center gap-2 bg-gradient-to-r from-[#8A1538] to-[#A5763F] text-white px-6 py-3 rounded-lg font-bold shadow-lg hover:shadow-xl"
+            className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-blue-500 text-white px-6 py-3 rounded-lg font-bold shadow-lg hover:shadow-xl"
           >
             <Plus className="w-5 h-5" />
             إضافة تكريم جديد
@@ -1795,9 +1795,9 @@ function AdminDashboard() {
       )}
 
       {tab === 'settings' && (
-        <div className="bg-white rounded-2xl shadow-xl p-8 border-t-4 border-[#8A1538]">
+        <div className="bg-white rounded-2xl shadow-xl p-8 border-t-4 border-blue-600">
           <div className="flex items-center gap-3 mb-6">
-            <Settings className="w-8 h-8 text-[#8A1538]" />
+            <Settings className="w-8 h-8 text-blue-600" />
             <h2 className="text-2xl font-black text-gray-800">إعدادات التطبيق</h2>
           </div>
           <div className="space-y-4">
@@ -1824,9 +1824,9 @@ function AdminDashboard() {
       )}
 
       {tab === 'suggestions' && (
-        <div className="bg-white rounded-2xl shadow-xl overflow-x-auto border-t-4 border-[#8A1538]">
+        <div className="bg-white rounded-2xl shadow-xl overflow-x-auto border-t-4 border-blue-600">
           <table className="w-full">
-            <thead className="bg-gradient-to-r from-[#8A1538] to-[#A5763F] text-white">
+            <thead className="bg-gradient-to-r from-blue-600 to-blue-500 text-white">
               <tr>
                 <th className="px-4 py-3 text-right text-sm">اسم الموهبة</th>
                 <th className="px-4 py-3 text-right text-sm">القسم</th>
@@ -1864,7 +1864,7 @@ function AdminDashboard() {
       {showAnnouncementModal && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4" onClick={() => setShowAnnouncementModal(false)}>
           <div className="bg-white rounded-3xl shadow-2xl w-full max-w-2xl p-8 max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()} dir="rtl">
-            <h2 className="text-2xl font-black text-[#8A1538] mb-6">{editingItem ? 'تعديل الإعلان' : 'إضافة إعلان جديد'}</h2>
+            <h2 className="text-2xl font-black text-blue-600 mb-6">{editingItem ? 'تعديل الإعلان' : 'إضافة إعلان جديد'}</h2>
             <div className="space-y-4">
               <div>
                 <label className="block text-gray-700 font-semibold mb-2">العنوان *</label>
@@ -1924,7 +1924,7 @@ function AdminDashboard() {
                     type="checkbox"
                     checked={newAnnouncement.registration_open}
                     onChange={(e) => setNewAnnouncement({ ...newAnnouncement, registration_open: e.target.checked })}
-                    className="w-5 h-5 text-[#8A1538] focus:ring-[#8A1538]"
+                    className="w-5 h-5 text-blue-600 focus:ring-[#8A1538]"
                     id="registration-open"
                   />
                   <label htmlFor="registration-open" className="text-gray-700 font-semibold">التسجيل مفتوح</label>
@@ -1934,7 +1934,7 @@ function AdminDashboard() {
                     type="checkbox"
                     checked={newAnnouncement.is_published}
                     onChange={(e) => setNewAnnouncement({ ...newAnnouncement, is_published: e.target.checked })}
-                    className="w-5 h-5 text-[#8A1538] focus:ring-[#8A1538]"
+                    className="w-5 h-5 text-blue-600 focus:ring-[#8A1538]"
                     id="is-published"
                   />
                   <label htmlFor="is-published" className="text-gray-700 font-semibold">نشر الإعلان</label>
@@ -1942,7 +1942,7 @@ function AdminDashboard() {
               </div>
               <div className="flex gap-4 pt-4">
                 <button onClick={() => setShowAnnouncementModal(false)} className="flex-1 bg-gray-200 py-3 rounded-lg font-bold">إلغاء</button>
-                <button onClick={handleSaveAnnouncement} className="flex-1 bg-gradient-to-r from-[#8A1538] to-[#A5763F] text-white py-3 rounded-lg font-bold">
+                <button onClick={handleSaveAnnouncement} className="flex-1 bg-gradient-to-r from-blue-600 to-blue-500 text-white py-3 rounded-lg font-bold">
                   {editingItem ? 'تحديث' : 'إضافة'}
                 </button>
               </div>
@@ -1954,7 +1954,7 @@ function AdminDashboard() {
       {showHonorModal && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4" onClick={() => setShowHonorModal(false)}>
           <div className="bg-white rounded-3xl shadow-2xl w-full max-w-2xl p-8 max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()} dir="rtl">
-            <h2 className="text-2xl font-black text-[#8A1538] mb-6">{editingItem ? 'تعديل التكريم' : 'إضافة تكريم جديد'}</h2>
+            <h2 className="text-2xl font-black text-blue-600 mb-6">{editingItem ? 'تعديل التكريم' : 'إضافة تكريم جديد'}</h2>
             <div className="space-y-4">
               <div>
                 <label className="block text-gray-700 font-semibold mb-2">العنوان *</label>
@@ -2021,7 +2021,7 @@ function AdminDashboard() {
               )}
               <div className="flex gap-4 pt-4">
                 <button onClick={() => setShowHonorModal(false)} className="flex-1 bg-gray-200 py-3 rounded-lg font-bold">إلغاء</button>
-                <button onClick={handleSaveHonor} className="flex-1 bg-gradient-to-r from-[#8A1538] to-[#A5763F] text-white py-3 rounded-lg font-bold">
+                <button onClick={handleSaveHonor} className="flex-1 bg-gradient-to-r from-blue-600 to-blue-500 text-white py-3 rounded-lg font-bold">
                   {editingItem ? 'تحديث' : 'إضافة'}
                 </button>
               </div>
