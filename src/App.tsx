@@ -545,35 +545,68 @@ function MainApp() {
     );
   }
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-slate-50">
-      <Header showLogin={showLogin} setShowLogin={setShowLogin} />
-      <LoginModal showLogin={showLogin} setShowLogin={setShowLogin} />
-
-      <div className="pb-20">
-        {currentSection === 'home' && <HomePage setCurrentSection={(section) => {
-          setCurrentSection(section);
-          if (section === 'talents') setPage('talents');
-        }} />}
-        {currentSection === 'talents' && (
-          <>
-            {page === 'talents' && <TalentsHomePage setPage={setPage} setSelectedCategory={setSelectedCategory} />}
-            {page === 'subcategories' && <SubcategoriesPage categoryId={selectedCategory!} setPage={setPage} setSelectedSubcategory={setSelectedSubcategory} setSelectedCategory={setSelectedCategory} />}
-            {page === 'register' && <RegisterPage categoryId={selectedCategory!} subcategoryId={selectedSubcategory!} setPage={setPage} />}
-            {page === 'mypage' && <MyPage setPage={setPage} />}
-          </>
-        )}
-        {currentSection === 'announcements' && <AnnouncementsPage />}
-        {currentSection === 'honors' && <HonorsPage />}
-      </div>
-
-      <BottomNav currentSection={currentSection} setCurrentSection={(section) => {
-        setCurrentSection(section);
-        if (section === 'talents') setPage('talents');
-      }} />
+return (
+  <div className="min-h-screen bg-[#fbfbfd] text-slate-900">
+    {/* خلفية ناعمة جدا */}
+    <div className="pointer-events-none fixed inset-0 -z-10">
+      <div className="absolute inset-0 bg-[radial-gradient(60%_40%_at_50%_0%,rgba(138,21,56,0.10),transparent_60%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(50%_35%_at_0%_60%,rgba(37,99,235,0.08),transparent_55%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(45%_35%_at_100%_70%,rgba(245,158,11,0.08),transparent_55%)]" />
     </div>
-  );
-}
+
+    <Header showLogin={showLogin} setShowLogin={setShowLogin} />
+    <LoginModal showLogin={showLogin} setShowLogin={setShowLogin} />
+
+    <div className="pb-24">
+      {currentSection === "home" && (
+        <HomePage
+          setCurrentSection={(section) => {
+            setCurrentSection(section);
+            if (section === "talents") setPage("talents");
+          }}
+        />
+      )}
+
+      {currentSection === "talents" && (
+        <>
+          {page === "talents" && (
+            <TalentsHomePage
+              setPage={setPage}
+              setSelectedCategory={setSelectedCategory}
+            />
+          )}
+          {page === "subcategories" && (
+            <SubcategoriesPage
+              categoryId={selectedCategory!}
+              setPage={setPage}
+              setSelectedSubcategory={setSelectedSubcategory}
+              setSelectedCategory={setSelectedCategory}
+            />
+          )}
+          {page === "register" && (
+            <RegisterPage
+              categoryId={selectedCategory!}
+              subcategoryId={selectedSubcategory!}
+              setPage={setPage}
+            />
+          )}
+          {page === "mypage" && <MyPage setPage={setPage} />}
+        </>
+      )}
+
+      {currentSection === "announcements" && <AnnouncementsPage />}
+      {currentSection === "honors" && <HonorsPage />}
+    </div>
+
+    <BottomNav
+      currentSection={currentSection}
+      setCurrentSection={(section) => {
+        setCurrentSection(section);
+        if (section === "talents") setPage("talents");
+      }}
+    />
+  </div>
+);
 
 function HomePage({ setCurrentSection }: { setCurrentSection: (section: string) => void }) {
   return (
