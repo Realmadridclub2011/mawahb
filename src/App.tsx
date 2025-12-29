@@ -634,148 +634,166 @@ function MainApp() {
 
 function HomePage({ setCurrentSection }: { setCurrentSection: (section: string) => void }) {
   return (
-    <div className="min-h-[calc(100vh-64px)]" dir="rtl">
-      {/* خلفية فاتحة زي الصورة */}
-      <div className="container mx-auto px-4 py-6 md:py-10">
-        {/* HERO CARD */}
-        <div className="relative overflow-hidden rounded-[28px] bg-gradient-to-br from-emerald-600 via-emerald-500 to-teal-500 p-5 md:p-7 text-white shadow-[0_18px_45px_rgba(16,185,129,0.25)]">
+    <div className="min-h-[calc(100vh-64px)] bg-[#F9FAFB]" dir="rtl">
+      <div className="container mx-auto px-4 py-6 md:py-10 max-w-4xl">
+
+        {/* ===== HERO CARD ===== */}
+        <div className="relative overflow-hidden rounded-[28px]
+          bg-gradient-to-br from-[#8A1538] via-[#9B1C3E] to-[#7A102F]
+          p-5 md:p-7 text-white
+          shadow-[0_20px_50px_rgba(138,21,56,0.35)]">
+
           {/* زخارف ناعمة */}
-          <div className="pointer-events-none absolute -top-20 -left-20 h-52 w-52 rounded-full bg-white/15 blur-2xl" />
-          <div className="pointer-events-none absolute -bottom-24 -right-24 h-64 w-64 rounded-full bg-white/10 blur-2xl" />
+          <div className="absolute -top-24 -left-24 w-56 h-56 rounded-full bg-white/15 blur-2xl" />
+          <div className="absolute -bottom-24 -right-24 w-64 h-64 rounded-full bg-black/10 blur-2xl" />
 
-          <div className="flex items-start justify-between gap-4">
-            <div>
-              <h1 className="text-xl md:text-3xl font-black leading-snug">
-                مرحباً بك في منصة المواهب
-              </h1>
-              <p className="mt-2 text-sm md:text-base font-semibold text-white/90">
-                اكتشف مواهبك، سجل في المسابقات، واحتفل بالإنجازات
-              </p>
+          <div className="relative z-10">
+            <h1 className="text-xl md:text-3xl font-black leading-snug">
+              مرحباً بك في منصة المواهب
+            </h1>
+            <p className="mt-2 text-sm md:text-base font-semibold text-white/90">
+              اكتشف مواهبك، سجل في المسابقات، واحتفل بالإنجازات
+            </p>
 
-              {/* Chip زي اللي بالصورة */}
-              <div className="mt-4 inline-flex items-center gap-2 rounded-full bg-white/18 px-4 py-2 text-xs md:text-sm font-bold backdrop-blur">
-                <span className="inline-block h-2 w-2 rounded-full bg-white/90" />
-                ابدأ رحلتك الآن
-              </div>
-            </div>
-
-            {/* أيقونة داخل دائرة */}
-            <div className="hidden md:flex h-12 w-12 items-center justify-center rounded-2xl bg-white/15 backdrop-blur">
-              <Star className="h-6 w-6 text-white" />
+            {/* Chip */}
+            <div className="mt-4 inline-flex items-center gap-2 rounded-full bg-white/15 px-4 py-2 text-xs md:text-sm font-bold backdrop-blur">
+              <span className="inline-block h-2 w-2 rounded-full bg-white" />
+              ابدأ رحلتك الآن
             </div>
           </div>
         </div>
 
-        {/* مسافة */}
-        <div className="mt-5" />
-
-        {/* عنوان الأقسام */}
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg md:text-xl font-black text-slate-900">الأقسام الرئيسية</h2>
-          <div className="h-[2px] flex-1 mx-3 bg-gradient-to-l from-transparent via-slate-200 to-transparent" />
+        {/* ===== عنوان الأقسام ===== */}
+        <div className="flex items-center gap-3 my-6">
+          <h2 className="text-lg md:text-xl font-black text-slate-900">
+            الأقسام الرئيسية
+          </h2>
+          <div className="flex-1 h-[2px] bg-gradient-to-l from-transparent via-slate-200 to-transparent" />
         </div>
 
-        {/* CARDS GRID (نفس 3 أقسام بس بشكل الصورة) */}
-        <div className="grid grid-cols-2 gap-4 max-w-4xl">
+        {/* ===== CARDS GRID ===== */}
+        <div className="grid grid-cols-2 gap-4">
+
           {/* اكتشف موهبتك */}
           <button
             onClick={() => setCurrentSection("talents")}
-            className="group rounded-[22px] bg-white border border-slate-200/70 shadow-[0_10px_30px_rgba(2,6,23,0.06)] hover:shadow-[0_18px_40px_rgba(2,6,23,0.10)] transition-all active:scale-[0.99] p-4 md:p-5"
+            className="rounded-[22px] bg-white border border-slate-200
+              shadow-[0_10px_30px_rgba(2,6,23,0.06)]
+              hover:shadow-[0_18px_45px_rgba(138,21,56,0.18)]
+              transition-all active:scale-[0.99] p-4"
           >
             <div className="flex flex-col items-center text-center gap-3">
-              <div className="h-14 w-14 rounded-2xl bg-emerald-50 border border-emerald-100 flex items-center justify-center">
+              <div className="h-14 w-14 rounded-2xl
+                bg-[#FDF2F4] border border-[#F6C1CC]
+                flex items-center justify-center">
                 <img
                   src="https://img.icons8.com/color/96/star--v1.png"
+                  className="h-8 w-8"
                   alt="talents"
-                  className="h-8 w-8 object-contain"
                 />
               </div>
-              <div>
-                <h3 className="text-sm md:text-base font-black text-slate-900">اكتشف موهبتك</h3>
-                <p className="mt-1 text-[11px] md:text-xs font-semibold text-slate-500">
-                  سجل موهبتك الآن
-                </p>
-              </div>
+              <h3 className="text-sm md:text-base font-black text-slate-900">
+                اكتشف موهبتك
+              </h3>
+              <p className="text-[11px] md:text-xs font-semibold text-slate-500">
+                سجل موهبتك الآن
+              </p>
             </div>
           </button>
 
           {/* الإعلانات */}
           <button
             onClick={() => setCurrentSection("announcements")}
-            className="group rounded-[22px] bg-white border border-slate-200/70 shadow-[0_10px_30px_rgba(2,6,23,0.06)] hover:shadow-[0_18px_40px_rgba(2,6,23,0.10)] transition-all active:scale-[0.99] p-4 md:p-5"
+            className="rounded-[22px] bg-white border border-slate-200
+              shadow-[0_10px_30px_rgba(2,6,23,0.06)]
+              hover:shadow-[0_18px_45px_rgba(138,21,56,0.18)]
+              transition-all active:scale-[0.99] p-4"
           >
             <div className="flex flex-col items-center text-center gap-3">
-              <div className="h-14 w-14 rounded-2xl bg-blue-50 border border-blue-100 flex items-center justify-center">
+              <div className="h-14 w-14 rounded-2xl
+                bg-[#FDF2F4] border border-[#F6C1CC]
+                flex items-center justify-center">
                 <img
                   src="https://img.icons8.com/color/96/bullhorn.png"
+                  className="h-8 w-8"
                   alt="announcements"
-                  className="h-8 w-8 object-contain"
                 />
               </div>
-              <div>
-                <h3 className="text-sm md:text-base font-black text-slate-900">الإعلانات</h3>
-                <p className="mt-1 text-[11px] md:text-xs font-semibold text-slate-500">
-                  تابع الأخبار
-                </p>
-              </div>
+              <h3 className="text-sm md:text-base font-black text-slate-900">
+                الإعلانات
+              </h3>
+              <p className="text-[11px] md:text-xs font-semibold text-slate-500">
+                تابع الأخبار
+              </p>
             </div>
           </button>
 
-          {/* التكريمات - خليها بعرض كامل زي الصورة (سطر لوحده) */}
+          {/* التكريمات – بعرض كامل */}
           <button
             onClick={() => setCurrentSection("honors")}
-            className="col-span-2 group rounded-[22px] bg-white border border-slate-200/70 shadow-[0_10px_30px_rgba(2,6,23,0.06)] hover:shadow-[0_18px_40px_rgba(2,6,23,0.10)] transition-all active:scale-[0.99] p-4 md:p-5"
+            className="col-span-2 rounded-[22px] bg-white border border-slate-200
+              shadow-[0_10px_30px_rgba(2,6,23,0.06)]
+              hover:shadow-[0_18px_45px_rgba(138,21,56,0.18)]
+              transition-all active:scale-[0.99] p-4"
           >
             <div className="flex items-center justify-between gap-4">
               <div className="flex items-center gap-4">
-                <div className="h-14 w-14 rounded-2xl bg-purple-50 border border-purple-100 flex items-center justify-center">
+                <div className="h-14 w-14 rounded-2xl
+                  bg-[#FDF2F4] border border-[#F6C1CC]
+                  flex items-center justify-center">
                   <img
                     src="https://img.icons8.com/color/96/trophy.png"
+                    className="h-8 w-8"
                     alt="honors"
-                    className="h-8 w-8 object-contain"
                   />
                 </div>
                 <div className="text-right">
-                  <h3 className="text-sm md:text-base font-black text-slate-900">التكريمات</h3>
-                  <p className="mt-1 text-[11px] md:text-xs font-semibold text-slate-500">
+                  <h3 className="text-sm md:text-base font-black text-slate-900">
+                    التكريمات
+                  </h3>
+                  <p className="text-[11px] md:text-xs font-semibold text-slate-500">
                     إنجازات مدرستنا
                   </p>
                 </div>
               </div>
 
-              <div className="h-10 w-10 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-center text-slate-700">
+              <div className="h-10 w-10 rounded-2xl
+                bg-[#FDF2F4] border border-[#F6C1CC]
+                flex items-center justify-center text-[#8A1538]">
                 <ArrowRight className="h-5 w-5 rotate-180" />
               </div>
             </div>
           </button>
         </div>
 
-        {/* CTA تحت (زي زر/كارد) */}
-        <div className="mt-6 max-w-4xl">
-          <div className="rounded-[22px] bg-white border border-slate-200/70 shadow-[0_10px_30px_rgba(2,6,23,0.06)] p-4 md:p-5">
+        {/* ===== CTA ===== */}
+        <div className="mt-6">
+          <div className="rounded-[22px] bg-white border border-slate-200
+            shadow-[0_10px_30px_rgba(2,6,23,0.06)] p-4">
             <div className="flex items-center justify-between gap-4">
               <div>
-                <h2 className="text-base md:text-lg font-black text-slate-900">ابدأ رحلتك الآن</h2>
-                <p className="mt-1 text-[12px] md:text-sm font-semibold text-slate-500">
+                <h2 className="text-base md:text-lg font-black text-slate-900">
+                  ابدأ رحلتك الآن
+                </h2>
+                <p className="text-[12px] md:text-sm font-semibold text-slate-500">
                   استخدم الشريط السفلي للتنقل بين الأقسام
                 </p>
               </div>
 
-              <div className="flex items-center gap-2 text-emerald-600">
-                <span className="text-xs md:text-sm font-black">اضغط بالأسفل</span>
+              <div className="flex items-center gap-2 text-[#8A1538]">
+                <span className="text-xs md:text-sm font-black">
+                  اضغط بالأسفل
+                </span>
                 <ArrowRight className="h-5 w-5 rotate-180 animate-bounce" />
               </div>
             </div>
           </div>
         </div>
-      </div>
 
-      {/* خلفية عامة للصفحة (خفيفة جدا) */}
-      <div className="pointer-events-none fixed inset-0 -z-10 bg-[#F6FBF9]" />
+      </div>
     </div>
   );
 }
-
 
 function TalentsHomePage({ setPage, setSelectedCategory }: any) {
   const { user } = useAuth();
