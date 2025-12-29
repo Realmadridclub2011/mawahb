@@ -985,32 +985,37 @@ function SubcategoriesPage({ categoryId, setPage, setSelectedSubcategory }: any)
   ];
 
   return (
-    <div className="container mx-auto px-3 py-6" dir="rtl">
-      <button onClick={() => setPage('talents')} className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-blue-500 text-white px-4 py-2 md:px-6 md:py-3 rounded-xl font-bold mb-6 shadow-lg active:scale-95 transition-all text-sm md:text-base">
-        <ArrowRight className="w-4 h-4 md:w-5 md:h-5" />
-        <span>العودة للأقسام</span>
-      </button>
+  <PageShell
+    title="اكتشف موهبتك"
+    subtitle="نور مستقبلك بموهبتك الفريدة"
+  >
+    <Hero
+      title="اختر موهبتك"
+      subtitle="ابدأ التسجيل الآن"
+      chipText="اختيار القسم"
+    />
 
-      <div className="text-center mb-6">
-        <h1 className="text-2xl md:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-blue-500 to-blue-400 mb-2 drop-shadow-sm">{category?.name_ar}</h1>
-        <p className="text-sm md:text-lg text-gray-700 font-semibold">اختر التخصص المناسب لموهبتك</p>
-      </div>
+    <SectionHeader label="الأقسام" />
 
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 max-w-5xl mx-auto">
-        {subcategories.map((sub, idx) => (
-          <button key={sub.id} onClick={() => { setSelectedSubcategory(sub.id); setPage('register'); }} className={`group relative bg-gradient-to-br ${subColors[idx % subColors.length]} rounded-2xl shadow-md active:scale-95 transition-all duration-300 overflow-hidden border-2 border-white/20 h-36 md:h-40`}>
-            <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-            <div className="p-3 flex flex-col items-center justify-center relative z-10 h-full">
-              <div className="w-12 h-12 md:w-14 md:h-14 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg transform group-active:scale-110 transition-all duration-300 mb-2">
-                <Award className="w-6 h-6 md:w-7 md:h-7 drop-shadow-lg" style={{color: '#8A1538'}} />
-              </div>
-              <h3 className="text-sm md:text-base font-black text-white drop-shadow-md text-center">{sub.name_ar}</h3>
-            </div>
-          </button>
-        ))}
-      </div>
+    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+      {categories.map((cat, i) => (
+        <button
+          key={cat.id}
+          onClick={() => {
+            setSelectedCategory(cat.id);
+            setPage("subcategories");
+          }}
+          className={`${UI.card} ${UI.pad} text-center`}
+        >
+          <div className={`${UI.softIcon} mx-auto ${PASTEL[i % PASTEL.length]}`}>
+            <img src={getIconImage(cat.icon)} className="h-8 w-8" />
+          </div>
+          <h3 className="mt-3 font-black">{cat.name_ar}</h3>
+        </button>
+      ))}
     </div>
-  );
+  </PageShell>
+);
 }
 
 function RegisterPage({ categoryId, subcategoryId, setPage }: any) {
