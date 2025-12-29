@@ -610,55 +610,129 @@ function MainApp() {
 }
 
 function HomePage({ setCurrentSection }: { setCurrentSection: (section: string) => void }) {
+  const CardButton = ({
+    title,
+    desc,
+    iconSrc,
+    onClick,
+    accent = "#8A1538",
+  }: {
+    title: string;
+    desc: string;
+    iconSrc: string;
+    onClick: () => void;
+    accent?: string;
+  }) => (
+    <button
+      onClick={onClick}
+      className="group w-full text-right rounded-3xl bg-white/80 backdrop-blur border border-slate-200/70 shadow-sm hover:shadow-lg transition-all active:scale-[0.99] overflow-hidden"
+    >
+      <div className="p-4 md:p-5 flex items-center gap-4">
+        <div
+          className="w-12 h-12 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-center group-hover:scale-105 transition"
+          style={{ boxShadow: `0 10px 30px ${accent}14` }}
+        >
+          <img src={iconSrc} alt={title} className="w-7 h-7 object-contain" />
+        </div>
+
+        <div className="flex-1">
+          <h3 className="text-base md:text-lg font-black text-slate-900">{title}</h3>
+          <p className="text-xs md:text-sm text-slate-500 font-semibold mt-0.5">
+            {desc}
+          </p>
+        </div>
+
+        <div
+          className="w-9 h-9 rounded-2xl flex items-center justify-center border border-slate-200 bg-white text-slate-900 group-hover:text-white transition"
+          style={{
+            background:
+              "linear-gradient(135deg, rgba(138,21,56,0.08), rgba(138,21,56,0.02))",
+          }}
+        >
+          <ArrowRight className="w-4 h-4 rotate-180" />
+        </div>
+      </div>
+
+      <div className="h-[3px] bg-slate-100">
+        <div
+          className="h-full w-0 group-hover:w-full transition-all duration-500"
+          style={{ background: `linear-gradient(90deg, ${accent}, ${accent}66)` }}
+        />
+      </div>
+    </button>
+  );
+
   return (
-    <div className="container mx-auto px-3 py-6" dir="rtl">
-      <div className="text-center mb-6">
-        <h1 className="text-2xl md:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-blue-500 to-blue-400 mb-2 drop-shadow-sm">مرحباً بك في منصة المواهب</h1>
-        <p className="text-sm md:text-lg text-gray-700 font-semibold mb-4">اكتشف مواهبك، سجل في المسابقات، واحتفل بالإنجازات</p>
+    <div className="container mx-auto px-3 py-6 md:py-10" dir="rtl">
+      {/* Hero */}
+      <div className="max-w-4xl mx-auto mb-6 md:mb-10">
+        <div className="rounded-[28px] bg-white/80 backdrop-blur border border-slate-200/70 shadow-sm p-5 md:p-8 overflow-hidden relative">
+          <div className="absolute -top-24 -left-24 w-56 h-56 rounded-full bg-[rgba(138,21,56,0.12)] blur-2xl" />
+          <div className="absolute -bottom-24 -right-24 w-56 h-56 rounded-full bg-[rgba(37,99,235,0.10)] blur-2xl" />
+
+          <h1 className="text-2xl md:text-4xl font-black text-slate-900">
+            مرحباً بك في منصة المواهب
+          </h1>
+          <p className="text-sm md:text-lg text-slate-600 font-semibold mt-2">
+            اكتشف مواهبك، سجّل في المسابقات، واحتفل بالإنجازات
+          </p>
+
+          <div className="mt-5 flex flex-wrap gap-2">
+            <span className="px-3 py-1 rounded-full bg-slate-100 text-slate-700 text-xs font-bold border border-slate-200">
+              واجهة حديثة
+            </span>
+            <span className="px-3 py-1 rounded-full bg-slate-100 text-slate-700 text-xs font-bold border border-slate-200">
+              ألوان فاتحة
+            </span>
+            <span className="px-3 py-1 rounded-full bg-slate-100 text-slate-700 text-xs font-bold border border-slate-200">
+              عنابي أساسي
+            </span>
+          </div>
+        </div>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-3 max-w-4xl mx-auto mb-6">
-        <button onClick={() => setCurrentSection('talents')} className="group relative rounded-2xl shadow-lg active:scale-95 transition-all duration-300 overflow-hidden h-32 md:h-40 bg-gradient-to-br from-orange-600 to-orange-500">
-          <div className="absolute inset-0 bg-gradient-to-t from-black/5 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300"></div>
-          <div className="relative z-10 h-full flex flex-col items-center justify-center p-3">
-            <div className="w-10 h-10 mb-2 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-md transform group-active:scale-110 transition-all duration-300 p-2">
-              <img src="https://img.icons8.com/color/96/star--v1.png" alt="star" className="w-full h-full object-contain" />
-            </div>
-            <h3 className="text-base md:text-xl font-black text-white mb-1 drop-shadow-md">اكتشف موهبتك</h3>
-            <p className="text-white/90 text-xs md:text-sm font-semibold drop-shadow hidden md:block">سجل موهبتك الآن</p>
-          </div>
-        </button>
+      {/* Actions */}
+      <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
+        <CardButton
+          title="اكتشف موهبتك"
+          desc="سجّل موهبتك واختر التخصص المناسب"
+          iconSrc="https://img.icons8.com/color/96/star--v1.png"
+          onClick={() => setCurrentSection("talents")}
+          accent="#8A1538"
+        />
 
-        <button onClick={() => setCurrentSection('announcements')} className="group relative rounded-2xl shadow-lg active:scale-95 transition-all duration-300 overflow-hidden h-32 md:h-40 bg-gradient-to-br from-green-700 to-green-600">
-          <div className="absolute inset-0 bg-gradient-to-t from-black/5 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300"></div>
-          <div className="relative z-10 h-full flex flex-col items-center justify-center p-3">
-            <div className="w-10 h-10 mb-2 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-md transform group-active:scale-110 transition-all duration-300 p-2">
-              <img src="https://img.icons8.com/color/96/bullhorn.png" alt="megaphone" className="w-full h-full object-contain" />
-            </div>
-            <h3 className="text-base md:text-xl font-black text-white mb-1 drop-shadow-md">الإعلانات</h3>
-            <p className="text-white/90 text-xs md:text-sm font-semibold drop-shadow hidden md:block">تابع الأخبار</p>
-          </div>
-        </button>
+        <CardButton
+          title="الإعلانات"
+          desc="تابع المسابقات والتسجيلات المفتوحة"
+          iconSrc="https://img.icons8.com/color/96/bullhorn.png"
+          onClick={() => setCurrentSection("announcements")}
+          accent="#2563eb"
+        />
 
-        <button onClick={() => setCurrentSection('honors')} className="group relative rounded-2xl shadow-lg active:scale-95 transition-all duration-300 overflow-hidden h-32 md:h-40 col-span-2 md:col-span-1 bg-gradient-to-br from-purple-600 to-purple-500">
-          <div className="absolute inset-0 bg-gradient-to-t from-black/5 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300"></div>
-          <div className="relative z-10 h-full flex flex-col items-center justify-center p-3">
-            <div className="w-10 h-10 mb-2 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-md transform group-active:scale-110 transition-all duration-300 p-2">
-              <img src="https://img.icons8.com/color/96/trophy.png" alt="trophy" className="w-full h-full object-contain" />
-            </div>
-            <h3 className="text-base md:text-xl font-black text-white mb-1 drop-shadow-md">التكريمات</h3>
-            <p className="text-white/90 text-xs md:text-sm font-semibold drop-shadow hidden md:block">إنجازات مدرستنا</p>
-          </div>
-        </button>
+        <div className="md:col-span-2">
+          <CardButton
+            title="التكريمات"
+            desc="شاهد إنجازات الطلاب وتكريمات المدرسة"
+            iconSrc="https://img.icons8.com/color/96/trophy.png"
+            onClick={() => setCurrentSection("honors")}
+            accent="#f59e0b"
+          />
+        </div>
       </div>
 
-      <div className="mt-6 bg-gradient-to-r from-blue-600 to-blue-500 rounded-2xl shadow-lg p-4 md:p-6 text-center text-white max-w-4xl mx-auto">
-        <h2 className="text-lg md:text-2xl font-black mb-2">ابدأ رحلتك الآن</h2>
-        <p className="text-sm md:text-lg mb-3">استخدم الشريط السفلي للتنقل بين الأقسام</p>
-        <div className="flex items-center justify-center gap-2 md:gap-4 text-amber-300">
-          <ArrowRight className="w-4 h-4 md:w-6 md:h-6 animate-bounce rotate-180" />
-          <span className="font-bold text-xs md:text-base">اضغط على الأيقونات بالأسفل</span>
-          <ArrowRight className="w-4 h-4 md:w-6 md:h-6 animate-bounce rotate-180" />
+      {/* CTA */}
+      <div className="max-w-4xl mx-auto mt-6 md:mt-10">
+        <div className="rounded-[28px] bg-[#8A1538] text-white shadow-md p-5 md:p-7 flex items-center justify-between gap-4">
+          <div>
+            <h2 className="text-lg md:text-2xl font-black">ابدأ رحلتك الآن</h2>
+            <p className="text-white/90 text-sm md:text-base font-semibold mt-1">
+              استخدم الشريط السفلي للتنقل بين الأقسام بسرعة
+            </p>
+          </div>
+          <div className="hidden md:flex items-center gap-2 text-white/90">
+            <ArrowRight className="w-5 h-5 rotate-180 animate-bounce" />
+            <span className="font-bold">الانتقال من الأسفل</span>
+          </div>
         </div>
       </div>
     </div>
