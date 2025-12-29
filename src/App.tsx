@@ -217,32 +217,55 @@ function Header({
   );
 }
 
-function BottomNav({ currentSection, setCurrentSection }: { currentSection: string; setCurrentSection: (section: string) => void }) {
+function BottomNav({
+  currentSection,
+  setCurrentSection,
+}: {
+  currentSection: string;
+  setCurrentSection: (section: string) => void;
+}) {
   const navItems = [
-    { id: 'home', label: 'الرئيسية', icon: Home },
-    { id: 'talents', label: 'اكتشف موهبتك', icon: Star },
-    { id: 'announcements', label: 'الإعلانات', icon: Megaphone },
-    { id: 'honors', label: 'التكريمات', icon: Trophy }
+    { id: "home", label: "الرئيسية", icon: Home },
+    { id: "talents", label: "اكتشف موهبتك", icon: Star },
+    { id: "announcements", label: "الإعلانات", icon: Megaphone },
+    { id: "honors", label: "التكريمات", icon: Trophy },
   ];
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-white border-t-2 md:border-t-4 border-blue-600 shadow-2xl z-40" dir="rtl">
-      <div className="container mx-auto px-1">
-        <div className="grid grid-cols-4 gap-0.5">
-          {navItems.map(item => (
-            <button
-              key={item.id}
-              onClick={() => setCurrentSection(item.id)}
-              className={`flex flex-col items-center justify-center py-2 transition-all ${
-                currentSection === item.id
-                  ? 'text-blue-600 bg-amber-50'
-                  : 'text-gray-600 hover:text-blue-600 hover:bg-amber-50/50'
-              }`}
-            >
-              <item.icon className={`w-5 h-5 md:w-6 md:h-6 mb-0.5 ${currentSection === item.id ? 'scale-110' : ''} transition-transform`} />
-              <span className="text-[9px] md:text-xs font-bold leading-tight">{item.label}</span>
-            </button>
-          ))}
+    <nav dir="rtl" className="fixed bottom-0 left-0 right-0 z-50">
+      <div className="mx-auto max-w-4xl px-3 pb-3">
+        <div className="rounded-3xl bg-white/80 backdrop-blur-xl border border-slate-200/70 shadow-lg overflow-hidden">
+          <div className="grid grid-cols-4">
+            {navItems.map((item) => {
+              const active = currentSection === item.id;
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => setCurrentSection(item.id)}
+                  className={`py-3 flex flex-col items-center justify-center gap-1 transition ${
+                    active ? "bg-slate-50" : "hover:bg-slate-50/60"
+                  }`}
+                >
+                  <div
+                    className={`w-10 h-10 rounded-2xl flex items-center justify-center transition ${
+                      active
+                        ? "bg-[#8A1538] text-white shadow-md"
+                        : "bg-white text-slate-700 border border-slate-200"
+                    }`}
+                  >
+                    <item.icon className="w-5 h-5" />
+                  </div>
+                  <span
+                    className={`text-[10px] md:text-xs font-black ${
+                      active ? "text-[#8A1538]" : "text-slate-600"
+                    }`}
+                  >
+                    {item.label}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
         </div>
       </div>
     </nav>
