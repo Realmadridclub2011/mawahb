@@ -124,51 +124,94 @@ function ToastProvider({ children }: { children: React.ReactNode }) {
 const useAuth = () => useContext(AuthContext)!;
 const useToast = () => useContext(ToastContext)!;
 
-function Header({ showLogin, setShowLogin }: { showLogin?: boolean; setShowLogin?: (show: boolean) => void }) {
+function Header({
+  showLogin,
+  setShowLogin,
+}: {
+  showLogin?: boolean;
+  setShowLogin?: (show: boolean) => void;
+}) {
   const { user, logout } = useAuth();
 
   const getRoleName = (role: string) => {
-    const names: Record<string, string> = { student: 'طالب', guardian: 'ولي أمر', teacher: 'معلم', admin: 'إداري' };
+    const names: Record<string, string> = {
+      student: "طالب",
+      guardian: "ولي أمر",
+      teacher: "معلم",
+      admin: "إداري",
+    };
     return names[role] || role;
   };
 
   return (
-    <header className="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-700 text-white shadow-2xl border-b-2 md:border-b-4 border-blue-400" dir="rtl">
-      <div className="container mx-auto px-3 py-3 md:px-4 md:py-4">
-        <div className="flex items-center justify-between gap-2">
-          <div className="flex items-center">
-            {user ? (
-              <div className="flex items-center gap-2 bg-white/15 backdrop-blur-md px-2 py-1.5 md:px-4 md:py-2 rounded-lg shadow-lg border border-white/20">
-                <div className="w-7 h-7 md:w-9 md:h-9 rounded-full bg-gradient-to-br from-blue-400 to-blue-500 flex items-center justify-center shadow-lg">
-                  <User className="w-4 h-4 md:w-5 md:h-5 text-white" />
-                </div>
-                <div className="hidden sm:block">
-                  <p className="font-black text-xs md:text-sm leading-tight">{user.full_name}</p>
-                  <p className="text-[10px] md:text-xs text-blue-200 font-semibold">{getRoleName(user.role)}</p>
-                </div>
+    <header dir="rtl" className="sticky top-0 z-50">
+      <div className="bg-white/70 backdrop-blur-xl border-b border-slate-200/70">
+        <div className="container mx-auto px-3 py-3 md:px-5 md:py-4">
+          <div className="flex items-center justify-between gap-3">
+            {/* Brand */}
+            <div className="flex items-center gap-2">
+              <div className="w-10 h-10 rounded-2xl bg-[linear-gradient(135deg,#8A1538,rgba(138,21,56,0.7))] shadow-sm flex items-center justify-center">
+                <Star className="w-5 h-5 text-white" />
               </div>
-            ) : (
-              <div className="flex items-center gap-1.5">
-                <Star className="w-6 h-6 md:w-7 md:h-7 text-amber-400" />
-                <span className="font-black text-sm md:text-lg">المواهب</span>
+              <div className="leading-tight">
+                <p className="font-black text-sm md:text-base text-slate-900">
+                  منصة المواهب
+                </p>
+                <p className="text-[11px] md:text-xs text-slate-500 font-semibold">
+                  اكتشاف المواهب المدرسية
+                </p>
               </div>
-            )}
-          </div>
-          <h1 className="text-xs md:text-xl lg:text-2xl font-black drop-shadow-lg text-center flex-1 mx-2">منصة اكتشاف المواهب المدرسية</h1>
-          <div className="flex items-center">
-            {user ? (
-              <button onClick={logout} className="flex items-center gap-1 md:gap-2 bg-white/20 hover:bg-white/30 px-2 py-1.5 md:px-4 md:py-2 rounded-lg font-bold shadow-lg transition-all border border-white/30">
-                <LogOut className="w-3.5 h-3.5 md:w-4 md:h-4" />
-                <span className="hidden md:inline text-xs md:text-sm">خروج</span>
-              </button>
-            ) : (
-              <button onClick={() => setShowLogin?.(true)} className="flex items-center gap-1 md:gap-2 bg-white/20 hover:bg-white/30 px-2.5 py-1.5 md:px-4 md:py-2 rounded-lg font-bold shadow-lg transition-all border border-white/30">
-                <LogIn className="w-3.5 h-3.5 md:w-4 md:h-4" />
-                <span className="text-xs md:text-sm">دخول</span>
-              </button>
-            )}
+            </div>
+
+            {/* Title */}
+            <div className="hidden md:block text-center flex-1">
+              <h1 className="text-sm md:text-lg font-black text-slate-900">
+                منصة اكتشاف المواهب المدرسية
+              </h1>
+              <p className="text-xs text-slate-500 font-semibold">
+                اكتشف — سجّل — شارك — احتفل بالإنجاز
+              </p>
+            </div>
+
+            {/* Auth */}
+            <div className="flex items-center gap-2">
+              {user ? (
+                <>
+                  <div className="hidden sm:flex items-center gap-2 px-3 py-2 rounded-2xl bg-slate-50 border border-slate-200/70">
+                    <div className="w-9 h-9 rounded-2xl bg-white border border-slate-200 flex items-center justify-center">
+                      <User className="w-4 h-4 text-[#8A1538]" />
+                    </div>
+                    <div className="leading-tight">
+                      <p className="font-black text-sm">{user.full_name}</p>
+                      <p className="text-[11px] text-slate-500 font-semibold">
+                        {getRoleName(user.role)}
+                      </p>
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={logout}
+                    className="inline-flex items-center gap-2 px-3 py-2 rounded-2xl bg-[#8A1538] text-white font-bold shadow-sm hover:shadow-md transition"
+                  >
+                    <LogOut className="w-4 h-4" />
+                    <span className="hidden md:inline">خروج</span>
+                  </button>
+                </>
+              ) : (
+                <button
+                  onClick={() => setShowLogin?.(true)}
+                  className="inline-flex items-center gap-2 px-3 py-2 rounded-2xl bg-[#8A1538] text-white font-bold shadow-sm hover:shadow-md transition"
+                >
+                  <LogIn className="w-4 h-4" />
+                  <span>دخول</span>
+                </button>
+              )}
+            </div>
           </div>
         </div>
+
+        {/* Accent line */}
+        <div className="h-[3px] bg-[linear-gradient(90deg,rgba(138,21,56,1),rgba(138,21,56,0.4),rgba(138,21,56,1))]" />
       </div>
     </header>
   );
