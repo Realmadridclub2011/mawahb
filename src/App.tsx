@@ -545,7 +545,7 @@ function MainApp() {
     );
   }
 
-return (
+ return (
   <div className="min-h-screen bg-[#fbfbfd] text-slate-900">
     {/* خلفية ناعمة جدا */}
     <div className="pointer-events-none fixed inset-0 -z-10">
@@ -607,6 +607,7 @@ return (
     />
   </div>
 );
+}
 
 function HomePage({ setCurrentSection }: { setCurrentSection: (section: string) => void }) {
   return (
