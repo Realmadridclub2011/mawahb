@@ -123,6 +123,86 @@ function ToastProvider({ children }: { children: React.ReactNode }) {
 
 const useAuth = () => useContext(AuthContext)!;
 const useToast = () => useContext(ToastContext)!;
+// ================== UI DESIGN SYSTEM (Maroon / Light) ==================
+const UI = {
+  maroon: "#8A1538",
+  bg: "bg-[#F9FAFB] text-slate-900",
+  page: "container mx-auto px-4 py-6 md:py-10 max-w-6xl",
+  card:
+    "rounded-[22px] bg-white border border-slate-200 shadow-[0_10px_30px_rgba(2,6,23,0.06)] hover:shadow-[0_18px_45px_rgba(138,21,56,0.16)] transition-all",
+  pad: "p-4 md:p-5",
+  softIcon:
+    "h-14 w-14 rounded-2xl bg-[#FDF2F4] border border-[#F6C1CC] flex items-center justify-center",
+  sectionTitle: "text-lg md:text-xl font-black text-slate-900",
+  divider:
+    "h-[2px] flex-1 bg-gradient-to-l from-transparent via-slate-200 to-transparent",
+  chip:
+    "inline-flex items-center gap-2 rounded-full bg-white/15 px-4 py-2 text-xs md:text-sm font-bold backdrop-blur",
+  hero:
+    "relative overflow-hidden rounded-[28px] bg-gradient-to-br from-[#8A1538] via-[#9B1C3E] to-[#7A102F] text-white shadow-[0_20px_50px_rgba(138,21,56,0.35)]",
+  btn:
+    "inline-flex items-center gap-2 rounded-2xl bg-white border border-slate-200 px-4 py-2 font-bold shadow-sm hover:shadow-md transition",
+};
+
+const PASTEL = [
+  "bg-rose-50 border-rose-200",
+  "bg-amber-50 border-amber-200",
+  "bg-emerald-50 border-emerald-200",
+  "bg-sky-50 border-sky-200",
+  "bg-violet-50 border-violet-200",
+  "bg-slate-50 border-slate-200",
+];
+
+function PageShell({ title, subtitle, right, children }) {
+  return (
+    <div className={`${UI.bg} min-h-screen`} dir="rtl">
+      <div className={UI.page}>
+        {(title || subtitle || right) && (
+          <div className="flex items-end justify-between gap-4 mb-6">
+            <div>
+              {title && (
+                <h1 className="text-2xl md:text-4xl font-black">{title}</h1>
+              )}
+              {subtitle && (
+                <p className="mt-1 text-sm md:text-base font-semibold text-slate-500">
+                  {subtitle}
+                </p>
+              )}
+            </div>
+            {right}
+          </div>
+        )}
+        {children}
+      </div>
+    </div>
+  );
+}
+
+function Hero({ title, subtitle, chipText }) {
+  return (
+    <div className={`${UI.hero} p-5 md:p-7`}>
+      <h2 className="text-xl md:text-3xl font-black">{title}</h2>
+      <p className="mt-2 text-sm md:text-base font-semibold text-white/90">
+        {subtitle}
+      </p>
+      {chipText && (
+        <div className="mt-4">
+          <span className={UI.chip}>{chipText}</span>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function SectionHeader({ label }) {
+  return (
+    <div className="flex items-center gap-3 my-6">
+      <h2 className={UI.sectionTitle}>{label}</h2>
+      <div className={UI.divider} />
+    </div>
+  );
+}
+// ======================================================================
 
 function Header({
   showLogin,
