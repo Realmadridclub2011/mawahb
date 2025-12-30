@@ -343,10 +343,10 @@ function LoginModal({ showLogin, setShowLogin }: { showLogin: boolean; setShowLo
         </button>
 
         <div className="text-center mb-4">
-          <div className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br from-[#8A1538] to-[#A5763F] rounded-full mb-3">
+          <div className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br from-emerald-600 to-cyan-600 rounded-full mb-3">
             {isRegisterMode ? <User className="w-6 h-6 text-white" /> : <LogIn className="w-6 h-6 text-white" />}
           </div>
-          <h2 className="text-xl font-black text-[#8A1538] mb-1">
+          <h2 className="text-xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-cyan-600 mb-1">
             {isRegisterMode ? 'إنشاء حساب جديد' : 'تسجيل الدخول'}
           </h2>
           <p className="text-sm text-gray-600">
@@ -358,20 +358,20 @@ function LoginModal({ showLogin, setShowLogin }: { showLogin: boolean; setShowLo
           <form onSubmit={handleLogin} className="space-y-3">
             <div>
               <label className="block text-gray-700 font-semibold mb-1 text-sm">البريد الإلكتروني</label>
-              <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8A1538]" placeholder="example@school.com" required dir="ltr" />
+              <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-600" placeholder="example@school.com" required dir="ltr" />
             </div>
 
             <div>
               <label className="block text-gray-700 font-semibold mb-1 text-sm">كلمة المرور</label>
-              <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8A1538]" placeholder="••••••••" required dir="ltr" />
+              <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-600" placeholder="••••••••" required dir="ltr" />
             </div>
 
-            <button type="submit" disabled={loading} className="w-full bg-gradient-to-r from-[#8A1538] to-[#A5763F] text-white py-2.5 rounded-lg font-bold hover:shadow-lg transition disabled:opacity-50 text-sm">
+            <button type="submit" disabled={loading} className="w-full bg-gradient-to-r from-emerald-600 to-cyan-600 text-white py-2.5 rounded-lg font-bold hover:shadow-lg transition disabled:opacity-50 text-sm">
               {loading ? 'جارٍ تسجيل الدخول...' : 'تسجيل الدخول'}
             </button>
 
             <div className="text-center pt-2">
-              <button type="button" onClick={() => setIsRegisterMode(true)} className="text-[#8A1538] font-bold text-sm hover:underline">
+              <button type="button" onClick={() => setIsRegisterMode(true)} className="text-emerald-600 font-bold text-sm hover:underline">
                 ليس لديك حساب؟ سجل الآن
               </button>
             </div>
@@ -380,17 +380,17 @@ function LoginModal({ showLogin, setShowLogin }: { showLogin: boolean; setShowLo
           <form onSubmit={handleRegister} className="space-y-3">
             <div>
               <label className="block text-gray-700 font-semibold mb-1 text-sm">الاسم الكامل</label>
-              <input type="text" value={fullName} onChange={(e) => setFullName(e.target.value)} className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8A1538]" placeholder="أحمد محمد علي" required />
+              <input type="text" value={fullName} onChange={(e) => setFullName(e.target.value)} className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-600" placeholder="أحمد محمد علي" required />
             </div>
 
             <div>
               <label className="block text-gray-700 font-semibold mb-1 text-sm">البريد الإلكتروني</label>
-              <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8A1538]" placeholder="example@school.com" required dir="ltr" />
+              <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-600" placeholder="example@school.com" required dir="ltr" />
             </div>
 
             <div>
               <label className="block text-gray-700 font-semibold mb-1 text-sm">نوع الحساب</label>
-              <select value={role} onChange={(e) => setRole(e.target.value as any)} className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8A1538]" required>
+              <select value={role} onChange={(e) => setRole(e.target.value as any)} className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-600" required>
                 <option value="student">طالب</option>
                 <option value="guardian">ولي أمر</option>
                 <option value="teacher">معلم</option>
@@ -402,11 +402,11 @@ function LoginModal({ showLogin, setShowLogin }: { showLogin: boolean; setShowLo
                 <div className="grid grid-cols-2 gap-2">
                   <div>
                     <label className="block text-gray-700 font-semibold mb-1 text-sm">الصف</label>
-                    <input type="text" value={grade} onChange={(e) => setGrade(e.target.value)} className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8A1538]" placeholder="الأول" required />
+                    <input type="text" value={grade} onChange={(e) => setGrade(e.target.value)} className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-600" placeholder="الأول" required />
                   </div>
                   <div>
                     <label className="block text-gray-700 font-semibold mb-1 text-sm">الفصل</label>
-                    <input type="text" value={classRoom} onChange={(e) => setClassRoom(e.target.value)} className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8A1538]" placeholder="أ" required />
+                    <input type="text" value={classRoom} onChange={(e) => setClassRoom(e.target.value)} className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-600" placeholder="أ" required />
                   </div>
                 </div>
               </>
@@ -414,25 +414,25 @@ function LoginModal({ showLogin, setShowLogin }: { showLogin: boolean; setShowLo
 
             <div>
               <label className="block text-gray-700 font-semibold mb-1 text-sm">رقم الجوال (اختياري)</label>
-              <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8A1538]" placeholder="05xxxxxxxx" dir="ltr" />
+              <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-600" placeholder="05xxxxxxxx" dir="ltr" />
             </div>
 
             <div>
               <label className="block text-gray-700 font-semibold mb-1 text-sm">كلمة المرور</label>
-              <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8A1538]" placeholder="••••••••" required minLength={6} dir="ltr" />
+              <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-600" placeholder="••••••••" required minLength={6} dir="ltr" />
             </div>
 
             <div>
               <label className="block text-gray-700 font-semibold mb-1 text-sm">تأكيد كلمة المرور</label>
-              <input type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8A1538]" placeholder="••••••••" required minLength={6} dir="ltr" />
+              <input type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-600" placeholder="••••••••" required minLength={6} dir="ltr" />
             </div>
 
-            <button type="submit" disabled={loading} className="w-full bg-gradient-to-r from-[#8A1538] to-[#A5763F] text-white py-2.5 rounded-lg font-bold hover:shadow-lg transition disabled:opacity-50 text-sm">
+            <button type="submit" disabled={loading} className="w-full bg-gradient-to-r from-emerald-600 to-cyan-600 text-white py-2.5 rounded-lg font-bold hover:shadow-lg transition disabled:opacity-50 text-sm">
               {loading ? 'جارٍ إنشاء الحساب...' : 'إنشاء حساب'}
             </button>
 
             <div className="text-center pt-2">
-              <button type="button" onClick={() => setIsRegisterMode(false)} className="text-[#8A1538] font-bold text-sm hover:underline">
+              <button type="button" onClick={() => setIsRegisterMode(false)} className="text-emerald-600 font-bold text-sm hover:underline">
                 لديك حساب بالفعل؟ سجل دخول
               </button>
             </div>
