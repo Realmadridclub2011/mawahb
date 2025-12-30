@@ -1386,6 +1386,7 @@ function AdminDashboard() {
   const [showAnnouncementModal, setShowAnnouncementModal] = useState(false);
   const [showHonorModal, setShowHonorModal] = useState(false);
   const [showResetPasswordModal, setShowResetPasswordModal] = useState(false);
+  const [showDeleteUserModal, setShowDeleteUserModal] = useState(false);
   const [editingItem, setEditingItem] = useState<any>(null);
   const [selectedAccount, setSelectedAccount] = useState<any>(null);
   const [newPassword, setNewPassword] = useState('');
@@ -1523,6 +1524,43 @@ function AdminDashboard() {
       setSelectedAccount(null);
     } catch (error: any) {
       showError(error.message || 'حدث خطأ أثناء إعادة تعيين كلمة المرور');
+    }
+  };
+
+  const handleDeleteUser = async () => {
+    if (!selectedAccount) return;
+
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        showError('الجلسة غير صالحة');
+        return;
+      }
+
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+      const response = await fetch(`${supabaseUrl}/functions/v1/delete-user`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify({
+          userId: selectedAccount.id,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || 'فشل حذف المستخدم');
+      }
+
+      showSuccess('تم حذف الحساب بنجاح');
+      setShowDeleteUserModal(false);
+      setSelectedAccount(null);
+      loadAccounts();
+    } catch (error: any) {
+      showError(error.message || 'حدث خطأ أثناء حذف المستخدم');
     }
   };
 
@@ -1939,6 +1977,7 @@ function AdminDashboard() {
                   <th className="px-4 py-3 text-right text-sm">الدور الحالي</th>
                   <th className="px-4 py-3 text-right text-sm">تغيير الدور</th>
                   <th className="px-4 py-3 text-right text-sm">إعادة تعيين كلمة المرور</th>
+                  <th className="px-4 py-3 text-right text-sm">حذف الحساب</th>
                 </tr>
               </thead>
               <tbody>
@@ -1983,6 +2022,18 @@ function AdminDashboard() {
                         className="bg-orange-500 text-white px-3 py-2 rounded-lg text-xs hover:bg-orange-600 font-semibold transition-colors"
                       >
                         إعادة تعيين
+                      </button>
+                    </td>
+                    <td className="px-4 py-3">
+                      <button
+                        onClick={() => {
+                          setSelectedAccount(account);
+                          setShowDeleteUserModal(true);
+                        }}
+                        className="bg-red-500 text-white px-3 py-2 rounded-lg text-xs hover:bg-red-600 font-semibold transition-colors flex items-center gap-1"
+                      >
+                        <Trash2 className="w-3 h-3" />
+                        حذف
                       </button>
                     </td>
                   </tr>
@@ -2232,6 +2283,34 @@ function AdminDashboard() {
                 }} className="flex-1 bg-gray-200 py-3 rounded-lg font-bold hover:bg-gray-300">إلغاء</button>
                 <button onClick={handleResetPassword} className="flex-1 bg-gradient-to-r from-orange-500 to-red-500 text-white py-3 rounded-lg font-bold hover:from-orange-600 hover:to-red-600">
                   إعادة تعيين
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showDeleteUserModal && (
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4" onClick={() => setShowDeleteUserModal(false)}>
+          <div className="bg-white rounded-3xl shadow-2xl w-full max-w-md p-8" onClick={(e) => e.stopPropagation()} dir="rtl">
+            <h2 className="text-2xl font-black text-red-600 mb-4">تأكيد حذف الحساب</h2>
+            <div className="space-y-4">
+              <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                <p className="text-gray-800 font-semibold mb-2">هل أنت متأكد من حذف هذا الحساب؟</p>
+                <div className="text-sm text-gray-600 space-y-1">
+                  <p><strong>الاسم:</strong> {selectedAccount?.full_name || '-'}</p>
+                  <p><strong>البريد الإلكتروني:</strong> {selectedAccount?.email}</p>
+                </div>
+                <p className="text-red-600 font-bold text-sm mt-3">تحذير: هذا الإجراء لا يمكن التراجع عنه!</p>
+              </div>
+              <div className="flex gap-4 pt-4">
+                <button onClick={() => {
+                  setShowDeleteUserModal(false);
+                  setSelectedAccount(null);
+                }} className="flex-1 bg-gray-200 py-3 rounded-lg font-bold hover:bg-gray-300">إلغاء</button>
+                <button onClick={handleDeleteUser} className="flex-1 bg-red-500 text-white py-3 rounded-lg font-bold hover:bg-red-600 flex items-center justify-center gap-2">
+                  <Trash2 className="w-4 h-4" />
+                  حذف الحساب
                 </button>
               </div>
             </div>
