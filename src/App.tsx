@@ -543,16 +543,19 @@ function HomePage({ setCurrentSection }: { setCurrentSection: (section: string) 
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-3 gap-3 max-w-4xl mx-auto mb-6">
-        <button onClick={() => setCurrentSection('talents')} className="group relative rounded-2xl shadow-lg active:scale-95 transition-all duration-300 overflow-hidden h-32 md:h-40 bg-gradient-to-br from-amber-400 via-yellow-400 to-orange-400">
-          <div className="absolute inset-0 bg-gradient-to-t from-black/5 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300"></div>
-          <div className="relative z-10 h-full flex flex-col items-center justify-center p-3">
-            <div className="w-10 h-10 mb-2 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-md transform group-active:scale-110 transition-all duration-300 p-2">
-              <img src="https://img.icons8.com/color/96/star--v1.png" alt="star" className="w-full h-full object-contain" />
-            </div>
-            <h3 className="text-base md:text-xl font-black text-white mb-1 drop-shadow-md">اكتشف موهبتك</h3>
-            <p className="text-white/90 text-xs md:text-sm font-semibold drop-shadow hidden md:block">سجل موهبتك الآن</p>
-          </div>
-        </button>
+        <button
+  onClick={() => setCurrentSection('talents')}
+  className="group ui-card ui-card-hover overflow-hidden h-32 md:h-40 active:scale-[0.99]"
+>
+  <div className="h-full flex flex-col items-center justify-center p-3">
+    <UiIconCircle className="mb-2">
+      <img src="https://img.icons8.com/color/96/star--v1.png" alt="star" className="w-7 h-7 object-contain" />
+    </UiIconCircle>
+
+    <h3 className="text-base md:text-xl font-black text-slate-900 mb-1">اكتشف موهبتك</h3>
+    <p className="text-slate-500 text-xs md:text-sm font-semibold hidden md:block">سجل موهبتك الآن</p>
+  </div>
+</button>
 
         <button onClick={() => setCurrentSection('announcements')} className="group relative rounded-2xl shadow-lg active:scale-95 transition-all duration-300 overflow-hidden h-32 md:h-40 bg-gradient-to-br from-blue-400 via-cyan-400 to-teal-400">
           <div className="absolute inset-0 bg-gradient-to-t from-black/5 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300"></div>
