@@ -494,12 +494,90 @@ function MainApp() {
   }
 
   if (user?.role === 'admin') {
-  return (
-    <div className="app-bg">
+    return (
+      <div className="app-bg">
         <Header />
         <div className="pb-20">
-          <AdminDashboard />
+          {currentSection === 'admin-dashboard' && <AdminDashboard />}
+          {currentSection === 'home' && <HomePage setCurrentSection={(section) => {
+            setCurrentSection(section);
+            if (section === 'talents') setPage('talents');
+          }} />}
+          {currentSection === 'talents' && (
+            <>
+              {page === 'talents' && <TalentsHomePage setPage={setPage} setSelectedCategory={setSelectedCategory} />}
+              {page === 'subcategories' && <SubcategoriesPage categoryId={selectedCategory!} setPage={setPage} setSelectedSubcategory={setSelectedSubcategory} setSelectedCategory={setSelectedCategory} />}
+              {page === 'register' && <RegisterPage categoryId={selectedCategory!} subcategoryId={selectedSubcategory!} setPage={setPage} />}
+              {page === 'mypage' && <MyPage setPage={setPage} />}
+            </>
+          )}
+          {currentSection === 'announcements' && <AnnouncementsPage />}
+          {currentSection === 'honors' && <HonorsPage />}
         </div>
+        <nav className="fixed bottom-0 left-0 right-0 bg-gradient-to-r from-slate-50 via-teal-50 to-cyan-50 border-t-2 md:border-t-4 border-teal-600 shadow-2xl z-40" dir="rtl">
+          <div className="container mx-auto px-1">
+            <div className="grid grid-cols-5 gap-0.5">
+              <button
+                onClick={() => setCurrentSection('home')}
+                className={`flex flex-col items-center justify-center py-2 transition-all ${
+                  currentSection === 'home'
+                    ? 'text-teal-700 bg-teal-100/60'
+                    : 'text-gray-600 hover:text-teal-700 hover:bg-teal-100/40'
+                }`}
+              >
+                <Home className={`w-5 h-5 md:w-6 md:h-6 mb-0.5 ${currentSection === 'home' ? 'scale-110' : ''} transition-transform`} />
+                <span className="text-[10px] md:text-xs font-bold">الرئيسية</span>
+              </button>
+              <button
+                onClick={() => {
+                  setCurrentSection('talents');
+                  setPage('talents');
+                }}
+                className={`flex flex-col items-center justify-center py-2 transition-all ${
+                  currentSection === 'talents'
+                    ? 'text-teal-700 bg-teal-100/60'
+                    : 'text-gray-600 hover:text-teal-700 hover:bg-teal-100/40'
+                }`}
+              >
+                <Star className={`w-5 h-5 md:w-6 md:h-6 mb-0.5 ${currentSection === 'talents' ? 'scale-110' : ''} transition-transform`} />
+                <span className="text-[10px] md:text-xs font-bold">المواهب</span>
+              </button>
+              <button
+                onClick={() => setCurrentSection('announcements')}
+                className={`flex flex-col items-center justify-center py-2 transition-all ${
+                  currentSection === 'announcements'
+                    ? 'text-teal-700 bg-teal-100/60'
+                    : 'text-gray-600 hover:text-teal-700 hover:bg-teal-100/40'
+                }`}
+              >
+                <Megaphone className={`w-5 h-5 md:w-6 md:h-6 mb-0.5 ${currentSection === 'announcements' ? 'scale-110' : ''} transition-transform`} />
+                <span className="text-[10px] md:text-xs font-bold">الإعلانات</span>
+              </button>
+              <button
+                onClick={() => setCurrentSection('honors')}
+                className={`flex flex-col items-center justify-center py-2 transition-all ${
+                  currentSection === 'honors'
+                    ? 'text-teal-700 bg-teal-100/60'
+                    : 'text-gray-600 hover:text-teal-700 hover:bg-teal-100/40'
+                }`}
+              >
+                <Trophy className={`w-5 h-5 md:w-6 md:h-6 mb-0.5 ${currentSection === 'honors' ? 'scale-110' : ''} transition-transform`} />
+                <span className="text-[10px] md:text-xs font-bold">التكريمات</span>
+              </button>
+              <button
+                onClick={() => setCurrentSection('admin-dashboard')}
+                className={`flex flex-col items-center justify-center py-2 transition-all ${
+                  currentSection === 'admin-dashboard'
+                    ? 'text-teal-700 bg-teal-100/60'
+                    : 'text-gray-600 hover:text-teal-700 hover:bg-teal-100/40'
+                }`}
+              >
+                <LayoutDashboard className={`w-5 h-5 md:w-6 md:h-6 mb-0.5 ${currentSection === 'admin-dashboard' ? 'scale-110' : ''} transition-transform`} />
+                <span className="text-[10px] md:text-xs font-bold">لوحة التحكم</span>
+              </button>
+            </div>
+          </div>
+        </nav>
       </div>
     );
   }
