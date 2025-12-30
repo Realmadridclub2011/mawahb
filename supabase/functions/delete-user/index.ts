@@ -87,6 +87,15 @@ Deno.serve(async (req: Request) => {
       );
     }
 
+    const { error: deleteUserRecordError } = await supabaseAdmin
+      .from("users")
+      .delete()
+      .eq("id", userId);
+
+    if (deleteUserRecordError) {
+      throw deleteUserRecordError;
+    }
+
     const { error: deleteError } = await supabaseAdmin.auth.admin.deleteUser(userId);
 
     if (deleteError) {
