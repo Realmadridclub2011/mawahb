@@ -504,7 +504,7 @@ function MainApp() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-stone-50">
+    <div className="app-bg">
       <Header showLogin={showLogin} setShowLogin={setShowLogin} />
       <LoginModal showLogin={showLogin} setShowLogin={setShowLogin} />
 
