@@ -1,4 +1,5 @@
 import { useState, useEffect, createContext, useContext } from 'react';
+import { UiCard, UiIconCircle } from "./components/ui/UiCard";
 import { createClient } from '@supabase/supabase-js';
 import { LogIn, LogOut, User, FileText, Users, LayoutDashboard, ArrowRight, CheckCircle, XCircle, Clock, TrendingUp, Plus, MessageSquare, Search, Download, X, Info, Award, Dumbbell, Palette, BookOpen, Microscope, Cpu, Home, Megaphone, Trophy, Star, CreditCard as Edit, Trash2, Settings, Image } from 'lucide-react';
 
@@ -33,8 +34,42 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<UserType | null>(null);
 
   useEffect(() => {
-    const stored = localStorage.getItem('user');
-    if (stored) setUser(JSON.parse(stored));
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session?.user) {
+        supabase
+          .from('users')
+          .select('*')
+          .eq('id', session.user.id)
+          .maybeSingle()
+          .then(({ data }) => {
+            if (data) {
+              setUser(data);
+              localStorage.setItem('user', JSON.stringify(data));
+            }
+          });
+      }
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session?.user) {
+        supabase
+          .from('users')
+          .select('*')
+          .eq('id', session.user.id)
+          .maybeSingle()
+          .then(({ data }) => {
+            if (data) {
+              setUser(data);
+              localStorage.setItem('user', JSON.stringify(data));
+            }
+          });
+      } else {
+        setUser(null);
+        localStorage.removeItem('user');
+      }
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
   const login = (user: UserType) => {
@@ -42,9 +77,11 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem('user', JSON.stringify(user));
   };
 
-  const logout = () => {
+  const logout = async () => {
+    await supabase.auth.signOut();
     setUser(null);
     localStorage.removeItem('user');
+    window.location.href = '/';
   };
 
   return <AuthContext.Provider value={{ user, login, logout }}>{children}</AuthContext.Provider>;
@@ -97,23 +134,23 @@ function Header({ showLogin, setShowLogin }: { showLogin?: boolean; setShowLogin
   };
 
   return (
-    <header className="bg-gradient-to-r from-[#8A1538] via-[#9A2545] to-[#A5763F] text-white shadow-2xl border-b-2 md:border-b-4 border-amber-400" dir="rtl">
+    <header className="bg-gradient-to-r from-slate-800 via-teal-700 to-cyan-700 text-white shadow-2xl border-b-2 md:border-b-4 border-teal-400" dir="rtl">
       <div className="container mx-auto px-3 py-3 md:px-4 md:py-4">
         <div className="flex items-center justify-between gap-2">
           <div className="flex items-center">
             {user ? (
               <div className="flex items-center gap-2 bg-white/15 backdrop-blur-md px-2 py-1.5 md:px-4 md:py-2 rounded-lg shadow-lg border border-white/20">
-                <div className="w-7 h-7 md:w-9 md:h-9 rounded-full bg-gradient-to-br from-amber-400 to-yellow-500 flex items-center justify-center shadow-lg">
-                  <User className="w-4 h-4 md:w-5 md:h-5 text-[#8A1538]" />
+                <div className="w-7 h-7 md:w-9 md:h-9 rounded-full bg-gradient-to-br from-teal-400 to-cyan-400 flex items-center justify-center shadow-lg">
+                  <User className="w-4 h-4 md:w-5 md:h-5 text-slate-800" />
                 </div>
                 <div className="hidden sm:block">
                   <p className="font-black text-xs md:text-sm leading-tight">{user.full_name}</p>
-                  <p className="text-[10px] md:text-xs text-amber-200 font-semibold">{getRoleName(user.role)}</p>
+                  <p className="text-[10px] md:text-xs text-teal-200 font-semibold">{getRoleName(user.role)}</p>
                 </div>
               </div>
             ) : (
               <div className="flex items-center gap-1.5">
-                <Star className="w-6 h-6 md:w-7 md:h-7 text-amber-400" />
+                <Star className="w-6 h-6 md:w-7 md:h-7 text-teal-300" />
                 <span className="font-black text-sm md:text-lg">المواهب</span>
               </div>
             )}
@@ -147,7 +184,7 @@ function BottomNav({ currentSection, setCurrentSection }: { currentSection: stri
   ];
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-white border-t-2 md:border-t-4 border-[#8A1538] shadow-2xl z-40" dir="rtl">
+    <nav className="fixed bottom-0 left-0 right-0 bg-gradient-to-r from-slate-50 via-teal-50 to-cyan-50 border-t-2 md:border-t-4 border-teal-600 shadow-2xl z-40" dir="rtl">
       <div className="container mx-auto px-1">
         <div className="grid grid-cols-4 gap-0.5">
           {navItems.map(item => (
@@ -156,8 +193,8 @@ function BottomNav({ currentSection, setCurrentSection }: { currentSection: stri
               onClick={() => setCurrentSection(item.id)}
               className={`flex flex-col items-center justify-center py-2 transition-all ${
                 currentSection === item.id
-                  ? 'text-[#8A1538] bg-amber-50'
-                  : 'text-gray-600 hover:text-[#8A1538] hover:bg-amber-50/50'
+                  ? 'text-teal-700 bg-teal-100/60'
+                  : 'text-gray-600 hover:text-teal-700 hover:bg-teal-100/40'
               }`}
             >
               <item.icon className={`w-5 h-5 md:w-6 md:h-6 mb-0.5 ${currentSection === item.id ? 'scale-110' : ''} transition-transform`} />
@@ -191,15 +228,28 @@ function LoginModal({ showLogin, setShowLogin }: { showLogin: boolean; setShowLo
     setLoading(true);
 
     try {
-      const { data, error } = await supabase.from('users').select('*').eq('email', email).eq('password', password).maybeSingle();
+      const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
+        email,
+        password
+      });
 
-      if (error) throw error;
-      if (!data) {
+      if (authError) {
         showError('البريد الإلكتروني أو كلمة المرور غير صحيحة');
         return;
       }
 
-      login(data);
+      const { data: userData, error: userError } = await supabase
+        .from('users')
+        .select('*')
+        .eq('id', authData.user.id)
+        .maybeSingle();
+
+      if (userError || !userData) {
+        showError('حدث خطأ في جلب بيانات المستخدم');
+        return;
+      }
+
+      login(userData);
       setShowLogin(false);
       showSuccess('تم تسجيل الدخول بنجاح');
     } catch (err) {
@@ -225,29 +275,53 @@ function LoginModal({ showLogin, setShowLogin }: { showLogin: boolean; setShowLo
     setLoading(true);
 
     try {
-      const { data: existingUser } = await supabase.from('users').select('email').eq('email', email).maybeSingle();
+      const { data: authData, error: authError } = await supabase.auth.signUp({
+        email,
+        password
+      });
 
-      if (existingUser) {
-        showError('البريد الإلكتروني مسجل مسبقاً');
+      if (authError) {
+        if (authError.message.includes('already registered')) {
+          showError('البريد الإلكتروني مسجل مسبقاً');
+        } else {
+          showError(authError.message);
+        }
         setLoading(false);
         return;
       }
 
-      const newUser = {
-        email,
-        password,
-        full_name: fullName,
-        role,
-        grade: role === 'student' ? grade : null,
-        class: role === 'student' ? classRoom : null,
-        phone: phone || null
-      };
+      if (!authData.user) {
+        showError('حدث خطأ في إنشاء الحساب');
+        setLoading(false);
+        return;
+      }
 
-      const { data, error } = await supabase.from('users').insert(newUser).select().single();
+      const { error: updateError } = await supabase
+        .from('users')
+        .update({
+          full_name: fullName,
+          role,
+          grade: role === 'student' ? grade : null,
+          class: role === 'student' ? classRoom : null,
+          phone: phone || null
+        })
+        .eq('id', authData.user.id);
 
-      if (error) throw error;
+      if (updateError) {
+        showError('حدث خطأ في حفظ البيانات');
+        setLoading(false);
+        return;
+      }
 
-      login(data);
+      const { data: userData } = await supabase
+        .from('users')
+        .select('*')
+        .eq('id', authData.user.id)
+        .single();
+
+      if (userData) {
+        login(userData);
+      }
       setShowLogin(false);
       showSuccess('تم إنشاء الحساب بنجاح');
     } catch (err) {
@@ -269,10 +343,10 @@ function LoginModal({ showLogin, setShowLogin }: { showLogin: boolean; setShowLo
         </button>
 
         <div className="text-center mb-4">
-          <div className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br from-[#8A1538] to-[#A5763F] rounded-full mb-3">
+          <div className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br from-emerald-600 to-cyan-600 rounded-full mb-3">
             {isRegisterMode ? <User className="w-6 h-6 text-white" /> : <LogIn className="w-6 h-6 text-white" />}
           </div>
-          <h2 className="text-xl font-black text-[#8A1538] mb-1">
+          <h2 className="text-xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-cyan-600 mb-1">
             {isRegisterMode ? 'إنشاء حساب جديد' : 'تسجيل الدخول'}
           </h2>
           <p className="text-sm text-gray-600">
@@ -284,20 +358,20 @@ function LoginModal({ showLogin, setShowLogin }: { showLogin: boolean; setShowLo
           <form onSubmit={handleLogin} className="space-y-3">
             <div>
               <label className="block text-gray-700 font-semibold mb-1 text-sm">البريد الإلكتروني</label>
-              <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8A1538]" placeholder="example@school.com" required dir="ltr" />
+              <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-600" placeholder="example@school.com" required dir="ltr" />
             </div>
 
             <div>
               <label className="block text-gray-700 font-semibold mb-1 text-sm">كلمة المرور</label>
-              <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8A1538]" placeholder="••••••••" required dir="ltr" />
+              <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-600" placeholder="••••••••" required dir="ltr" />
             </div>
 
-            <button type="submit" disabled={loading} className="w-full bg-gradient-to-r from-[#8A1538] to-[#A5763F] text-white py-2.5 rounded-lg font-bold hover:shadow-lg transition disabled:opacity-50 text-sm">
+            <button type="submit" disabled={loading} className="w-full bg-gradient-to-r from-emerald-600 to-cyan-600 text-white py-2.5 rounded-lg font-bold hover:shadow-lg transition disabled:opacity-50 text-sm">
               {loading ? 'جارٍ تسجيل الدخول...' : 'تسجيل الدخول'}
             </button>
 
             <div className="text-center pt-2">
-              <button type="button" onClick={() => setIsRegisterMode(true)} className="text-[#8A1538] font-bold text-sm hover:underline">
+              <button type="button" onClick={() => setIsRegisterMode(true)} className="text-emerald-600 font-bold text-sm hover:underline">
                 ليس لديك حساب؟ سجل الآن
               </button>
             </div>
@@ -306,17 +380,17 @@ function LoginModal({ showLogin, setShowLogin }: { showLogin: boolean; setShowLo
           <form onSubmit={handleRegister} className="space-y-3">
             <div>
               <label className="block text-gray-700 font-semibold mb-1 text-sm">الاسم الكامل</label>
-              <input type="text" value={fullName} onChange={(e) => setFullName(e.target.value)} className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8A1538]" placeholder="أحمد محمد علي" required />
+              <input type="text" value={fullName} onChange={(e) => setFullName(e.target.value)} className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-600" placeholder="أحمد محمد علي" required />
             </div>
 
             <div>
               <label className="block text-gray-700 font-semibold mb-1 text-sm">البريد الإلكتروني</label>
-              <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8A1538]" placeholder="example@school.com" required dir="ltr" />
+              <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-600" placeholder="example@school.com" required dir="ltr" />
             </div>
 
             <div>
               <label className="block text-gray-700 font-semibold mb-1 text-sm">نوع الحساب</label>
-              <select value={role} onChange={(e) => setRole(e.target.value as any)} className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8A1538]" required>
+              <select value={role} onChange={(e) => setRole(e.target.value as any)} className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-600" required>
                 <option value="student">طالب</option>
                 <option value="guardian">ولي أمر</option>
                 <option value="teacher">معلم</option>
@@ -328,11 +402,11 @@ function LoginModal({ showLogin, setShowLogin }: { showLogin: boolean; setShowLo
                 <div className="grid grid-cols-2 gap-2">
                   <div>
                     <label className="block text-gray-700 font-semibold mb-1 text-sm">الصف</label>
-                    <input type="text" value={grade} onChange={(e) => setGrade(e.target.value)} className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8A1538]" placeholder="الأول" required />
+                    <input type="text" value={grade} onChange={(e) => setGrade(e.target.value)} className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-600" placeholder="الأول" required />
                   </div>
                   <div>
                     <label className="block text-gray-700 font-semibold mb-1 text-sm">الفصل</label>
-                    <input type="text" value={classRoom} onChange={(e) => setClassRoom(e.target.value)} className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8A1538]" placeholder="أ" required />
+                    <input type="text" value={classRoom} onChange={(e) => setClassRoom(e.target.value)} className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-600" placeholder="أ" required />
                   </div>
                 </div>
               </>
@@ -340,25 +414,25 @@ function LoginModal({ showLogin, setShowLogin }: { showLogin: boolean; setShowLo
 
             <div>
               <label className="block text-gray-700 font-semibold mb-1 text-sm">رقم الجوال (اختياري)</label>
-              <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8A1538]" placeholder="05xxxxxxxx" dir="ltr" />
+              <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-600" placeholder="05xxxxxxxx" dir="ltr" />
             </div>
 
             <div>
               <label className="block text-gray-700 font-semibold mb-1 text-sm">كلمة المرور</label>
-              <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8A1538]" placeholder="••••••••" required minLength={6} dir="ltr" />
+              <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-600" placeholder="••••••••" required minLength={6} dir="ltr" />
             </div>
 
             <div>
               <label className="block text-gray-700 font-semibold mb-1 text-sm">تأكيد كلمة المرور</label>
-              <input type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8A1538]" placeholder="••••••••" required minLength={6} dir="ltr" />
+              <input type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-600" placeholder="••••••••" required minLength={6} dir="ltr" />
             </div>
 
-            <button type="submit" disabled={loading} className="w-full bg-gradient-to-r from-[#8A1538] to-[#A5763F] text-white py-2.5 rounded-lg font-bold hover:shadow-lg transition disabled:opacity-50 text-sm">
+            <button type="submit" disabled={loading} className="w-full bg-gradient-to-r from-emerald-600 to-cyan-600 text-white py-2.5 rounded-lg font-bold hover:shadow-lg transition disabled:opacity-50 text-sm">
               {loading ? 'جارٍ إنشاء الحساب...' : 'إنشاء حساب'}
             </button>
 
             <div className="text-center pt-2">
-              <button type="button" onClick={() => setIsRegisterMode(false)} className="text-[#8A1538] font-bold text-sm hover:underline">
+              <button type="button" onClick={() => setIsRegisterMode(false)} className="text-emerald-600 font-bold text-sm hover:underline">
                 لديك حساب بالفعل؟ سجل دخول
               </button>
             </div>
@@ -409,7 +483,8 @@ function MainApp() {
 
   if (user?.role === 'teacher') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-amber-50 to-stone-50">
+<div className="app-bg">
+
         <Header />
         <div className="pb-20">
           <TeacherDashboard />
@@ -419,8 +494,8 @@ function MainApp() {
   }
 
   if (user?.role === 'admin') {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-amber-50 to-stone-50">
+  return (
+    <div className="app-bg">
         <Header />
         <div className="pb-20">
           <AdminDashboard />
@@ -430,7 +505,7 @@ function MainApp() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-stone-50">
+    <div className="app-bg">
       <Header showLogin={showLogin} setShowLogin={setShowLogin} />
       <LoginModal showLogin={showLogin} setShowLogin={setShowLogin} />
 
@@ -463,49 +538,58 @@ function HomePage({ setCurrentSection }: { setCurrentSection: (section: string) 
   return (
     <div className="container mx-auto px-3 py-6" dir="rtl">
       <div className="text-center mb-6">
-        <h1 className="text-2xl md:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#8A1538] via-[#9A2545] to-[#A5763F] mb-2 drop-shadow-sm">مرحباً بك في منصة المواهب</h1>
-        <p className="text-sm md:text-lg text-gray-700 font-semibold mb-4">اكتشف مواهبك، سجل في المسابقات، واحتفل بالإنجازات</p>
+        <h1 className="text-2xl md:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 mb-2 drop-shadow-sm">مرحباً بك في منصة المواهب</h1>
+        <p className="text-sm md:text-lg text-gray-600 font-semibold mb-4">اكتشف مواهبك، سجل في المسابقات، واحتفل بالإنجازات</p>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-3 gap-3 max-w-4xl mx-auto mb-6">
-        <button onClick={() => setCurrentSection('talents')} className="group relative rounded-2xl shadow-lg active:scale-95 transition-all duration-300 overflow-hidden h-32 md:h-40 bg-gradient-to-br from-amber-400 via-yellow-400 to-orange-400">
-          <div className="absolute inset-0 bg-gradient-to-t from-black/5 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300"></div>
-          <div className="relative z-10 h-full flex flex-col items-center justify-center p-3">
-            <div className="w-10 h-10 mb-2 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-md transform group-active:scale-110 transition-all duration-300 p-2">
-              <img src="https://img.icons8.com/color/96/star--v1.png" alt="star" className="w-full h-full object-contain" />
+        <button
+          onClick={() => setCurrentSection('talents')}
+          className="group ui-card ui-card-hover ui-card-amber overflow-hidden h-32 md:h-40 active:scale-[0.99]"
+        >
+          <div className="h-full flex flex-col items-center justify-center p-3">
+            <div className="mb-2 w-12 h-12 rounded-full bg-gradient-to-br from-amber-400 to-yellow-500 flex items-center justify-center shadow-md">
+              <Star className="w-6 h-6 text-white" />
             </div>
-            <h3 className="text-base md:text-xl font-black text-white mb-1 drop-shadow-md">اكتشف موهبتك</h3>
-            <p className="text-white/90 text-xs md:text-sm font-semibold drop-shadow hidden md:block">سجل موهبتك الآن</p>
+
+            <h3 className="text-base md:text-xl font-black text-slate-900 mb-1">اكتشف موهبتك</h3>
+            <p className="text-slate-500 text-xs md:text-sm font-semibold hidden md:block">سجل موهبتك الآن</p>
           </div>
         </button>
 
-        <button onClick={() => setCurrentSection('announcements')} className="group relative rounded-2xl shadow-lg active:scale-95 transition-all duration-300 overflow-hidden h-32 md:h-40 bg-gradient-to-br from-blue-400 via-cyan-400 to-teal-400">
-          <div className="absolute inset-0 bg-gradient-to-t from-black/5 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300"></div>
-          <div className="relative z-10 h-full flex flex-col items-center justify-center p-3">
-            <div className="w-10 h-10 mb-2 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-md transform group-active:scale-110 transition-all duration-300 p-2">
-              <img src="https://img.icons8.com/color/96/bullhorn.png" alt="megaphone" className="w-full h-full object-contain" />
+        <button
+          onClick={() => setCurrentSection('announcements')}
+          className="group ui-card ui-card-hover ui-card-cyan overflow-hidden h-32 md:h-40 active:scale-[0.99]"
+        >
+          <div className="h-full flex flex-col items-center justify-center p-3">
+            <div className="mb-2 w-12 h-12 rounded-full bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center shadow-md">
+              <Megaphone className="w-6 h-6 text-white" />
             </div>
-            <h3 className="text-base md:text-xl font-black text-white mb-1 drop-shadow-md">الإعلانات</h3>
-            <p className="text-white/90 text-xs md:text-sm font-semibold drop-shadow hidden md:block">تابع الأخبار</p>
+
+            <h3 className="text-base md:text-xl font-black text-slate-900 mb-1">الإعلانات</h3>
+            <p className="text-slate-500 text-xs md:text-sm font-semibold hidden md:block">تابع الأخبار</p>
           </div>
         </button>
 
-        <button onClick={() => setCurrentSection('honors')} className="group relative rounded-2xl shadow-lg active:scale-95 transition-all duration-300 overflow-hidden h-32 md:h-40 col-span-2 md:col-span-1 bg-gradient-to-br from-purple-400 via-pink-400 to-rose-400">
-          <div className="absolute inset-0 bg-gradient-to-t from-black/5 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300"></div>
-          <div className="relative z-10 h-full flex flex-col items-center justify-center p-3">
-            <div className="w-10 h-10 mb-2 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-md transform group-active:scale-110 transition-all duration-300 p-2">
-              <img src="https://img.icons8.com/color/96/trophy.png" alt="trophy" className="w-full h-full object-contain" />
+        <button
+          onClick={() => setCurrentSection('honors')}
+          className="group ui-card ui-card-hover ui-card-rose overflow-hidden h-32 md:h-40 col-span-2 md:col-span-1 active:scale-[0.99]"
+        >
+          <div className="h-full flex flex-col items-center justify-center p-3">
+            <div className="mb-2 w-12 h-12 rounded-full bg-gradient-to-br from-rose-400 to-pink-500 flex items-center justify-center shadow-md">
+              <Trophy className="w-6 h-6 text-white" />
             </div>
-            <h3 className="text-base md:text-xl font-black text-white mb-1 drop-shadow-md">التكريمات</h3>
-            <p className="text-white/90 text-xs md:text-sm font-semibold drop-shadow hidden md:block">إنجازات مدرستنا</p>
+
+            <h3 className="text-base md:text-xl font-black text-slate-900 mb-1">التكريمات</h3>
+            <p className="text-slate-500 text-xs md:text-sm font-semibold hidden md:block">إنجازات مدرستنا</p>
           </div>
         </button>
       </div>
 
-      <div className="mt-6 bg-gradient-to-r from-[#8A1538] to-[#A5763F] rounded-2xl shadow-lg p-4 md:p-6 text-center text-white max-w-4xl mx-auto">
+      <div className="mt-6 bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 rounded-2xl shadow-lg p-4 md:p-6 text-center text-white max-w-4xl mx-auto">
         <h2 className="text-lg md:text-2xl font-black mb-2">ابدأ رحلتك الآن</h2>
         <p className="text-sm md:text-lg mb-3">استخدم الشريط السفلي للتنقل بين الأقسام</p>
-        <div className="flex items-center justify-center gap-2 md:gap-4 text-amber-300">
+        <div className="flex items-center justify-center gap-2 md:gap-4 text-emerald-200">
           <ArrowRight className="w-4 h-4 md:w-6 md:h-6 animate-bounce rotate-180" />
           <span className="font-bold text-xs md:text-base">اضغط على الأيقونات بالأسفل</span>
           <ArrowRight className="w-4 h-4 md:w-6 md:h-6 animate-bounce rotate-180" />
@@ -527,17 +611,27 @@ function TalentsHomePage({ setPage, setSelectedCategory }: any) {
     });
   }, []);
 
-  const getIconImage = (iconName: string) => {
-    const iconUrls: Record<string, string> = {
-      'Dumbbell': 'https://img.icons8.com/color/96/soccer-ball.png',
-      'Palette': 'https://img.icons8.com/color/96/paint-palette.png',
-      'BookOpen': 'https://img.icons8.com/color/96/open-book.png',
-      'Microscope': 'https://img.icons8.com/color/96/microscope.png',
-      'Cpu': 'https://img.icons8.com/color/96/laptop.png'
-    };
-    return iconUrls[iconName] || 'https://img.icons8.com/color/96/star--v1.png';
+ // === TalentsHomePage: استبدل الدالة بالكامل ===
+const getIconImage = (iconNameOrArabic: string) => {
+  const map: Record<string, string> = {
+    // مفاتيح قديمة (لو مخزّنة في DB)
+    'Dumbbell': 'https://img.icons8.com/color/96/soccer-ball.png',
+    'Palette': 'https://img.icons8.com/color/96/paint-palette.png',
+    'BookOpen': 'https://img.icons8.com/color/96/open-book.png',
+    'Microscope': 'https://img.icons8.com/color/96/microscope.png',
+    'Cpu': 'https://img.icons8.com/color/96/laptop.png',
+
+    // دعم الأسماء العربية مباشرة من الحقل name_ar
+    'رياضية': 'https://img.icons8.com/color/96/soccer-ball.png',
+    'فنية': 'https://img.icons8.com/color/96/paint-palette.png',
+    'أدبية': 'https://img.icons8.com/color/96/open-book.png',
+    'علمية': 'https://img.icons8.com/color/96/microscope.png',
+    'تقنية': 'https://img.icons8.com/color/96/laptop.png',
   };
 
+  // جرّب أولاً بالمفتاح كما هو، ثم جرّب الاسم العربي إن وُجد
+  return map[iconNameOrArabic] || map[(iconNameOrArabic || '').trim()] || 'https://img.icons8.com/color/96/star--v1.png';
+};
   const colorSchemes = [
     { gradient: 'from-blue-400 via-cyan-400 to-emerald-400', name: 'رياضية' },
     { gradient: 'from-purple-400 via-pink-400 to-rose-400', name: 'فنية' },
@@ -553,15 +647,15 @@ function TalentsHomePage({ setPage, setSelectedCategory }: any) {
       <div className="text-center mb-6">
         {user && (
           <div className="inline-block mb-4">
-            <div className="bg-gradient-to-r from-[#8A1538] via-[#9A2545] to-[#A5763F] text-white px-4 py-2 md:px-6 md:py-3 rounded-xl shadow-lg">
+            <div className="bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 text-white px-4 py-2 md:px-6 md:py-3 rounded-xl shadow-lg">
               <p className="text-sm md:text-lg font-black drop-shadow-md">مرحباً {user.full_name}</p>
             </div>
           </div>
         )}
-        <h1 className="text-2xl md:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#8A1538] via-[#9A2545] to-[#A5763F] mb-2 drop-shadow-sm">اكتشف موهبتك</h1>
-        <p className="text-sm md:text-lg text-gray-700 font-semibold mb-4">نور مستقبلك بموهبتك الفريدة</p>
+        <h1 className="text-2xl md:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 mb-2 drop-shadow-sm">اكتشف موهبتك</h1>
+        <p className="text-sm md:text-lg text-gray-600 font-semibold mb-4">نور مستقبلك بموهبتك الفريدة</p>
         {user && (
-          <button onClick={() => setPage('mypage')} className="inline-flex items-center gap-2 bg-gradient-to-r from-[#8A1538] to-[#A5763F] text-white px-4 py-2 md:px-6 md:py-3 rounded-xl font-bold shadow-lg active:scale-95 transition-all text-sm md:text-base">
+          <button onClick={() => setPage('mypage')} className="inline-flex items-center gap-2 bg-gradient-to-r from-emerald-600 to-cyan-600 text-white px-4 py-2 md:px-6 md:py-3 rounded-xl font-bold shadow-lg active:scale-95 transition-all text-sm md:text-base">
             <FileText className="w-4 h-4 md:w-5 md:h-5" />
             <span>صفحتي</span>
           </button>
@@ -570,16 +664,29 @@ function TalentsHomePage({ setPage, setSelectedCategory }: any) {
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
         {categories.map((cat, i) => {
-          const scheme = colorSchemes[i % colorSchemes.length];
+          const colorClasses = ['ui-card-teal', 'ui-card-purple', 'ui-card-amber', 'ui-card-blue', 'ui-card-cyan'];
+          const iconColors = [
+            'from-teal-400 to-emerald-500',
+            'from-purple-400 to-pink-500',
+            'from-amber-400 to-orange-500',
+            'from-blue-400 to-cyan-500',
+            'from-cyan-400 to-sky-500'
+          ];
+          const colorClass = colorClasses[i % colorClasses.length];
+          const iconColor = iconColors[i % iconColors.length];
+
           return (
-            <button key={cat.id} onClick={() => { setSelectedCategory(cat.id); setPage('subcategories'); }} className={`group relative bg-gradient-to-br ${scheme.gradient} rounded-2xl shadow-md active:scale-95 transition-all duration-300 overflow-hidden h-36 md:h-44`}>
-              <div className="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-              <div className="p-3 flex flex-col items-center justify-center relative z-10 h-full">
-                <div className="mb-3 w-10 h-10 bg-white/95 backdrop-blur-sm rounded-full flex items-center justify-center shadow-md transform group-active:scale-110 transition-all duration-300 p-2">
-                  <img src={getIconImage(cat.icon)} alt={cat.name_ar} className="w-full h-full object-contain" />
+            <button
+              key={cat.id}
+              onClick={() => { setSelectedCategory(cat.id); setPage('subcategories'); }}
+              className={`group ui-card ui-card-hover ${colorClass} overflow-hidden h-36 md:h-44 active:scale-[0.99]`}
+            >
+              <div className="p-3 flex flex-col items-center justify-center h-full">
+                <div className={`mb-3 w-12 h-12 rounded-full bg-gradient-to-br ${iconColor} flex items-center justify-center shadow-md`}>
+                  <img src={getIconImage(cat.icon)} alt={cat.name_ar} className="w-7 h-7 object-contain" />
                 </div>
-                <h3 className="text-base md:text-lg font-black text-white mb-1 drop-shadow-md">{cat.name_ar}</h3>
-                <div className="w-10 h-0.5 bg-white/50 rounded-full"></div>
+                <h3 className="text-base md:text-lg font-black text-slate-900 mb-1">{cat.name_ar}</h3>
+                <div className="w-10 h-0.5 bg-slate-200 rounded-full"></div>
               </div>
             </button>
           );
@@ -616,28 +723,45 @@ function SubcategoriesPage({ categoryId, setPage, setSelectedSubcategory }: any)
 
   return (
     <div className="container mx-auto px-3 py-6" dir="rtl">
-      <button onClick={() => setPage('talents')} className="flex items-center gap-2 bg-gradient-to-r from-[#8A1538] to-[#A5763F] text-white px-4 py-2 md:px-6 md:py-3 rounded-xl font-bold mb-6 shadow-lg active:scale-95 transition-all text-sm md:text-base">
+      <button onClick={() => setPage('talents')} className="flex items-center gap-2 bg-gradient-to-r from-emerald-600 to-cyan-600 text-white px-4 py-2 md:px-6 md:py-3 rounded-xl font-bold mb-6 shadow-lg active:scale-95 transition-all text-sm md:text-base">
         <ArrowRight className="w-4 h-4 md:w-5 md:h-5" />
         <span>العودة للأقسام</span>
       </button>
 
       <div className="text-center mb-6">
-        <h1 className="text-2xl md:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#8A1538] via-[#9A2545] to-[#A5763F] mb-2 drop-shadow-sm">{category?.name_ar}</h1>
-        <p className="text-sm md:text-lg text-gray-700 font-semibold">اختر التخصص المناسب لموهبتك</p>
+        <h1 className="text-2xl md:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 mb-2 drop-shadow-sm">{category?.name_ar}</h1>
+        <p className="text-sm md:text-lg text-gray-600 font-semibold">اختر التخصص المناسب لموهبتك</p>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 max-w-5xl mx-auto">
-        {subcategories.map((sub, idx) => (
-          <button key={sub.id} onClick={() => { setSelectedSubcategory(sub.id); setPage('register'); }} className={`group relative bg-gradient-to-br ${subColors[idx % subColors.length]} rounded-2xl shadow-md active:scale-95 transition-all duration-300 overflow-hidden border-2 border-white/20 h-36 md:h-40`}>
-            <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-            <div className="p-3 flex flex-col items-center justify-center relative z-10 h-full">
-              <div className="w-12 h-12 md:w-14 md:h-14 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg transform group-active:scale-110 transition-all duration-300 mb-2">
-                <Award className="w-6 h-6 md:w-7 md:h-7 drop-shadow-lg" style={{color: '#8A1538'}} />
+        {subcategories.map((sub, idx) => {
+          const colorClasses = ['ui-card-rose', 'ui-card-blue', 'ui-card-teal', 'ui-card-amber', 'ui-card-purple', 'ui-card-cyan'];
+          const iconColors = [
+            'from-rose-400 to-pink-500',
+            'from-blue-400 to-indigo-500',
+            'from-teal-400 to-emerald-500',
+            'from-amber-400 to-yellow-500',
+            'from-purple-400 to-fuchsia-500',
+            'from-cyan-400 to-blue-500'
+          ];
+          const colorClass = colorClasses[idx % colorClasses.length];
+          const iconColor = iconColors[idx % iconColors.length];
+
+          return (
+            <button
+              key={sub.id}
+              onClick={() => { setSelectedSubcategory(sub.id); setPage('register'); }}
+              className={`group ui-card ui-card-hover ${colorClass} overflow-hidden h-36 md:h-40 active:scale-[0.99]`}
+            >
+              <div className="p-3 flex flex-col items-center justify-center h-full">
+                <div className={`mb-2 w-12 h-12 rounded-full bg-gradient-to-br ${iconColor} flex items-center justify-center shadow-md`}>
+                  <Award className="w-6 h-6 md:w-7 md:h-7 text-white" />
+                </div>
+                <h3 className="text-sm md:text-base font-black text-slate-900 text-center">{sub.name_ar}</h3>
               </div>
-              <h3 className="text-sm md:text-base font-black text-white drop-shadow-md text-center">{sub.name_ar}</h3>
-            </div>
-          </button>
-        ))}
+            </button>
+          );
+        })}
       </div>
     </div>
   );
@@ -652,7 +776,7 @@ function RegisterPage({ categoryId, subcategoryId, setPage }: any) {
   if (!user) {
     return (
       <div className="container mx-auto px-4 py-16" dir="rtl">
-        <div className="max-w-md mx-auto bg-white rounded-3xl shadow-2xl p-12 text-center border-t-4 border-[#8A1538]">
+        <div className="max-w-md mx-auto ui-card p-12 text-center border-t-4 border-[#8A1538]">
           <LogIn className="w-16 h-16 text-[#8A1538] mx-auto mb-6" />
           <h2 className="text-3xl font-black text-gray-800 mb-4">يجب تسجيل الدخول</h2>
           <p className="text-gray-600 mb-8">لتسجيل موهبتك، يرجى تسجيل الدخول أولاً</p>
@@ -701,13 +825,13 @@ function RegisterPage({ categoryId, subcategoryId, setPage }: any) {
 
   return (
     <div className="container mx-auto px-4 py-12" dir="rtl">
-      <button onClick={() => setPage('subcategories')} className="flex items-center gap-3 bg-white text-[#8A1538] hover:text-white hover:bg-gradient-to-r hover:from-[#8A1538] hover:to-[#A5763F] px-6 py-3 rounded-xl font-bold mb-8 shadow-lg hover:shadow-xl transition-all transform hover:scale-105 border-2 border-[#8A1538]">
+      <button onClick={() => setPage('subcategories')} className="flex items-center gap-3 bg-white text-emerald-600 hover:text-white hover:bg-gradient-to-r hover:from-emerald-600 hover:to-cyan-600 px-6 py-3 rounded-xl font-bold mb-8 shadow-lg hover:shadow-xl transition-all transform hover:scale-105 border-2 border-emerald-600">
         <ArrowRight className="w-5 h-5" />
         <span>العودة</span>
       </button>
 
-      <div className="max-w-2xl mx-auto bg-white rounded-3xl shadow-2xl p-8 border-t-4 border-[#8A1538]">
-        <h1 className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#8A1538] to-[#A5763F] mb-8 text-center">نموذج تسجيل الموهبة</h1>
+      <div className="max-w-2xl mx-auto ui-card p-8 border-t-4 border-emerald-600">
+        <h1 className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 mb-8 text-center">نموذج تسجيل الموهبة</h1>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -747,7 +871,7 @@ function RegisterPage({ categoryId, subcategoryId, setPage }: any) {
             </label>
           </div>
 
-          <button type="submit" disabled={loading || !form.consent_guardian} className="w-full bg-gradient-to-r from-[#8A1538] to-[#A5763F] text-white py-4 rounded-xl font-black text-lg hover:shadow-xl transition disabled:opacity-50">
+          <button type="submit" disabled={loading || !form.consent_guardian} className="w-full bg-gradient-to-r from-emerald-600 to-cyan-600 text-white py-4 rounded-xl font-black text-lg hover:shadow-xl transition disabled:opacity-50">
             {loading ? 'جارٍ التسجيل...' : 'تسجيل الموهبة'}
           </button>
         </form>
@@ -795,29 +919,29 @@ function MyPage({ setPage }: any) {
 
   return (
     <div className="container mx-auto px-4 py-12" dir="rtl">
-      <button onClick={() => setPage('talents')} className="flex items-center gap-3 bg-white text-[#8A1538] hover:text-white hover:bg-gradient-to-r hover:from-[#8A1538] hover:to-[#A5763F] px-6 py-3 rounded-xl font-bold mb-8 shadow-lg hover:shadow-xl transition-all transform hover:scale-105 border-2 border-[#8A1538]">
+      <button onClick={() => setPage('talents')} className="flex items-center gap-3 bg-white text-emerald-600 hover:text-white hover:bg-gradient-to-r hover:from-emerald-600 hover:to-cyan-600 px-6 py-3 rounded-xl font-bold mb-8 shadow-lg hover:shadow-xl transition-all transform hover:scale-105 border-2 border-emerald-600">
         <ArrowRight className="w-5 h-5" />
         <span>العودة</span>
       </button>
 
       <div className="text-center mb-12">
-        <h1 className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#8A1538] to-[#A5763F] mb-4">صفحتي</h1>
-        <p className="text-xl text-gray-700 font-semibold">مواهبك المسجلة وحالة الطلبات</p>
+        <h1 className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 mb-4">صفحتي</h1>
+        <p className="text-xl text-gray-600 font-semibold">مواهبك المسجلة وحالة الطلبات</p>
       </div>
 
       {talents.length === 0 ? (
-        <div className="bg-white rounded-3xl shadow-2xl p-16 text-center border-t-4 border-[#8A1538] max-w-2xl mx-auto">
+        <div className="ui-card p-16 text-center border-t-4 border-emerald-600 max-w-2xl mx-auto">
           <FileText className="w-24 h-24 text-gray-400 mx-auto mb-6" />
           <h2 className="text-3xl font-black text-gray-800 mb-4">لم تسجل أي موهبة بعد</h2>
           <p className="text-gray-600 mb-8 text-lg">ابدأ رحلتك في اكتشاف مواهبك الآن</p>
-          <button onClick={() => setPage('talents')} className="bg-gradient-to-r from-[#8A1538] to-[#A5763F] text-white px-10 py-4 rounded-xl font-black text-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all">
+          <button onClick={() => setPage('talents')} className="bg-gradient-to-r from-emerald-600 to-cyan-600 text-white px-10 py-4 rounded-xl font-black text-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all">
             سجّل موهبتك الآن
           </button>
         </div>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 max-w-5xl mx-auto">
           {talents.map(t => (
-            <div key={t.id} className={`bg-white rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 p-6 border-r-8 ${t.status === 'approved' ? 'border-green-500' : t.status === 'rejected' ? 'border-red-500' : 'border-yellow-500'} transform hover:-translate-y-1`}>
+            <div key={t.id} className={`ui-card ui-card-hover ${t.status === 'approved' ? 'ui-card-teal border-green-500' : t.status === 'rejected' ? 'ui-card-rose border-red-500' : 'ui-card-amber border-yellow-500'} p-6 border-r-8`}>
               <div className="flex justify-between items-start mb-4">
                 <div>
                   <h3 className="text-2xl font-black text-[#8A1538] mb-1">{t.subcategory_name}</h3>
@@ -851,6 +975,20 @@ function AnnouncementsPage() {
 
   useEffect(() => {
     loadAnnouncements();
+
+    const channel = supabase
+      .channel('announcements-changes')
+      .on('postgres_changes',
+        { event: '*', schema: 'public', table: 'announcements' },
+        () => {
+          loadAnnouncements();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   const loadAnnouncements = async () => {
@@ -900,14 +1038,19 @@ function AnnouncementsPage() {
 
   return (
     <div className="container mx-auto px-4 py-12" dir="rtl">
+      <button onClick={() => window.location.href = '/'} className="flex items-center gap-3 bg-white text-emerald-600 hover:text-white hover:bg-gradient-to-r hover:from-emerald-600 hover:to-cyan-600 px-6 py-3 rounded-xl font-bold mb-8 shadow-lg hover:shadow-xl transition-all transform hover:scale-105 border-2 border-emerald-600">
+        <ArrowRight className="w-5 h-5" />
+        <span>العودة للرئيسية</span>
+      </button>
+
       <div className="text-center mb-12">
-        <h1 className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#8A1538] to-[#A5763F] mb-4">الإعلانات والمسابقات</h1>
-        <p className="text-xl text-gray-700 font-semibold">تابع آخر الأخبار والمسابقات</p>
+        <h1 className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 mb-4">الإعلانات والمسابقات</h1>
+        <p className="text-xl text-gray-600 font-semibold">تابع آخر الأخبار والمسابقات</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
         {announcements.map(announcement => (
-          <div key={announcement.id} className="bg-white rounded-2xl shadow-xl overflow-hidden transform hover:-translate-y-2 transition-all border-t-4 border-blue-500">
+          <div key={announcement.id} className="ui-card ui-card-hover ui-card-blue overflow-hidden border-t-4 border-blue-500">
             {announcement.image_url && (
               <img src={announcement.image_url} alt={announcement.title} className="w-full h-48 object-cover" />
             )}
@@ -932,7 +1075,7 @@ function AnnouncementsPage() {
               {announcement.registration_open && announcement.type === 'competition' && (
                 <button
                   onClick={() => setSelectedAnnouncement(announcement)}
-                  className="w-full bg-gradient-to-r from-[#8A1538] to-[#A5763F] text-white py-3 rounded-lg font-bold hover:shadow-lg transition"
+                  className="w-full bg-gradient-to-r from-emerald-600 to-cyan-600 text-white py-3 rounded-lg font-bold hover:shadow-lg transition"
                 >
                   سجّل الآن
                 </button>
@@ -962,7 +1105,7 @@ function AnnouncementsPage() {
                 <button
                   onClick={() => handleRegister(selectedAnnouncement.id)}
                   disabled={registering}
-                  className="flex-1 bg-gradient-to-r from-[#8A1538] to-[#A5763F] text-white py-3 rounded-lg font-bold disabled:opacity-50"
+                  className="flex-1 bg-gradient-to-r from-emerald-600 to-cyan-600 text-white py-3 rounded-lg font-bold disabled:opacity-50"
                 >
                   {registering ? 'جارٍ التسجيل...' : 'تأكيد التسجيل'}
                 </button>
@@ -980,29 +1123,52 @@ function HonorsPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    supabase
-      .from('honors')
-      .select('*')
-      .eq('is_published', true)
-      .order('honor_date', { ascending: false })
-      .then(({ data }) => {
-        setHonors(data || []);
-        setLoading(false);
-      });
+    const loadHonors = () => {
+      supabase
+        .from('honors')
+        .select('*')
+        .eq('is_published', true)
+        .order('honor_date', { ascending: false })
+        .then(({ data }) => {
+          setHonors(data || []);
+          setLoading(false);
+        });
+    };
+
+    loadHonors();
+
+    const channel = supabase
+      .channel('honors-changes')
+      .on('postgres_changes',
+        { event: '*', schema: 'public', table: 'honors' },
+        () => {
+          loadHonors();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   if (loading) return <div className="flex items-center justify-center min-h-screen"><div className="animate-spin rounded-full h-16 w-16 border-4 border-[#8A1538] border-t-transparent"></div></div>;
 
   return (
     <div className="container mx-auto px-4 py-12" dir="rtl">
+      <button onClick={() => window.location.href = '/'} className="flex items-center gap-3 bg-white text-emerald-600 hover:text-white hover:bg-gradient-to-r hover:from-emerald-600 hover:to-cyan-600 px-6 py-3 rounded-xl font-bold mb-8 shadow-lg hover:shadow-xl transition-all transform hover:scale-105 border-2 border-emerald-600">
+        <ArrowRight className="w-5 h-5" />
+        <span>العودة للرئيسية</span>
+      </button>
+
       <div className="text-center mb-12">
-        <h1 className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#8A1538] to-[#A5763F] mb-4">التكريمات</h1>
-        <p className="text-xl text-gray-700 font-semibold">إنجازاتنا وتكريماتنا</p>
+        <h1 className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 mb-4">التكريمات</h1>
+        <p className="text-xl text-gray-600 font-semibold">إنجازاتنا وتكريماتنا</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
         {honors.map(honor => (
-          <div key={honor.id} className="bg-white rounded-2xl shadow-xl overflow-hidden transform hover:-translate-y-2 transition-all border-t-4 border-amber-500">
+          <div key={honor.id} className="ui-card ui-card-hover ui-card-amber overflow-hidden border-t-4 border-amber-500">
             {honor.media_type === 'image' ? (
               <img src={honor.media_url} alt={honor.title} className="w-full h-56 object-cover" />
             ) : (
@@ -1119,11 +1285,11 @@ function TeacherDashboard() {
   return (
     <div className="container mx-auto px-4 py-12" dir="rtl">
       <div className="text-center mb-8">
-        <h1 className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#8A1538] to-[#A5763F] mb-4">لوحة المعلم</h1>
+        <h1 className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 mb-4">لوحة المعلم</h1>
         <p className="text-lg text-gray-600 font-semibold">مشاهدة طلبات الطلاب والإحصائيات</p>
       </div>
 
-      <div className="bg-white rounded-2xl shadow-xl p-6 mb-6 border-t-4 border-[#8A1538]">
+      <div className="ui-card p-6 mb-6 border-t-4 border-emerald-600">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
           <div className="relative">
             <Search className="absolute right-3 top-3 text-gray-400 w-5 h-5" />
@@ -1138,15 +1304,15 @@ function TeacherDashboard() {
             {categories.map(c => <option key={c.id} value={c.name_ar}>{c.name_ar}</option>)}
           </select>
         </div>
-        <button onClick={() => setShowModal(true)} className="flex items-center gap-2 bg-gradient-to-r from-[#8A1538] to-[#A5763F] text-white px-6 py-3 rounded-lg font-bold">
+        <button onClick={() => setShowModal(true)} className="flex items-center gap-2 bg-gradient-to-r from-emerald-600 to-cyan-600 text-white px-6 py-3 rounded-lg font-bold">
           <Plus className="w-5 h-5" />
           اقتراح موهبة جديدة
         </button>
       </div>
 
-      <div className="bg-white rounded-2xl shadow-xl overflow-x-auto border-t-4 border-[#8A1538]">
+      <div className="ui-card overflow-x-auto border-t-4 border-emerald-600">
         <table className="w-full">
-          <thead className="bg-gradient-to-r from-[#8A1538] to-[#A5763F] text-white">
+          <thead className="bg-gradient-to-r from-emerald-600 to-cyan-600 text-white">
             <tr>
               <th className="px-4 py-3 text-right text-sm">الطالب</th>
               <th className="px-4 py-3 text-right text-sm">الصف</th>
@@ -1196,7 +1362,7 @@ function TeacherDashboard() {
               <input type="text" value={newSub.name} onChange={(e) => setNewSub({ ...newSub, name: e.target.value })} className="w-full px-4 py-3 border rounded-lg" placeholder="اسم التخصص" />
               <div className="flex gap-4">
                 <button onClick={() => setShowModal(false)} className="flex-1 bg-gray-200 py-3 rounded-lg font-bold">إلغاء</button>
-                <button onClick={handleSuggest} className="flex-1 bg-gradient-to-r from-[#8A1538] to-[#A5763F] text-white py-3 rounded-lg font-bold">إرسال</button>
+                <button onClick={handleSuggest} className="flex-1 bg-gradient-to-r from-emerald-600 to-cyan-600 text-white py-3 rounded-lg font-bold">إرسال</button>
               </div>
             </div>
           </div>
@@ -1215,14 +1381,18 @@ function AdminDashboard() {
   const [announcements, setAnnouncements] = useState<any[]>([]);
   const [honors, setHonors] = useState<any[]>([]);
   const [settings, setSettings] = useState<any[]>([]);
-  const [tab, setTab] = useState<'stats' | 'requests' | 'suggestions' | 'announcements' | 'honors' | 'settings'>('stats');
+  const [accounts, setAccounts] = useState<any[]>([]);
+  const [tab, setTab] = useState<'stats' | 'requests' | 'suggestions' | 'announcements' | 'honors' | 'settings' | 'accounts'>('stats');
   const [showAnnouncementModal, setShowAnnouncementModal] = useState(false);
   const [showHonorModal, setShowHonorModal] = useState(false);
+  const [showResetPasswordModal, setShowResetPasswordModal] = useState(false);
   const [editingItem, setEditingItem] = useState<any>(null);
-  const [newAnnouncement, setNewAnnouncement] = useState({ title: '', description: '', type: 'announcement', image_url: '', registration_open: false, end_date: '' });
+  const [selectedAccount, setSelectedAccount] = useState<any>(null);
+  const [newPassword, setNewPassword] = useState('');
+  const [newAnnouncement, setNewAnnouncement] = useState({ title: '', description: '', type: 'announcement', image_url: '', registration_open: false, end_date: '', is_published: true });
   const [newHonor, setNewHonor] = useState({ title: '', description: '', image_url: '', video_url: '', media_type: 'image', honor_date: '' });
 
-  useEffect(() => { loadData(); loadAnnouncements(); loadHonors(); loadSettings(); }, []);
+  useEffect(() => { loadData(); loadAnnouncements(); loadHonors(); loadSettings(); loadAccounts(); }, []);
 
   const loadData = async () => {
     const [talRes, subsRes] = await Promise.all([
@@ -1304,25 +1474,92 @@ function AdminDashboard() {
     setSettings(data || []);
   };
 
+  const loadAccounts = async () => {
+    const { data } = await supabase.from('users').select('*').order('created_at', { ascending: false });
+    setAccounts(data || []);
+  };
+
+  const handleUpdateUserRole = async (userId: string, newRole: string) => {
+    const { error } = await supabase.from('users').update({ role: newRole }).eq('id', userId);
+    if (error) {
+      showError('فشل تحديث الدور');
+    } else {
+      showSuccess('تم تحديث الدور بنجاح');
+      loadAccounts();
+    }
+  };
+
+  const handleResetPassword = async () => {
+    if (!newPassword || newPassword.length < 6) {
+      showError('كلمة المرور يجب أن تكون 6 أحرف على الأقل');
+      return;
+    }
+
+    try {
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+      const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+      const response = await fetch(`${supabaseUrl}/functions/v1/update-admin-password`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${supabaseAnonKey}`,
+        },
+        body: JSON.stringify({
+          email: selectedAccount.email,
+          newPassword: newPassword,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || 'فشل إعادة تعيين كلمة المرور');
+      }
+
+      showSuccess('تم إعادة تعيين كلمة المرور بنجاح');
+      setShowResetPasswordModal(false);
+      setNewPassword('');
+      setSelectedAccount(null);
+    } catch (error: any) {
+      showError(error.message || 'حدث خطأ أثناء إعادة تعيين كلمة المرور');
+    }
+  };
+
   const handleSaveAnnouncement = async () => {
     if (!newAnnouncement.title || !newAnnouncement.description) {
       return showError('الرجاء ملء جميع الحقول المطلوبة');
     }
 
     try {
+      const announcementData: any = {
+        title: newAnnouncement.title,
+        description: newAnnouncement.description,
+        type: newAnnouncement.type,
+        image_url: newAnnouncement.image_url || null,
+        registration_open: newAnnouncement.registration_open,
+        is_published: newAnnouncement.is_published,
+        end_date: newAnnouncement.end_date ? new Date(newAnnouncement.end_date).toISOString() : null
+      };
+
       if (editingItem) {
-        await supabase.from('announcements').update(newAnnouncement).eq('id', editingItem.id);
+        const { error } = await supabase.from('announcements').update(announcementData).eq('id', editingItem.id);
+        if (error) throw error;
         showSuccess('تم تحديث الإعلان بنجاح');
       } else {
-        await supabase.from('announcements').insert(newAnnouncement);
+        const { error } = await supabase.from('announcements').insert(announcementData);
+        if (error) throw error;
         showSuccess('تم إضافة الإعلان بنجاح');
       }
+
+      await loadAnnouncements();
+
       setShowAnnouncementModal(false);
       setEditingItem(null);
-      setNewAnnouncement({ title: '', description: '', type: 'announcement', image_url: '', registration_open: false, end_date: '' });
-      loadAnnouncements();
-    } catch {
-      showError('حدث خطأ');
+      setNewAnnouncement({ title: '', description: '', type: 'announcement', image_url: '', registration_open: false, end_date: '', is_published: true });
+    } catch (error: any) {
+      showError('حدث خطأ: ' + (error.message || 'خطأ غير معروف'));
+      console.error('Error saving announcement:', error);
     }
   };
 
@@ -1331,7 +1568,7 @@ function AdminDashboard() {
     try {
       await supabase.from('announcements').delete().eq('id', id);
       showSuccess('تم حذف الإعلان بنجاح');
-      loadAnnouncements();
+      await loadAnnouncements();
     } catch {
       showError('حدث خطأ');
     }
@@ -1361,10 +1598,12 @@ function AdminDashboard() {
         await supabase.from('honors').insert(honorData);
         showSuccess('تم إضافة التكريم بنجاح');
       }
+
+      await loadHonors();
+
       setShowHonorModal(false);
       setEditingItem(null);
       setNewHonor({ title: '', description: '', image_url: '', video_url: '', media_type: 'image', honor_date: '' });
-      loadHonors();
     } catch {
       showError('حدث خطأ');
     }
@@ -1375,7 +1614,7 @@ function AdminDashboard() {
     try {
       await supabase.from('honors').delete().eq('id', id);
       showSuccess('تم حذف التكريم بنجاح');
-      loadHonors();
+      await loadHonors();
     } catch {
       showError('حدث خطأ');
     }
@@ -1385,7 +1624,7 @@ function AdminDashboard() {
     try {
       await supabase.from('app_settings').update({ value, updated_at: new Date().toISOString(), updated_by: user?.id }).eq('id', id);
       showSuccess('تم تحديث الإعداد بنجاح');
-      loadSettings();
+      await loadSettings();
     } catch {
       showError('حدث خطأ');
     }
@@ -1393,13 +1632,15 @@ function AdminDashboard() {
 
   const openEditAnnouncement = (announcement: any) => {
     setEditingItem(announcement);
+    const endDateStr = announcement.end_date ? new Date(announcement.end_date).toISOString().split('T')[0] : '';
     setNewAnnouncement({
       title: announcement.title,
       description: announcement.description,
       type: announcement.type,
       image_url: announcement.image_url || '',
       registration_open: announcement.registration_open,
-      end_date: announcement.end_date || ''
+      end_date: endDateStr,
+      is_published: announcement.is_published !== undefined ? announcement.is_published : true
     });
     setShowAnnouncementModal(true);
   };
@@ -1460,7 +1701,7 @@ function AdminDashboard() {
   return (
     <div className="container mx-auto px-4 py-12" dir="rtl">
       <div className="text-center mb-8">
-        <h1 className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#8A1538] to-[#A5763F] mb-4">لوحة الإدارة</h1>
+        <h1 className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 mb-4">لوحة الإدارة</h1>
         <p className="text-lg text-gray-600 font-semibold">مشاهدة جميع الطلبات والإحصائيات</p>
       </div>
 
@@ -1471,9 +1712,10 @@ function AdminDashboard() {
           { key: 'suggestions', label: 'اقتراحات المعلمين' },
           { key: 'announcements', label: 'إدارة الإعلانات' },
           { key: 'honors', label: 'إدارة التكريمات' },
+          { key: 'accounts', label: 'إدارة الحسابات' },
           { key: 'settings', label: 'إعدادات التطبيق' }
         ].map(t => (
-          <button key={t.key} onClick={() => setTab(t.key as any)} className={`px-6 py-3 rounded-xl font-black transition-all whitespace-nowrap shadow-lg transform hover:scale-105 ${tab === t.key ? 'bg-gradient-to-r from-[#8A1538] to-[#A5763F] text-white shadow-xl' : 'bg-white text-gray-700 hover:bg-gray-50'}`}>
+          <button key={t.key} onClick={() => setTab(t.key as any)} className={`px-6 py-3 rounded-xl font-black transition-all whitespace-nowrap shadow-lg transform hover:scale-105 ${tab === t.key ? 'bg-gradient-to-r from-emerald-600 to-cyan-600 text-white shadow-xl' : 'bg-white text-gray-700 hover:bg-gray-50'}`}>
             {t.label}
           </button>
         ))}
@@ -1482,19 +1724,19 @@ function AdminDashboard() {
       {tab === 'stats' && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {[
-            { icon: Users, label: 'إجمالي الطلبات', value: stats.total, color: 'from-blue-500 to-cyan-500', borderColor: 'border-blue-500' },
-            { icon: CheckCircle, label: 'المقبولين', value: stats.approved, color: 'from-green-500 to-teal-500', borderColor: 'border-green-500' },
-            { icon: Clock, label: 'قيد المراجعة', value: stats.pending, color: 'from-yellow-500 to-orange-500', borderColor: 'border-yellow-500' },
-            { icon: TrendingUp, label: 'الأكثر تسجيلاً', value: stats.topTalent, color: 'from-rose-500 to-pink-500', borderColor: 'border-rose-500' }
+            { icon: Users, label: 'إجمالي الطلبات', value: stats.total, iconColor: 'from-blue-400 to-cyan-500', borderColor: 'border-blue-500', hoverColor: 'ui-card-blue' },
+            { icon: CheckCircle, label: 'المقبولين', value: stats.approved, iconColor: 'from-green-400 to-teal-500', borderColor: 'border-green-500', hoverColor: 'ui-card-teal' },
+            { icon: Clock, label: 'قيد المراجعة', value: stats.pending, iconColor: 'from-yellow-400 to-orange-500', borderColor: 'border-yellow-500', hoverColor: 'ui-card-amber' },
+            { icon: TrendingUp, label: 'الأكثر تسجيلاً', value: stats.topTalent, iconColor: 'from-rose-400 to-pink-500', borderColor: 'border-rose-500', hoverColor: 'ui-card-rose' }
           ].map((stat, i) => (
-            <div key={i} className={`bg-white rounded-2xl shadow-xl hover:shadow-2xl p-6 transform hover:-translate-y-2 transition-all duration-300 border-t-4 ${stat.borderColor}`}>
+            <div key={i} className={`ui-card ui-card-hover ${stat.hoverColor} p-6 border-t-4 ${stat.borderColor}`}>
               <div className="flex items-center gap-4">
-                <div className={`w-16 h-16 bg-gradient-to-br ${stat.color} rounded-2xl flex items-center justify-center text-white shadow-lg`}>
-                  <stat.icon className="w-8 h-8" />
+                <div className={`w-16 h-16 rounded-full bg-gradient-to-br ${stat.iconColor} flex items-center justify-center shadow-md`}>
+                  <stat.icon className="w-8 h-8 text-white" />
                 </div>
                 <div>
-                  <p className="text-gray-600 font-semibold text-sm mb-1">{stat.label}</p>
-                  <p className="text-3xl font-black text-gray-800">{stat.value}</p>
+                  <p className="text-slate-600 font-semibold text-sm mb-1">{stat.label}</p>
+                  <p className="text-3xl font-black text-slate-900">{stat.value}</p>
                 </div>
               </div>
             </div>
@@ -1503,14 +1745,14 @@ function AdminDashboard() {
       )}
 
       {tab === 'requests' && (
-        <div className="bg-white rounded-2xl shadow-xl p-6 border-t-4 border-[#8A1538]">
+        <div className="ui-card p-6 border-t-4 border-[#8A1538]">
           <button onClick={exportCSV} className="mb-4 flex items-center gap-2 bg-green-500 text-white px-6 py-3 rounded-lg font-bold hover:bg-green-600">
             <Download className="w-5 h-5" />
             تصدير CSV
           </button>
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-gradient-to-r from-[#8A1538] to-[#A5763F] text-white">
+              <thead className="bg-gradient-to-r from-emerald-600 to-cyan-600 text-white">
                 <tr>
                   <th className="px-4 py-3 text-right text-sm">الطالب</th>
                   <th className="px-4 py-3 text-right text-sm">القسم</th>
@@ -1556,7 +1798,7 @@ function AdminDashboard() {
               setNewAnnouncement({ title: '', description: '', type: 'announcement', image_url: '', registration_open: false, end_date: '' });
               setShowAnnouncementModal(true);
             }}
-            className="flex items-center gap-2 bg-gradient-to-r from-[#8A1538] to-[#A5763F] text-white px-6 py-3 rounded-lg font-bold shadow-lg hover:shadow-xl"
+            className="flex items-center gap-2 bg-gradient-to-r from-emerald-600 to-cyan-600 text-white px-6 py-3 rounded-lg font-bold shadow-lg hover:shadow-xl"
           >
             <Plus className="w-5 h-5" />
             إضافة إعلان جديد
@@ -1564,19 +1806,22 @@ function AdminDashboard() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {announcements.map(announcement => (
-              <div key={announcement.id} className="bg-white rounded-2xl shadow-xl overflow-hidden border-t-4 border-blue-500">
+              <div key={announcement.id} className="ui-card overflow-hidden border-t-4 border-blue-500">
                 {announcement.image_url && (
                   <img src={announcement.image_url} alt={announcement.title} className="w-full h-48 object-cover" />
                 )}
                 <div className="p-6">
                   <div className="flex items-center justify-between mb-3">
-                    <div className="flex gap-2">
+                    <div className="flex gap-2 flex-wrap">
                       <span className={`px-3 py-1 rounded-full text-xs font-bold ${announcement.type === 'competition' ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800'}`}>
                         {announcement.type === 'competition' ? 'مسابقة' : 'إعلان'}
                       </span>
                       {announcement.registration_open && (
                         <span className="bg-amber-100 text-amber-800 px-3 py-1 rounded-full text-xs font-bold">مفتوح</span>
                       )}
+                      <span className={`px-3 py-1 rounded-full text-xs font-bold ${announcement.is_published ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
+                        {announcement.is_published ? 'منشور' : 'غير منشور'}
+                      </span>
                     </div>
                     <div className="flex gap-2">
                       <button onClick={() => openEditAnnouncement(announcement)} className="p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
@@ -1607,7 +1852,7 @@ function AdminDashboard() {
               setNewHonor({ title: '', description: '', image_url: '', video_url: '', media_type: 'image', honor_date: '' });
               setShowHonorModal(true);
             }}
-            className="flex items-center gap-2 bg-gradient-to-r from-[#8A1538] to-[#A5763F] text-white px-6 py-3 rounded-lg font-bold shadow-lg hover:shadow-xl"
+            className="flex items-center gap-2 bg-gradient-to-r from-emerald-600 to-cyan-600 text-white px-6 py-3 rounded-lg font-bold shadow-lg hover:shadow-xl"
           >
             <Plus className="w-5 h-5" />
             إضافة تكريم جديد
@@ -1615,7 +1860,7 @@ function AdminDashboard() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {honors.map(honor => (
-              <div key={honor.id} className="bg-white rounded-2xl shadow-xl overflow-hidden border-t-4 border-amber-500">
+              <div key={honor.id} className="ui-card overflow-hidden border-t-4 border-amber-500">
                 {honor.media_type === 'image' ? (
                   honor.media_url && <img src={honor.media_url} alt={honor.title} className="w-full h-48 object-cover" />
                 ) : (
@@ -1648,7 +1893,7 @@ function AdminDashboard() {
       )}
 
       {tab === 'settings' && (
-        <div className="bg-white rounded-2xl shadow-xl p-8 border-t-4 border-[#8A1538]">
+        <div className="ui-card p-8 border-t-4 border-[#8A1538]">
           <div className="flex items-center gap-3 mb-6">
             <Settings className="w-8 h-8 text-[#8A1538]" />
             <h2 className="text-2xl font-black text-gray-800">إعدادات التطبيق</h2>
@@ -1676,10 +1921,82 @@ function AdminDashboard() {
         </div>
       )}
 
+      {tab === 'accounts' && (
+        <div className="ui-card p-6 border-t-4 border-[#8A1538]">
+          <div className="flex items-center gap-3 mb-6">
+            <Users className="w-8 h-8 text-[#8A1538]" />
+            <h2 className="text-2xl font-black text-gray-800">إدارة الحسابات</h2>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-gradient-to-r from-emerald-600 to-cyan-600 text-white">
+                <tr>
+                  <th className="px-4 py-3 text-right text-sm">الاسم الكامل</th>
+                  <th className="px-4 py-3 text-right text-sm">البريد الإلكتروني</th>
+                  <th className="px-4 py-3 text-right text-sm">الصف</th>
+                  <th className="px-4 py-3 text-right text-sm">الفصل</th>
+                  <th className="px-4 py-3 text-right text-sm">رقم الجوال</th>
+                  <th className="px-4 py-3 text-right text-sm">الدور الحالي</th>
+                  <th className="px-4 py-3 text-right text-sm">تغيير الدور</th>
+                  <th className="px-4 py-3 text-right text-sm">إعادة تعيين كلمة المرور</th>
+                </tr>
+              </thead>
+              <tbody>
+                {accounts.map((account, i) => (
+                  <tr key={account.id} className={i % 2 === 0 ? 'bg-gray-50' : 'bg-white'}>
+                    <td className="px-4 py-3 font-semibold text-sm">{account.full_name || '-'}</td>
+                    <td className="px-4 py-3 text-sm">{account.email}</td>
+                    <td className="px-4 py-3 text-sm">{account.grade || '-'}</td>
+                    <td className="px-4 py-3 text-sm">{account.class || '-'}</td>
+                    <td className="px-4 py-3 text-sm">{account.phone || '-'}</td>
+                    <td className="px-4 py-3">
+                      <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                        account.role === 'admin' ? 'bg-red-100 text-red-800' :
+                        account.role === 'teacher' ? 'bg-blue-100 text-blue-800' :
+                        account.role === 'guardian' ? 'bg-purple-100 text-purple-800' :
+                        'bg-green-100 text-green-800'
+                      }`}>
+                        {account.role === 'admin' ? 'إداري' :
+                         account.role === 'teacher' ? 'معلم' :
+                         account.role === 'guardian' ? 'ولي أمر' :
+                         'طالب'}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3">
+                      <select
+                        value={account.role}
+                        onChange={(e) => handleUpdateUserRole(account.id, e.target.value)}
+                        className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#8A1538] font-semibold"
+                      >
+                        <option value="student">طالب</option>
+                        <option value="guardian">ولي أمر</option>
+                        <option value="teacher">معلم</option>
+                        <option value="admin">إداري</option>
+                      </select>
+                    </td>
+                    <td className="px-4 py-3">
+                      <button
+                        onClick={() => {
+                          setSelectedAccount(account);
+                          setShowResetPasswordModal(true);
+                        }}
+                        className="bg-orange-500 text-white px-3 py-2 rounded-lg text-xs hover:bg-orange-600 font-semibold transition-colors"
+                      >
+                        إعادة تعيين
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
       {tab === 'suggestions' && (
-        <div className="bg-white rounded-2xl shadow-xl overflow-x-auto border-t-4 border-[#8A1538]">
+        <div className="ui-card overflow-x-auto border-t-4 border-[#8A1538]">
           <table className="w-full">
-            <thead className="bg-gradient-to-r from-[#8A1538] to-[#A5763F] text-white">
+            <thead className="bg-gradient-to-r from-emerald-600 to-cyan-600 text-white">
               <tr>
                 <th className="px-4 py-3 text-right text-sm">اسم الموهبة</th>
                 <th className="px-4 py-3 text-right text-sm">القسم</th>
@@ -1717,7 +2034,7 @@ function AdminDashboard() {
       {showAnnouncementModal && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4" onClick={() => setShowAnnouncementModal(false)}>
           <div className="bg-white rounded-3xl shadow-2xl w-full max-w-2xl p-8 max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()} dir="rtl">
-            <h2 className="text-2xl font-black text-[#8A1538] mb-6">{editingItem ? 'تعديل الإعلان' : 'إضافة إعلان جديد'}</h2>
+            <h2 className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-cyan-600 mb-6">{editingItem ? 'تعديل الإعلان' : 'إضافة إعلان جديد'}</h2>
             <div className="space-y-4">
               <div>
                 <label className="block text-gray-700 font-semibold mb-2">العنوان *</label>
@@ -1771,19 +2088,31 @@ function AdminDashboard() {
                   />
                 </div>
               </div>
-              <div className="flex items-center gap-3">
-                <input
-                  type="checkbox"
-                  checked={newAnnouncement.registration_open}
-                  onChange={(e) => setNewAnnouncement({ ...newAnnouncement, registration_open: e.target.checked })}
-                  className="w-5 h-5 text-[#8A1538] focus:ring-[#8A1538]"
-                  id="registration-open"
-                />
-                <label htmlFor="registration-open" className="text-gray-700 font-semibold">التسجيل مفتوح</label>
+              <div className="space-y-3">
+                <div className="flex items-center gap-3">
+                  <input
+                    type="checkbox"
+                    checked={newAnnouncement.registration_open}
+                    onChange={(e) => setNewAnnouncement({ ...newAnnouncement, registration_open: e.target.checked })}
+                    className="w-5 h-5 text-[#8A1538] focus:ring-[#8A1538]"
+                    id="registration-open"
+                  />
+                  <label htmlFor="registration-open" className="text-gray-700 font-semibold">التسجيل مفتوح</label>
+                </div>
+                <div className="flex items-center gap-3">
+                  <input
+                    type="checkbox"
+                    checked={newAnnouncement.is_published}
+                    onChange={(e) => setNewAnnouncement({ ...newAnnouncement, is_published: e.target.checked })}
+                    className="w-5 h-5 text-[#8A1538] focus:ring-[#8A1538]"
+                    id="is-published"
+                  />
+                  <label htmlFor="is-published" className="text-gray-700 font-semibold">نشر الإعلان</label>
+                </div>
               </div>
               <div className="flex gap-4 pt-4">
                 <button onClick={() => setShowAnnouncementModal(false)} className="flex-1 bg-gray-200 py-3 rounded-lg font-bold">إلغاء</button>
-                <button onClick={handleSaveAnnouncement} className="flex-1 bg-gradient-to-r from-[#8A1538] to-[#A5763F] text-white py-3 rounded-lg font-bold">
+                <button onClick={handleSaveAnnouncement} className="flex-1 bg-gradient-to-r from-emerald-600 to-cyan-600 text-white py-3 rounded-lg font-bold">
                   {editingItem ? 'تحديث' : 'إضافة'}
                 </button>
               </div>
@@ -1795,7 +2124,7 @@ function AdminDashboard() {
       {showHonorModal && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4" onClick={() => setShowHonorModal(false)}>
           <div className="bg-white rounded-3xl shadow-2xl w-full max-w-2xl p-8 max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()} dir="rtl">
-            <h2 className="text-2xl font-black text-[#8A1538] mb-6">{editingItem ? 'تعديل التكريم' : 'إضافة تكريم جديد'}</h2>
+            <h2 className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-cyan-600 mb-6">{editingItem ? 'تعديل التكريم' : 'إضافة تكريم جديد'}</h2>
             <div className="space-y-4">
               <div>
                 <label className="block text-gray-700 font-semibold mb-2">العنوان *</label>
@@ -1862,8 +2191,47 @@ function AdminDashboard() {
               )}
               <div className="flex gap-4 pt-4">
                 <button onClick={() => setShowHonorModal(false)} className="flex-1 bg-gray-200 py-3 rounded-lg font-bold">إلغاء</button>
-                <button onClick={handleSaveHonor} className="flex-1 bg-gradient-to-r from-[#8A1538] to-[#A5763F] text-white py-3 rounded-lg font-bold">
+                <button onClick={handleSaveHonor} className="flex-1 bg-gradient-to-r from-emerald-600 to-cyan-600 text-white py-3 rounded-lg font-bold">
                   {editingItem ? 'تحديث' : 'إضافة'}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showResetPasswordModal && (
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4" onClick={() => setShowResetPasswordModal(false)}>
+          <div className="bg-white rounded-3xl shadow-2xl w-full max-w-md p-8" onClick={(e) => e.stopPropagation()} dir="rtl">
+            <h2 className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-cyan-600 mb-6">إعادة تعيين كلمة المرور</h2>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-gray-700 font-semibold mb-2">الحساب</label>
+                <input
+                  type="text"
+                  value={selectedAccount?.email || ''}
+                  disabled
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-100 text-gray-600"
+                />
+              </div>
+              <div>
+                <label className="block text-gray-700 font-semibold mb-2">كلمة المرور الجديدة *</label>
+                <input
+                  type="password"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8A1538]"
+                  placeholder="أدخل كلمة المرور الجديدة (6 أحرف على الأقل)"
+                />
+              </div>
+              <div className="flex gap-4 pt-4">
+                <button onClick={() => {
+                  setShowResetPasswordModal(false);
+                  setNewPassword('');
+                  setSelectedAccount(null);
+                }} className="flex-1 bg-gray-200 py-3 rounded-lg font-bold hover:bg-gray-300">إلغاء</button>
+                <button onClick={handleResetPassword} className="flex-1 bg-gradient-to-r from-orange-500 to-red-500 text-white py-3 rounded-lg font-bold hover:from-orange-600 hover:to-red-600">
+                  إعادة تعيين
                 </button>
               </div>
             </div>
