@@ -544,27 +544,27 @@ function HomePage({ setCurrentSection }: { setCurrentSection: (section: string) 
 
       <div className="grid grid-cols-2 md:grid-cols-3 gap-3 max-w-4xl mx-auto mb-6">
         <button
-  onClick={() => setCurrentSection('talents')}
-  className="group ui-card ui-card-hover overflow-hidden h-32 md:h-40 active:scale-[0.99]"
->
-  <div className="h-full flex flex-col items-center justify-center p-3">
-    <UiIconCircle className="mb-2">
-      <img src="https://img.icons8.com/color/96/star--v1.png" alt="star" className="w-7 h-7 object-contain" />
-    </UiIconCircle>
+          onClick={() => setCurrentSection('talents')}
+          className="group ui-card ui-card-hover ui-card-amber overflow-hidden h-32 md:h-40 active:scale-[0.99]"
+        >
+          <div className="h-full flex flex-col items-center justify-center p-3">
+            <div className="mb-2 w-12 h-12 rounded-full bg-gradient-to-br from-amber-400 to-yellow-500 flex items-center justify-center shadow-md">
+              <Star className="w-6 h-6 text-white" />
+            </div>
 
-    <h3 className="text-base md:text-xl font-black text-slate-900 mb-1">اكتشف موهبتك</h3>
-    <p className="text-slate-500 text-xs md:text-sm font-semibold hidden md:block">سجل موهبتك الآن</p>
-  </div>
-</button>
+            <h3 className="text-base md:text-xl font-black text-slate-900 mb-1">اكتشف موهبتك</h3>
+            <p className="text-slate-500 text-xs md:text-sm font-semibold hidden md:block">سجل موهبتك الآن</p>
+          </div>
+        </button>
 
         <button
           onClick={() => setCurrentSection('announcements')}
-          className="group ui-card ui-card-hover overflow-hidden h-32 md:h-40 active:scale-[0.99]"
+          className="group ui-card ui-card-hover ui-card-cyan overflow-hidden h-32 md:h-40 active:scale-[0.99]"
         >
           <div className="h-full flex flex-col items-center justify-center p-3">
-            <UiIconCircle className="mb-2">
-              <img src="https://img.icons8.com/color/96/bullhorn.png" alt="megaphone" className="w-7 h-7 object-contain" />
-            </UiIconCircle>
+            <div className="mb-2 w-12 h-12 rounded-full bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center shadow-md">
+              <Megaphone className="w-6 h-6 text-white" />
+            </div>
 
             <h3 className="text-base md:text-xl font-black text-slate-900 mb-1">الإعلانات</h3>
             <p className="text-slate-500 text-xs md:text-sm font-semibold hidden md:block">تابع الأخبار</p>
@@ -573,12 +573,12 @@ function HomePage({ setCurrentSection }: { setCurrentSection: (section: string) 
 
         <button
           onClick={() => setCurrentSection('honors')}
-          className="group ui-card ui-card-hover overflow-hidden h-32 md:h-40 col-span-2 md:col-span-1 active:scale-[0.99]"
+          className="group ui-card ui-card-hover ui-card-rose overflow-hidden h-32 md:h-40 col-span-2 md:col-span-1 active:scale-[0.99]"
         >
           <div className="h-full flex flex-col items-center justify-center p-3">
-            <UiIconCircle className="mb-2">
-              <img src="https://img.icons8.com/color/96/trophy.png" alt="trophy" className="w-7 h-7 object-contain" />
-            </UiIconCircle>
+            <div className="mb-2 w-12 h-12 rounded-full bg-gradient-to-br from-rose-400 to-pink-500 flex items-center justify-center shadow-md">
+              <Trophy className="w-6 h-6 text-white" />
+            </div>
 
             <h3 className="text-base md:text-xl font-black text-slate-900 mb-1">التكريمات</h3>
             <p className="text-slate-500 text-xs md:text-sm font-semibold hidden md:block">إنجازات مدرستنا</p>
@@ -663,17 +663,28 @@ const getIconImage = (iconNameOrArabic: string) => {
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
-        {categories.map((cat) => {
+        {categories.map((cat, i) => {
+          const colorClasses = ['ui-card-teal', 'ui-card-purple', 'ui-card-amber', 'ui-card-blue', 'ui-card-cyan'];
+          const iconColors = [
+            'from-teal-400 to-emerald-500',
+            'from-purple-400 to-pink-500',
+            'from-amber-400 to-orange-500',
+            'from-blue-400 to-cyan-500',
+            'from-cyan-400 to-sky-500'
+          ];
+          const colorClass = colorClasses[i % colorClasses.length];
+          const iconColor = iconColors[i % iconColors.length];
+
           return (
             <button
               key={cat.id}
               onClick={() => { setSelectedCategory(cat.id); setPage('subcategories'); }}
-              className="group ui-card ui-card-hover overflow-hidden h-36 md:h-44 active:scale-[0.99]"
+              className={`group ui-card ui-card-hover ${colorClass} overflow-hidden h-36 md:h-44 active:scale-[0.99]`}
             >
               <div className="p-3 flex flex-col items-center justify-center h-full">
-                <UiIconCircle className="mb-3">
+                <div className={`mb-3 w-12 h-12 rounded-full bg-gradient-to-br ${iconColor} flex items-center justify-center shadow-md`}>
                   <img src={getIconImage(cat.icon)} alt={cat.name_ar} className="w-7 h-7 object-contain" />
-                </UiIconCircle>
+                </div>
                 <h3 className="text-base md:text-lg font-black text-slate-900 mb-1">{cat.name_ar}</h3>
                 <div className="w-10 h-0.5 bg-slate-200 rounded-full"></div>
               </div>
@@ -723,20 +734,34 @@ function SubcategoriesPage({ categoryId, setPage, setSelectedSubcategory }: any)
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 max-w-5xl mx-auto">
-        {subcategories.map((sub) => (
-          <button
-            key={sub.id}
-            onClick={() => { setSelectedSubcategory(sub.id); setPage('register'); }}
-            className="group ui-card ui-card-hover overflow-hidden h-36 md:h-40 active:scale-[0.99]"
-          >
-            <div className="p-3 flex flex-col items-center justify-center h-full">
-              <UiIconCircle className="mb-2">
-                <Award className="w-6 h-6 md:w-7 md:h-7" style={{color: '#8A1538'}} />
-              </UiIconCircle>
-              <h3 className="text-sm md:text-base font-black text-slate-900 text-center">{sub.name_ar}</h3>
-            </div>
-          </button>
-        ))}
+        {subcategories.map((sub, idx) => {
+          const colorClasses = ['ui-card-rose', 'ui-card-blue', 'ui-card-teal', 'ui-card-amber', 'ui-card-purple', 'ui-card-cyan'];
+          const iconColors = [
+            'from-rose-400 to-pink-500',
+            'from-blue-400 to-indigo-500',
+            'from-teal-400 to-emerald-500',
+            'from-amber-400 to-yellow-500',
+            'from-purple-400 to-fuchsia-500',
+            'from-cyan-400 to-blue-500'
+          ];
+          const colorClass = colorClasses[idx % colorClasses.length];
+          const iconColor = iconColors[idx % iconColors.length];
+
+          return (
+            <button
+              key={sub.id}
+              onClick={() => { setSelectedSubcategory(sub.id); setPage('register'); }}
+              className={`group ui-card ui-card-hover ${colorClass} overflow-hidden h-36 md:h-40 active:scale-[0.99]`}
+            >
+              <div className="p-3 flex flex-col items-center justify-center h-full">
+                <div className={`mb-2 w-12 h-12 rounded-full bg-gradient-to-br ${iconColor} flex items-center justify-center shadow-md`}>
+                  <Award className="w-6 h-6 md:w-7 md:h-7 text-white" />
+                </div>
+                <h3 className="text-sm md:text-base font-black text-slate-900 text-center">{sub.name_ar}</h3>
+              </div>
+            </button>
+          );
+        })}
       </div>
     </div>
   );
@@ -916,7 +941,7 @@ function MyPage({ setPage }: any) {
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 max-w-5xl mx-auto">
           {talents.map(t => (
-            <div key={t.id} className={`ui-card ui-card-hover p-6 border-r-8 ${t.status === 'approved' ? 'border-green-500' : t.status === 'rejected' ? 'border-red-500' : 'border-yellow-500'}`}>
+            <div key={t.id} className={`ui-card ui-card-hover ${t.status === 'approved' ? 'ui-card-teal border-green-500' : t.status === 'rejected' ? 'ui-card-rose border-red-500' : 'ui-card-amber border-yellow-500'} p-6 border-r-8`}>
               <div className="flex justify-between items-start mb-4">
                 <div>
                   <h3 className="text-2xl font-black text-[#8A1538] mb-1">{t.subcategory_name}</h3>
@@ -1025,7 +1050,7 @@ function AnnouncementsPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
         {announcements.map(announcement => (
-          <div key={announcement.id} className="ui-card ui-card-hover overflow-hidden border-t-4 border-blue-500">
+          <div key={announcement.id} className="ui-card ui-card-hover ui-card-blue overflow-hidden border-t-4 border-blue-500">
             {announcement.image_url && (
               <img src={announcement.image_url} alt={announcement.title} className="w-full h-48 object-cover" />
             )}
@@ -1143,7 +1168,7 @@ function HonorsPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
         {honors.map(honor => (
-          <div key={honor.id} className="ui-card ui-card-hover overflow-hidden border-t-4 border-amber-500">
+          <div key={honor.id} className="ui-card ui-card-hover ui-card-amber overflow-hidden border-t-4 border-amber-500">
             {honor.media_type === 'image' ? (
               <img src={honor.media_url} alt={honor.title} className="w-full h-56 object-cover" />
             ) : (
@@ -1642,16 +1667,16 @@ function AdminDashboard() {
       {tab === 'stats' && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {[
-            { icon: Users, label: 'إجمالي الطلبات', value: stats.total, color: 'from-blue-500 to-cyan-500', borderColor: 'border-blue-500' },
-            { icon: CheckCircle, label: 'المقبولين', value: stats.approved, color: 'from-green-500 to-teal-500', borderColor: 'border-green-500' },
-            { icon: Clock, label: 'قيد المراجعة', value: stats.pending, color: 'from-yellow-500 to-orange-500', borderColor: 'border-yellow-500' },
-            { icon: TrendingUp, label: 'الأكثر تسجيلاً', value: stats.topTalent, color: 'from-rose-500 to-pink-500', borderColor: 'border-rose-500' }
+            { icon: Users, label: 'إجمالي الطلبات', value: stats.total, iconColor: 'from-blue-400 to-cyan-500', borderColor: 'border-blue-500', hoverColor: 'ui-card-blue' },
+            { icon: CheckCircle, label: 'المقبولين', value: stats.approved, iconColor: 'from-green-400 to-teal-500', borderColor: 'border-green-500', hoverColor: 'ui-card-teal' },
+            { icon: Clock, label: 'قيد المراجعة', value: stats.pending, iconColor: 'from-yellow-400 to-orange-500', borderColor: 'border-yellow-500', hoverColor: 'ui-card-amber' },
+            { icon: TrendingUp, label: 'الأكثر تسجيلاً', value: stats.topTalent, iconColor: 'from-rose-400 to-pink-500', borderColor: 'border-rose-500', hoverColor: 'ui-card-rose' }
           ].map((stat, i) => (
-            <div key={i} className={`ui-card ui-card-hover p-6 border-t-4 ${stat.borderColor}`}>
+            <div key={i} className={`ui-card ui-card-hover ${stat.hoverColor} p-6 border-t-4 ${stat.borderColor}`}>
               <div className="flex items-center gap-4">
-                <UiIconCircle className="w-16 h-16">
-                  <stat.icon className="w-8 h-8" style={{ color: '#8A1538' }} />
-                </UiIconCircle>
+                <div className={`w-16 h-16 rounded-full bg-gradient-to-br ${stat.iconColor} flex items-center justify-center shadow-md`}>
+                  <stat.icon className="w-8 h-8 text-white" />
+                </div>
                 <div>
                   <p className="text-slate-600 font-semibold text-sm mb-1">{stat.label}</p>
                   <p className="text-3xl font-black text-slate-900">{stat.value}</p>
