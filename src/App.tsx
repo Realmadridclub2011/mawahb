@@ -483,7 +483,8 @@ function MainApp() {
 
   if (user?.role === 'teacher') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-amber-50 to-stone-50">
+<div className="app-bg">
+
         <Header />
         <div className="pb-20">
           <TeacherDashboard />
