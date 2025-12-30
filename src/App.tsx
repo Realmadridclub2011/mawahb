@@ -494,8 +494,8 @@ function MainApp() {
   }
 
   if (user?.role === 'admin') {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-amber-50 to-stone-50">
+  return (
+    <div className="app-bg">
         <Header />
         <div className="pb-20">
           <AdminDashboard />
