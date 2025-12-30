@@ -123,229 +123,83 @@ function ToastProvider({ children }: { children: React.ReactNode }) {
 
 const useAuth = () => useContext(AuthContext)!;
 const useToast = () => useContext(ToastContext)!;
-// ================== UI DESIGN SYSTEM (Maroon / Light) ==================
-const UI = {
-  maroon: "#8A1538",
-  bg: "bg-[#F9FAFB] text-slate-900",
-  page: "container mx-auto px-4 py-6 md:py-10 max-w-6xl",
-  card:
-    "rounded-[22px] bg-white border border-slate-200 shadow-[0_10px_30px_rgba(2,6,23,0.06)] hover:shadow-[0_18px_45px_rgba(138,21,56,0.16)] transition-all",
-  pad: "p-4 md:p-5",
-  softIcon:
-    "h-14 w-14 rounded-2xl bg-[#FDF2F4] border border-[#F6C1CC] flex items-center justify-center",
-  sectionTitle: "text-lg md:text-xl font-black text-slate-900",
-  divider:
-    "h-[2px] flex-1 bg-gradient-to-l from-transparent via-slate-200 to-transparent",
-  chip:
-    "inline-flex items-center gap-2 rounded-full bg-white/15 px-4 py-2 text-xs md:text-sm font-bold backdrop-blur",
-  hero:
-    "relative overflow-hidden rounded-[28px] bg-gradient-to-br from-[#8A1538] via-[#9B1C3E] to-[#7A102F] text-white shadow-[0_20px_50px_rgba(138,21,56,0.35)]",
-  btn:
-    "inline-flex items-center gap-2 rounded-2xl bg-white border border-slate-200 px-4 py-2 font-bold shadow-sm hover:shadow-md transition",
-};
 
-const PASTEL = [
-  "bg-rose-50 border-rose-200",
-  "bg-amber-50 border-amber-200",
-  "bg-emerald-50 border-emerald-200",
-  "bg-sky-50 border-sky-200",
-  "bg-violet-50 border-violet-200",
-  "bg-slate-50 border-slate-200",
-];
-
-function PageShell({ title, subtitle, right, children }) {
-  return (
-    <div className={`${UI.bg} min-h-screen`} dir="rtl">
-      <div className={UI.page}>
-        {(title || subtitle || right) && (
-          <div className="flex items-end justify-between gap-4 mb-6">
-            <div>
-              {title && (
-                <h1 className="text-2xl md:text-4xl font-black">{title}</h1>
-              )}
-              {subtitle && (
-                <p className="mt-1 text-sm md:text-base font-semibold text-slate-500">
-                  {subtitle}
-                </p>
-              )}
-            </div>
-            {right}
-          </div>
-        )}
-        {children}
-      </div>
-    </div>
-  );
-}
-
-function Hero({ title, subtitle, chipText }) {
-  return (
-    <div className={`${UI.hero} p-5 md:p-7`}>
-      <h2 className="text-xl md:text-3xl font-black">{title}</h2>
-      <p className="mt-2 text-sm md:text-base font-semibold text-white/90">
-        {subtitle}
-      </p>
-      {chipText && (
-        <div className="mt-4">
-          <span className={UI.chip}>{chipText}</span>
-        </div>
-      )}
-    </div>
-  );
-}
-
-function SectionHeader({ label }) {
-  return (
-    <div className="flex items-center gap-3 my-6">
-      <h2 className={UI.sectionTitle}>{label}</h2>
-      <div className={UI.divider} />
-    </div>
-  );
-}
-// ======================================================================
-
-function Header({
-  showLogin,
-  setShowLogin,
-}: {
-  showLogin?: boolean;
-  setShowLogin?: (show: boolean) => void;
-}) {
+function Header({ showLogin, setShowLogin }: { showLogin?: boolean; setShowLogin?: (show: boolean) => void }) {
   const { user, logout } = useAuth();
 
   const getRoleName = (role: string) => {
-    const names: Record<string, string> = {
-      student: "طالب",
-      guardian: "ولي أمر",
-      teacher: "معلم",
-      admin: "إداري",
-    };
+    const names: Record<string, string> = { student: 'طالب', guardian: 'ولي أمر', teacher: 'معلم', admin: 'إداري' };
     return names[role] || role;
   };
 
   return (
-    <header dir="rtl" className="sticky top-0 z-50">
-      <div className="bg-white/70 backdrop-blur-xl border-b border-slate-200/70">
-        <div className="container mx-auto px-3 py-3 md:px-5 md:py-4">
-          <div className="flex items-center justify-between gap-3">
-            {/* Brand */}
-            <div className="flex items-center gap-2">
-              <div className="w-10 h-10 rounded-2xl bg-[linear-gradient(135deg,#8A1538,rgba(138,21,56,0.7))] shadow-sm flex items-center justify-center">
-                <Star className="w-5 h-5 text-white" />
+    <header className="bg-gradient-to-r from-[#8A1538] via-[#9A2545] to-[#A5763F] text-white shadow-2xl border-b-2 md:border-b-4 border-amber-400" dir="rtl">
+      <div className="container mx-auto px-3 py-3 md:px-4 md:py-4">
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center">
+            {user ? (
+              <div className="flex items-center gap-2 bg-white/15 backdrop-blur-md px-2 py-1.5 md:px-4 md:py-2 rounded-lg shadow-lg border border-white/20">
+                <div className="w-7 h-7 md:w-9 md:h-9 rounded-full bg-gradient-to-br from-amber-400 to-yellow-500 flex items-center justify-center shadow-lg">
+                  <User className="w-4 h-4 md:w-5 md:h-5 text-[#8A1538]" />
+                </div>
+                <div className="hidden sm:block">
+                  <p className="font-black text-xs md:text-sm leading-tight">{user.full_name}</p>
+                  <p className="text-[10px] md:text-xs text-amber-200 font-semibold">{getRoleName(user.role)}</p>
+                </div>
               </div>
-              <div className="leading-tight">
-                <p className="font-black text-sm md:text-base text-slate-900">
-                  منصة المواهب
-                </p>
-                <p className="text-[11px] md:text-xs text-slate-500 font-semibold">
-                  اكتشاف المواهب المدرسية
-                </p>
+            ) : (
+              <div className="flex items-center gap-1.5">
+                <Star className="w-6 h-6 md:w-7 md:h-7 text-amber-400" />
+                <span className="font-black text-sm md:text-lg">المواهب</span>
               </div>
-            </div>
-
-            {/* Title */}
-            <div className="hidden md:block text-center flex-1">
-              <h1 className="text-sm md:text-lg font-black text-slate-900">
-                منصة اكتشاف المواهب المدرسية
-              </h1>
-              <p className="text-xs text-slate-500 font-semibold">
-                اكتشف — سجّل — شارك — احتفل بالإنجاز
-              </p>
-            </div>
-
-            {/* Auth */}
-            <div className="flex items-center gap-2">
-              {user ? (
-                <>
-                  <div className="hidden sm:flex items-center gap-2 px-3 py-2 rounded-2xl bg-slate-50 border border-slate-200/70">
-                    <div className="w-9 h-9 rounded-2xl bg-white border border-slate-200 flex items-center justify-center">
-                      <User className="w-4 h-4 text-[#8A1538]" />
-                    </div>
-                    <div className="leading-tight">
-                      <p className="font-black text-sm">{user.full_name}</p>
-                      <p className="text-[11px] text-slate-500 font-semibold">
-                        {getRoleName(user.role)}
-                      </p>
-                    </div>
-                  </div>
-
-                  <button
-                    onClick={logout}
-                    className="inline-flex items-center gap-2 px-3 py-2 rounded-2xl bg-[#8A1538] text-white font-bold shadow-sm hover:shadow-md transition"
-                  >
-                    <LogOut className="w-4 h-4" />
-                    <span className="hidden md:inline">خروج</span>
-                  </button>
-                </>
-              ) : (
-                <button
-                  onClick={() => setShowLogin?.(true)}
-                  className="inline-flex items-center gap-2 px-3 py-2 rounded-2xl bg-[#8A1538] text-white font-bold shadow-sm hover:shadow-md transition"
-                >
-                  <LogIn className="w-4 h-4" />
-                  <span>دخول</span>
-                </button>
-              )}
-            </div>
+            )}
+          </div>
+          <h1 className="text-xs md:text-xl lg:text-2xl font-black drop-shadow-lg text-center flex-1 mx-2">منصة اكتشاف المواهب المدرسية</h1>
+          <div className="flex items-center">
+            {user ? (
+              <button onClick={logout} className="flex items-center gap-1 md:gap-2 bg-white/20 hover:bg-white/30 px-2 py-1.5 md:px-4 md:py-2 rounded-lg font-bold shadow-lg transition-all border border-white/30">
+                <LogOut className="w-3.5 h-3.5 md:w-4 md:h-4" />
+                <span className="hidden md:inline text-xs md:text-sm">خروج</span>
+              </button>
+            ) : (
+              <button onClick={() => setShowLogin?.(true)} className="flex items-center gap-1 md:gap-2 bg-white/20 hover:bg-white/30 px-2.5 py-1.5 md:px-4 md:py-2 rounded-lg font-bold shadow-lg transition-all border border-white/30">
+                <LogIn className="w-3.5 h-3.5 md:w-4 md:h-4" />
+                <span className="text-xs md:text-sm">دخول</span>
+              </button>
+            )}
           </div>
         </div>
-
-        {/* Accent line */}
-        <div className="h-[3px] bg-[linear-gradient(90deg,rgba(138,21,56,1),rgba(138,21,56,0.4),rgba(138,21,56,1))]" />
       </div>
     </header>
   );
 }
 
-function BottomNav({
-  currentSection,
-  setCurrentSection,
-}: {
-  currentSection: string;
-  setCurrentSection: (section: string) => void;
-}) {
+function BottomNav({ currentSection, setCurrentSection }: { currentSection: string; setCurrentSection: (section: string) => void }) {
   const navItems = [
-    { id: "home", label: "الرئيسية", icon: Home },
-    { id: "talents", label: "اكتشف موهبتك", icon: Star },
-    { id: "announcements", label: "الإعلانات", icon: Megaphone },
-    { id: "honors", label: "التكريمات", icon: Trophy },
+    { id: 'home', label: 'الرئيسية', icon: Home },
+    { id: 'talents', label: 'اكتشف موهبتك', icon: Star },
+    { id: 'announcements', label: 'الإعلانات', icon: Megaphone },
+    { id: 'honors', label: 'التكريمات', icon: Trophy }
   ];
 
   return (
-    <nav dir="rtl" className="fixed bottom-0 left-0 right-0 z-50">
-      <div className="mx-auto max-w-4xl px-3 pb-3">
-        <div className="rounded-3xl bg-white/80 backdrop-blur-xl border border-slate-200/70 shadow-lg overflow-hidden">
-          <div className="grid grid-cols-4">
-            {navItems.map((item) => {
-              const active = currentSection === item.id;
-              return (
-                <button
-                  key={item.id}
-                  onClick={() => setCurrentSection(item.id)}
-                  className={`py-3 flex flex-col items-center justify-center gap-1 transition ${
-                    active ? "bg-slate-50" : "hover:bg-slate-50/60"
-                  }`}
-                >
-                  <div
-                    className={`w-10 h-10 rounded-2xl flex items-center justify-center transition ${
-                      active
-                        ? "bg-[#8A1538] text-white shadow-md"
-                        : "bg-white text-slate-700 border border-slate-200"
-                    }`}
-                  >
-                    <item.icon className="w-5 h-5" />
-                  </div>
-                  <span
-                    className={`text-[10px] md:text-xs font-black ${
-                      active ? "text-[#8A1538]" : "text-slate-600"
-                    }`}
-                  >
-                    {item.label}
-                  </span>
-                </button>
-              );
-            })}
-          </div>
+    <nav className="fixed bottom-0 left-0 right-0 bg-white border-t-2 md:border-t-4 border-[#8A1538] shadow-2xl z-40" dir="rtl">
+      <div className="container mx-auto px-1">
+        <div className="grid grid-cols-4 gap-0.5">
+          {navItems.map(item => (
+            <button
+              key={item.id}
+              onClick={() => setCurrentSection(item.id)}
+              className={`flex flex-col items-center justify-center py-2 transition-all ${
+                currentSection === item.id
+                  ? 'text-[#8A1538] bg-amber-50'
+                  : 'text-gray-600 hover:text-[#8A1538] hover:bg-amber-50/50'
+              }`}
+            >
+              <item.icon className={`w-5 h-5 md:w-6 md:h-6 mb-0.5 ${currentSection === item.id ? 'scale-110' : ''} transition-transform`} />
+              <span className="text-[9px] md:text-xs font-bold leading-tight">{item.label}</span>
+            </button>
+          ))}
         </div>
       </div>
     </nav>
@@ -488,10 +342,10 @@ function LoginModal({ showLogin, setShowLogin }: { showLogin: boolean; setShowLo
         </button>
 
         <div className="text-center mb-4">
-          <div className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br from-blue-600 to-blue-500 rounded-full mb-3">
+          <div className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br from-[#8A1538] to-[#A5763F] rounded-full mb-3">
             {isRegisterMode ? <User className="w-6 h-6 text-white" /> : <LogIn className="w-6 h-6 text-white" />}
           </div>
-          <h2 className="text-xl font-black text-blue-600 mb-1">
+          <h2 className="text-xl font-black text-[#8A1538] mb-1">
             {isRegisterMode ? 'إنشاء حساب جديد' : 'تسجيل الدخول'}
           </h2>
           <p className="text-sm text-gray-600">
@@ -511,12 +365,12 @@ function LoginModal({ showLogin, setShowLogin }: { showLogin: boolean; setShowLo
               <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8A1538]" placeholder="••••••••" required dir="ltr" />
             </div>
 
-            <button type="submit" disabled={loading} className="w-full bg-gradient-to-r from-blue-600 to-blue-500 text-white py-2.5 rounded-lg font-bold hover:shadow-lg transition disabled:opacity-50 text-sm">
+            <button type="submit" disabled={loading} className="w-full bg-gradient-to-r from-[#8A1538] to-[#A5763F] text-white py-2.5 rounded-lg font-bold hover:shadow-lg transition disabled:opacity-50 text-sm">
               {loading ? 'جارٍ تسجيل الدخول...' : 'تسجيل الدخول'}
             </button>
 
             <div className="text-center pt-2">
-              <button type="button" onClick={() => setIsRegisterMode(true)} className="text-blue-600 font-bold text-sm hover:underline">
+              <button type="button" onClick={() => setIsRegisterMode(true)} className="text-[#8A1538] font-bold text-sm hover:underline">
                 ليس لديك حساب؟ سجل الآن
               </button>
             </div>
@@ -572,12 +426,12 @@ function LoginModal({ showLogin, setShowLogin }: { showLogin: boolean; setShowLo
               <input type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8A1538]" placeholder="••••••••" required minLength={6} dir="ltr" />
             </div>
 
-            <button type="submit" disabled={loading} className="w-full bg-gradient-to-r from-blue-600 to-blue-500 text-white py-2.5 rounded-lg font-bold hover:shadow-lg transition disabled:opacity-50 text-sm">
+            <button type="submit" disabled={loading} className="w-full bg-gradient-to-r from-[#8A1538] to-[#A5763F] text-white py-2.5 rounded-lg font-bold hover:shadow-lg transition disabled:opacity-50 text-sm">
               {loading ? 'جارٍ إنشاء الحساب...' : 'إنشاء حساب'}
             </button>
 
             <div className="text-center pt-2">
-              <button type="button" onClick={() => setIsRegisterMode(false)} className="text-blue-600 font-bold text-sm hover:underline">
+              <button type="button" onClick={() => setIsRegisterMode(false)} className="text-[#8A1538] font-bold text-sm hover:underline">
                 لديك حساب بالفعل؟ سجل دخول
               </button>
             </div>
@@ -586,7 +440,7 @@ function LoginModal({ showLogin, setShowLogin }: { showLogin: boolean; setShowLo
 
         {!isRegisterMode && (
           <div className="mt-4 p-3 bg-amber-50 rounded-lg border border-amber-200">
-            <h3 className="font-bold text-blue-600 mb-2 text-xs">حسابات تجريبية:</h3>
+            <h3 className="font-bold text-[#8A1538] mb-2 text-xs">حسابات تجريبية:</h3>
             <div className="text-[10px] space-y-0.5 text-gray-700">
               <p><strong>طالب:</strong> student@test.com</p>
               <p><strong>معلم:</strong> teacher@test.com</p>
@@ -628,7 +482,7 @@ function MainApp() {
 
   if (user?.role === 'teacher') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-slate-50">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-amber-50 to-stone-50">
         <Header />
         <div className="pb-20">
           <TeacherDashboard />
@@ -639,7 +493,7 @@ function MainApp() {
 
   if (user?.role === 'admin') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-slate-50">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-amber-50 to-stone-50">
         <Header />
         <div className="pb-20">
           <AdminDashboard />
@@ -648,228 +502,87 @@ function MainApp() {
     );
   }
 
- return (
-  <div className="min-h-screen bg-[#fbfbfd] text-slate-900">
-    {/* خلفية ناعمة جدا */}
-    <div className="pointer-events-none fixed inset-0 -z-10">
-      <div className="absolute inset-0 bg-[radial-gradient(60%_40%_at_50%_0%,rgba(138,21,56,0.10),transparent_60%)]" />
-      <div className="absolute inset-0 bg-[radial-gradient(50%_35%_at_0%_60%,rgba(37,99,235,0.08),transparent_55%)]" />
-      <div className="absolute inset-0 bg-[radial-gradient(45%_35%_at_100%_70%,rgba(245,158,11,0.08),transparent_55%)]" />
-    </div>
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-stone-50">
+      <Header showLogin={showLogin} setShowLogin={setShowLogin} />
+      <LoginModal showLogin={showLogin} setShowLogin={setShowLogin} />
 
-    <Header showLogin={showLogin} setShowLogin={setShowLogin} />
-    <LoginModal showLogin={showLogin} setShowLogin={setShowLogin} />
+      <div className="pb-20">
+        {currentSection === 'home' && <HomePage setCurrentSection={(section) => {
+          setCurrentSection(section);
+          if (section === 'talents') setPage('talents');
+        }} />}
+        {currentSection === 'talents' && (
+          <>
+            {page === 'talents' && <TalentsHomePage setPage={setPage} setSelectedCategory={setSelectedCategory} />}
+            {page === 'subcategories' && <SubcategoriesPage categoryId={selectedCategory!} setPage={setPage} setSelectedSubcategory={setSelectedSubcategory} setSelectedCategory={setSelectedCategory} />}
+            {page === 'register' && <RegisterPage categoryId={selectedCategory!} subcategoryId={selectedSubcategory!} setPage={setPage} />}
+            {page === 'mypage' && <MyPage setPage={setPage} />}
+          </>
+        )}
+        {currentSection === 'announcements' && <AnnouncementsPage />}
+        {currentSection === 'honors' && <HonorsPage />}
+      </div>
 
-    <div className="pb-24">
-      {currentSection === "home" && (
-        <HomePage
-          setCurrentSection={(section) => {
-            setCurrentSection(section);
-            if (section === "talents") setPage("talents");
-          }}
-        />
-      )}
-
-      {currentSection === "talents" && (
-        <>
-          {page === "talents" && (
-            <TalentsHomePage
-              setPage={setPage}
-              setSelectedCategory={setSelectedCategory}
-            />
-          )}
-          {page === "subcategories" && (
-            <SubcategoriesPage
-              categoryId={selectedCategory!}
-              setPage={setPage}
-              setSelectedSubcategory={setSelectedSubcategory}
-              setSelectedCategory={setSelectedCategory}
-            />
-          )}
-          {page === "register" && (
-            <RegisterPage
-              categoryId={selectedCategory!}
-              subcategoryId={selectedSubcategory!}
-              setPage={setPage}
-            />
-          )}
-          {page === "mypage" && <MyPage setPage={setPage} />}
-        </>
-      )}
-
-      {currentSection === "announcements" && <AnnouncementsPage />}
-      {currentSection === "honors" && <HonorsPage />}
-    </div>
-
-    <BottomNav
-      currentSection={currentSection}
-      setCurrentSection={(section) => {
+      <BottomNav currentSection={currentSection} setCurrentSection={(section) => {
         setCurrentSection(section);
-        if (section === "talents") setPage("talents");
-      }}
-    />
-  </div>
-);
+        if (section === 'talents') setPage('talents');
+      }} />
+    </div>
+  );
 }
 
 function HomePage({ setCurrentSection }: { setCurrentSection: (section: string) => void }) {
   return (
-    <div className="min-h-[calc(100vh-64px)] bg-[#F9FAFB]" dir="rtl">
-      <div className="container mx-auto px-4 py-6 md:py-10 max-w-4xl">
+    <div className="container mx-auto px-3 py-6" dir="rtl">
+      <div className="text-center mb-6">
+        <h1 className="text-2xl md:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#8A1538] via-[#9A2545] to-[#A5763F] mb-2 drop-shadow-sm">مرحباً بك في منصة المواهب</h1>
+        <p className="text-sm md:text-lg text-gray-700 font-semibold mb-4">اكتشف مواهبك، سجل في المسابقات، واحتفل بالإنجازات</p>
+      </div>
 
-        {/* ===== HERO CARD ===== */}
-        <div className="relative overflow-hidden rounded-[28px]
-          bg-gradient-to-br from-[#8A1538] via-[#9B1C3E] to-[#7A102F]
-          p-5 md:p-7 text-white
-          shadow-[0_20px_50px_rgba(138,21,56,0.35)]">
-
-          {/* زخارف ناعمة */}
-          <div className="absolute -top-24 -left-24 w-56 h-56 rounded-full bg-white/15 blur-2xl" />
-          <div className="absolute -bottom-24 -right-24 w-64 h-64 rounded-full bg-black/10 blur-2xl" />
-
-          <div className="relative z-10">
-            <h1 className="text-xl md:text-3xl font-black leading-snug">
-              مرحباً بك في منصة المواهب
-            </h1>
-            <p className="mt-2 text-sm md:text-base font-semibold text-white/90">
-              اكتشف مواهبك، سجل في المسابقات، واحتفل بالإنجازات
-            </p>
-
-            {/* Chip */}
-            <div className="mt-4 inline-flex items-center gap-2 rounded-full bg-white/15 px-4 py-2 text-xs md:text-sm font-bold backdrop-blur">
-              <span className="inline-block h-2 w-2 rounded-full bg-white" />
-              ابدأ رحلتك الآن
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-3 max-w-4xl mx-auto mb-6">
+        <button onClick={() => setCurrentSection('talents')} className="group relative rounded-2xl shadow-lg active:scale-95 transition-all duration-300 overflow-hidden h-32 md:h-40 bg-gradient-to-br from-amber-400 via-yellow-400 to-orange-400">
+          <div className="absolute inset-0 bg-gradient-to-t from-black/5 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300"></div>
+          <div className="relative z-10 h-full flex flex-col items-center justify-center p-3">
+            <div className="w-10 h-10 mb-2 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-md transform group-active:scale-110 transition-all duration-300 p-2">
+              <img src="https://img.icons8.com/color/96/star--v1.png" alt="star" className="w-full h-full object-contain" />
             </div>
+            <h3 className="text-base md:text-xl font-black text-white mb-1 drop-shadow-md">اكتشف موهبتك</h3>
+            <p className="text-white/90 text-xs md:text-sm font-semibold drop-shadow hidden md:block">سجل موهبتك الآن</p>
           </div>
-        </div>
+        </button>
 
-        {/* ===== عنوان الأقسام ===== */}
-        <div className="flex items-center gap-3 my-6">
-          <h2 className="text-lg md:text-xl font-black text-slate-900">
-            الأقسام الرئيسية
-          </h2>
-          <div className="flex-1 h-[2px] bg-gradient-to-l from-transparent via-slate-200 to-transparent" />
-        </div>
-
-        {/* ===== CARDS GRID ===== */}
-        <div className="grid grid-cols-2 gap-4">
-
-          {/* اكتشف موهبتك */}
-          <button
-            onClick={() => setCurrentSection("talents")}
-            className="rounded-[22px] bg-white border border-slate-200
-              shadow-[0_10px_30px_rgba(2,6,23,0.06)]
-              hover:shadow-[0_18px_45px_rgba(138,21,56,0.18)]
-              transition-all active:scale-[0.99] p-4"
-          >
-            <div className="flex flex-col items-center text-center gap-3">
-              <div className="h-14 w-14 rounded-2xl
-                bg-[#FDF2F4] border border-[#F6C1CC]
-                flex items-center justify-center">
-                <img
-                  src="https://img.icons8.com/color/96/star--v1.png"
-                  className="h-8 w-8"
-                  alt="talents"
-                />
-              </div>
-              <h3 className="text-sm md:text-base font-black text-slate-900">
-                اكتشف موهبتك
-              </h3>
-              <p className="text-[11px] md:text-xs font-semibold text-slate-500">
-                سجل موهبتك الآن
-              </p>
+        <button onClick={() => setCurrentSection('announcements')} className="group relative rounded-2xl shadow-lg active:scale-95 transition-all duration-300 overflow-hidden h-32 md:h-40 bg-gradient-to-br from-blue-400 via-cyan-400 to-teal-400">
+          <div className="absolute inset-0 bg-gradient-to-t from-black/5 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300"></div>
+          <div className="relative z-10 h-full flex flex-col items-center justify-center p-3">
+            <div className="w-10 h-10 mb-2 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-md transform group-active:scale-110 transition-all duration-300 p-2">
+              <img src="https://img.icons8.com/color/96/bullhorn.png" alt="megaphone" className="w-full h-full object-contain" />
             </div>
-          </button>
-
-          {/* الإعلانات */}
-          <button
-            onClick={() => setCurrentSection("announcements")}
-            className="rounded-[22px] bg-white border border-slate-200
-              shadow-[0_10px_30px_rgba(2,6,23,0.06)]
-              hover:shadow-[0_18px_45px_rgba(138,21,56,0.18)]
-              transition-all active:scale-[0.99] p-4"
-          >
-            <div className="flex flex-col items-center text-center gap-3">
-              <div className="h-14 w-14 rounded-2xl
-                bg-[#FDF2F4] border border-[#F6C1CC]
-                flex items-center justify-center">
-                <img
-                  src="https://img.icons8.com/color/96/bullhorn.png"
-                  className="h-8 w-8"
-                  alt="announcements"
-                />
-              </div>
-              <h3 className="text-sm md:text-base font-black text-slate-900">
-                الإعلانات
-              </h3>
-              <p className="text-[11px] md:text-xs font-semibold text-slate-500">
-                تابع الأخبار
-              </p>
-            </div>
-          </button>
-
-          {/* التكريمات – بعرض كامل */}
-          <button
-            onClick={() => setCurrentSection("honors")}
-            className="col-span-2 rounded-[22px] bg-white border border-slate-200
-              shadow-[0_10px_30px_rgba(2,6,23,0.06)]
-              hover:shadow-[0_18px_45px_rgba(138,21,56,0.18)]
-              transition-all active:scale-[0.99] p-4"
-          >
-            <div className="flex items-center justify-between gap-4">
-              <div className="flex items-center gap-4">
-                <div className="h-14 w-14 rounded-2xl
-                  bg-[#FDF2F4] border border-[#F6C1CC]
-                  flex items-center justify-center">
-                  <img
-                    src="https://img.icons8.com/color/96/trophy.png"
-                    className="h-8 w-8"
-                    alt="honors"
-                  />
-                </div>
-                <div className="text-right">
-                  <h3 className="text-sm md:text-base font-black text-slate-900">
-                    التكريمات
-                  </h3>
-                  <p className="text-[11px] md:text-xs font-semibold text-slate-500">
-                    إنجازات مدرستنا
-                  </p>
-                </div>
-              </div>
-
-              <div className="h-10 w-10 rounded-2xl
-                bg-[#FDF2F4] border border-[#F6C1CC]
-                flex items-center justify-center text-[#8A1538]">
-                <ArrowRight className="h-5 w-5 rotate-180" />
-              </div>
-            </div>
-          </button>
-        </div>
-
-        {/* ===== CTA ===== */}
-        <div className="mt-6">
-          <div className="rounded-[22px] bg-white border border-slate-200
-            shadow-[0_10px_30px_rgba(2,6,23,0.06)] p-4">
-            <div className="flex items-center justify-between gap-4">
-              <div>
-                <h2 className="text-base md:text-lg font-black text-slate-900">
-                  ابدأ رحلتك الآن
-                </h2>
-                <p className="text-[12px] md:text-sm font-semibold text-slate-500">
-                  استخدم الشريط السفلي للتنقل بين الأقسام
-                </p>
-              </div>
-
-              <div className="flex items-center gap-2 text-[#8A1538]">
-                <span className="text-xs md:text-sm font-black">
-                  اضغط بالأسفل
-                </span>
-                <ArrowRight className="h-5 w-5 rotate-180 animate-bounce" />
-              </div>
-            </div>
+            <h3 className="text-base md:text-xl font-black text-white mb-1 drop-shadow-md">الإعلانات</h3>
+            <p className="text-white/90 text-xs md:text-sm font-semibold drop-shadow hidden md:block">تابع الأخبار</p>
           </div>
-        </div>
+        </button>
 
+        <button onClick={() => setCurrentSection('honors')} className="group relative rounded-2xl shadow-lg active:scale-95 transition-all duration-300 overflow-hidden h-32 md:h-40 col-span-2 md:col-span-1 bg-gradient-to-br from-purple-400 via-pink-400 to-rose-400">
+          <div className="absolute inset-0 bg-gradient-to-t from-black/5 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300"></div>
+          <div className="relative z-10 h-full flex flex-col items-center justify-center p-3">
+            <div className="w-10 h-10 mb-2 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-md transform group-active:scale-110 transition-all duration-300 p-2">
+              <img src="https://img.icons8.com/color/96/trophy.png" alt="trophy" className="w-full h-full object-contain" />
+            </div>
+            <h3 className="text-base md:text-xl font-black text-white mb-1 drop-shadow-md">التكريمات</h3>
+            <p className="text-white/90 text-xs md:text-sm font-semibold drop-shadow hidden md:block">إنجازات مدرستنا</p>
+          </div>
+        </button>
+      </div>
+
+      <div className="mt-6 bg-gradient-to-r from-[#8A1538] to-[#A5763F] rounded-2xl shadow-lg p-4 md:p-6 text-center text-white max-w-4xl mx-auto">
+        <h2 className="text-lg md:text-2xl font-black mb-2">ابدأ رحلتك الآن</h2>
+        <p className="text-sm md:text-lg mb-3">استخدم الشريط السفلي للتنقل بين الأقسام</p>
+        <div className="flex items-center justify-center gap-2 md:gap-4 text-amber-300">
+          <ArrowRight className="w-4 h-4 md:w-6 md:h-6 animate-bounce rotate-180" />
+          <span className="font-bold text-xs md:text-base">اضغط على الأيقونات بالأسفل</span>
+          <ArrowRight className="w-4 h-4 md:w-6 md:h-6 animate-bounce rotate-180" />
+        </div>
       </div>
     </div>
   );
@@ -909,29 +622,29 @@ const getIconImage = (iconNameOrArabic: string) => {
   return map[iconNameOrArabic] || map[(iconNameOrArabic || '').trim()] || 'https://img.icons8.com/color/96/star--v1.png';
 };
   const colorSchemes = [
-    { gradient: 'from-orange-600 to-orange-500', name: 'رياضية' },
-    { gradient: 'from-green-700 to-green-600', name: 'فنية' },
-    { gradient: 'from-blue-600 to-blue-500', name: 'أدبية' },
-    { gradient: 'from-purple-600 to-purple-500', name: 'علمية' },
-    { gradient: 'from-blue-500 to-blue-400', name: 'تقنية' }
+    { gradient: 'from-blue-400 via-cyan-400 to-emerald-400', name: 'رياضية' },
+    { gradient: 'from-purple-400 via-pink-400 to-rose-400', name: 'فنية' },
+    { gradient: 'from-amber-400 via-yellow-300 to-orange-200', name: 'أدبية' },
+    { gradient: 'from-blue-600 via-cyan-500 to-teal-400', name: 'علمية' },
+    { gradient: 'from-gray-400 via-slate-400 to-sky-300', name: 'تقنية' }
   ];
 
-  if (loading) return <div className="flex items-center justify-center min-h-screen"><div className="animate-spin rounded-full h-16 w-16 border-4 border-blue-600 border-t-transparent"></div></div>;
+  if (loading) return <div className="flex items-center justify-center min-h-screen"><div className="animate-spin rounded-full h-16 w-16 border-4 border-[#8A1538] border-t-transparent"></div></div>;
 
   return (
     <div className="container mx-auto px-3 py-6" dir="rtl">
       <div className="text-center mb-6">
         {user && (
           <div className="inline-block mb-4">
-            <div className="bg-gradient-to-r from-blue-600 to-blue-500 text-white px-4 py-2 md:px-6 md:py-3 rounded-xl shadow-lg">
+            <div className="bg-gradient-to-r from-[#8A1538] via-[#9A2545] to-[#A5763F] text-white px-4 py-2 md:px-6 md:py-3 rounded-xl shadow-lg">
               <p className="text-sm md:text-lg font-black drop-shadow-md">مرحباً {user.full_name}</p>
             </div>
           </div>
         )}
-        <h1 className="text-2xl md:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-blue-500 to-blue-400 mb-2 drop-shadow-sm">اكتشف موهبتك</h1>
+        <h1 className="text-2xl md:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#8A1538] via-[#9A2545] to-[#A5763F] mb-2 drop-shadow-sm">اكتشف موهبتك</h1>
         <p className="text-sm md:text-lg text-gray-700 font-semibold mb-4">نور مستقبلك بموهبتك الفريدة</p>
         {user && (
-          <button onClick={() => setPage('mypage')} className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-blue-500 text-white px-4 py-2 md:px-6 md:py-3 rounded-xl font-bold shadow-lg active:scale-95 transition-all text-sm md:text-base">
+          <button onClick={() => setPage('mypage')} className="inline-flex items-center gap-2 bg-gradient-to-r from-[#8A1538] to-[#A5763F] text-white px-4 py-2 md:px-6 md:py-3 rounded-xl font-bold shadow-lg active:scale-95 transition-all text-sm md:text-base">
             <FileText className="w-4 h-4 md:w-5 md:h-5" />
             <span>صفحتي</span>
           </button>
@@ -974,48 +687,43 @@ function SubcategoriesPage({ categoryId, setPage, setSelectedSubcategory }: any)
   }, [categoryId]);
 
   const subColors = [
-    'from-orange-600 to-orange-500',
-    'from-green-700 to-green-600',
-    'from-blue-600 to-blue-500',
-    'from-purple-600 to-purple-500',
-    'from-blue-500 to-blue-400',
-    'from-orange-600 to-orange-500',
-    'from-green-700 to-green-600',
-    'from-blue-600 to-blue-500'
+    'from-rose-400 to-pink-400',
+    'from-blue-400 to-cyan-400',
+    'from-emerald-400 to-teal-400',
+    'from-amber-400 to-yellow-400',
+    'from-purple-400 to-pink-400',
+    'from-sky-400 to-blue-400',
+    'from-orange-400 to-red-400',
+    'from-teal-400 to-cyan-400'
   ];
 
   return (
-  <PageShell
-    title="اكتشف موهبتك"
-    subtitle="نور مستقبلك بموهبتك الفريدة"
-  >
-    <Hero
-      title="اختر موهبتك"
-      subtitle="ابدأ التسجيل الآن"
-      chipText="اختيار القسم"
-    />
+    <div className="container mx-auto px-3 py-6" dir="rtl">
+      <button onClick={() => setPage('talents')} className="flex items-center gap-2 bg-gradient-to-r from-[#8A1538] to-[#A5763F] text-white px-4 py-2 md:px-6 md:py-3 rounded-xl font-bold mb-6 shadow-lg active:scale-95 transition-all text-sm md:text-base">
+        <ArrowRight className="w-4 h-4 md:w-5 md:h-5" />
+        <span>العودة للأقسام</span>
+      </button>
 
-    <SectionHeader label="الأقسام" />
+      <div className="text-center mb-6">
+        <h1 className="text-2xl md:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#8A1538] via-[#9A2545] to-[#A5763F] mb-2 drop-shadow-sm">{category?.name_ar}</h1>
+        <p className="text-sm md:text-lg text-gray-700 font-semibold">اختر التخصص المناسب لموهبتك</p>
+      </div>
 
-    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-      {categories.map((cat, i) => (
-        <button
-          key={cat.id}
-          onClick={() => {
-            setSelectedCategory(cat.id);
-            setPage("subcategories");
-          }}
-          className={`${UI.card} ${UI.pad} text-center`}
-        >
-          <div className={`${UI.softIcon} mx-auto ${PASTEL[i % PASTEL.length]}`}>
-            <img src={getIconImage(cat.icon)} className="h-8 w-8" />
-          </div>
-          <h3 className="mt-3 font-black">{cat.name_ar}</h3>
-        </button>
-      ))}
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 max-w-5xl mx-auto">
+        {subcategories.map((sub, idx) => (
+          <button key={sub.id} onClick={() => { setSelectedSubcategory(sub.id); setPage('register'); }} className={`group relative bg-gradient-to-br ${subColors[idx % subColors.length]} rounded-2xl shadow-md active:scale-95 transition-all duration-300 overflow-hidden border-2 border-white/20 h-36 md:h-40`}>
+            <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            <div className="p-3 flex flex-col items-center justify-center relative z-10 h-full">
+              <div className="w-12 h-12 md:w-14 md:h-14 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg transform group-active:scale-110 transition-all duration-300 mb-2">
+                <Award className="w-6 h-6 md:w-7 md:h-7 drop-shadow-lg" style={{color: '#8A1538'}} />
+              </div>
+              <h3 className="text-sm md:text-base font-black text-white drop-shadow-md text-center">{sub.name_ar}</h3>
+            </div>
+          </button>
+        ))}
+      </div>
     </div>
-  </PageShell>
-);
+  );
 }
 
 function RegisterPage({ categoryId, subcategoryId, setPage }: any) {
@@ -1027,11 +735,11 @@ function RegisterPage({ categoryId, subcategoryId, setPage }: any) {
   if (!user) {
     return (
       <div className="container mx-auto px-4 py-16" dir="rtl">
-        <div className="max-w-md mx-auto bg-white rounded-3xl shadow-2xl p-12 text-center border-t-4 border-blue-600">
-          <LogIn className="w-16 h-16 text-blue-600 mx-auto mb-6" />
+        <div className="max-w-md mx-auto bg-white rounded-3xl shadow-2xl p-12 text-center border-t-4 border-[#8A1538]">
+          <LogIn className="w-16 h-16 text-[#8A1538] mx-auto mb-6" />
           <h2 className="text-3xl font-black text-gray-800 mb-4">يجب تسجيل الدخول</h2>
           <p className="text-gray-600 mb-8">لتسجيل موهبتك، يرجى تسجيل الدخول أولاً</p>
-          <button onClick={() => setPage('talents')} className="bg-gradient-to-r from-blue-600 to-blue-500 text-white px-8 py-3 rounded-xl font-bold shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all">
+          <button onClick={() => setPage('talents')} className="bg-gradient-to-r from-[#8A1538] to-[#A5763F] text-white px-8 py-3 rounded-xl font-bold shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all">
             العودة للأقسام
           </button>
         </div>
@@ -1076,13 +784,13 @@ function RegisterPage({ categoryId, subcategoryId, setPage }: any) {
 
   return (
     <div className="container mx-auto px-4 py-12" dir="rtl">
-      <button onClick={() => setPage('subcategories')} className="flex items-center gap-3 bg-white text-blue-600 hover:text-white hover:bg-gradient-to-r hover:from-[#8A1538] hover:to-[#A5763F] px-6 py-3 rounded-xl font-bold mb-8 shadow-lg hover:shadow-xl transition-all transform hover:scale-105 border-2 border-blue-600">
+      <button onClick={() => setPage('subcategories')} className="flex items-center gap-3 bg-white text-[#8A1538] hover:text-white hover:bg-gradient-to-r hover:from-[#8A1538] hover:to-[#A5763F] px-6 py-3 rounded-xl font-bold mb-8 shadow-lg hover:shadow-xl transition-all transform hover:scale-105 border-2 border-[#8A1538]">
         <ArrowRight className="w-5 h-5" />
         <span>العودة</span>
       </button>
 
-      <div className="max-w-2xl mx-auto bg-white rounded-3xl shadow-2xl p-8 border-t-4 border-blue-600">
-        <h1 className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-blue-500 mb-8 text-center">نموذج تسجيل الموهبة</h1>
+      <div className="max-w-2xl mx-auto bg-white rounded-3xl shadow-2xl p-8 border-t-4 border-[#8A1538]">
+        <h1 className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#8A1538] to-[#A5763F] mb-8 text-center">نموذج تسجيل الموهبة</h1>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -1117,12 +825,12 @@ function RegisterPage({ categoryId, subcategoryId, setPage }: any) {
 
           <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
             <label className="flex items-start gap-3 cursor-pointer">
-              <input type="checkbox" checked={form.consent_guardian} onChange={(e) => setForm({ ...form, consent_guardian: e.target.checked })} className="mt-1 w-5 h-5 text-blue-600" required />
+              <input type="checkbox" checked={form.consent_guardian} onChange={(e) => setForm({ ...form, consent_guardian: e.target.checked })} className="mt-1 w-5 h-5 text-[#8A1538]" required />
               <span className="text-gray-700"><strong>موافقة ولي الأمر:</strong> أقر بأن ولي أمري على علم بتسجيل هذه الموهبة ويوافق على المشاركة *</span>
             </label>
           </div>
 
-          <button type="submit" disabled={loading || !form.consent_guardian} className="w-full bg-gradient-to-r from-blue-600 to-blue-500 text-white py-4 rounded-xl font-black text-lg hover:shadow-xl transition disabled:opacity-50">
+          <button type="submit" disabled={loading || !form.consent_guardian} className="w-full bg-gradient-to-r from-[#8A1538] to-[#A5763F] text-white py-4 rounded-xl font-black text-lg hover:shadow-xl transition disabled:opacity-50">
             {loading ? 'جارٍ التسجيل...' : 'تسجيل الموهبة'}
           </button>
         </form>
@@ -1166,26 +874,26 @@ function MyPage({ setPage }: any) {
     });
   }, [user]);
 
-  if (loading) return <div className="flex items-center justify-center min-h-screen"><div className="animate-spin rounded-full h-16 w-16 border-4 border-blue-600 border-t-transparent"></div></div>;
+  if (loading) return <div className="flex items-center justify-center min-h-screen"><div className="animate-spin rounded-full h-16 w-16 border-4 border-[#8A1538] border-t-transparent"></div></div>;
 
   return (
     <div className="container mx-auto px-4 py-12" dir="rtl">
-      <button onClick={() => setPage('talents')} className="flex items-center gap-3 bg-white text-blue-600 hover:text-white hover:bg-gradient-to-r hover:from-[#8A1538] hover:to-[#A5763F] px-6 py-3 rounded-xl font-bold mb-8 shadow-lg hover:shadow-xl transition-all transform hover:scale-105 border-2 border-blue-600">
+      <button onClick={() => setPage('talents')} className="flex items-center gap-3 bg-white text-[#8A1538] hover:text-white hover:bg-gradient-to-r hover:from-[#8A1538] hover:to-[#A5763F] px-6 py-3 rounded-xl font-bold mb-8 shadow-lg hover:shadow-xl transition-all transform hover:scale-105 border-2 border-[#8A1538]">
         <ArrowRight className="w-5 h-5" />
         <span>العودة</span>
       </button>
 
       <div className="text-center mb-12">
-        <h1 className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-blue-500 mb-4">صفحتي</h1>
+        <h1 className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#8A1538] to-[#A5763F] mb-4">صفحتي</h1>
         <p className="text-xl text-gray-700 font-semibold">مواهبك المسجلة وحالة الطلبات</p>
       </div>
 
       {talents.length === 0 ? (
-        <div className="bg-white rounded-3xl shadow-2xl p-16 text-center border-t-4 border-blue-600 max-w-2xl mx-auto">
+        <div className="bg-white rounded-3xl shadow-2xl p-16 text-center border-t-4 border-[#8A1538] max-w-2xl mx-auto">
           <FileText className="w-24 h-24 text-gray-400 mx-auto mb-6" />
           <h2 className="text-3xl font-black text-gray-800 mb-4">لم تسجل أي موهبة بعد</h2>
           <p className="text-gray-600 mb-8 text-lg">ابدأ رحلتك في اكتشاف مواهبك الآن</p>
-          <button onClick={() => setPage('talents')} className="bg-gradient-to-r from-blue-600 to-blue-500 text-white px-10 py-4 rounded-xl font-black text-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all">
+          <button onClick={() => setPage('talents')} className="bg-gradient-to-r from-[#8A1538] to-[#A5763F] text-white px-10 py-4 rounded-xl font-black text-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all">
             سجّل موهبتك الآن
           </button>
         </div>
@@ -1195,7 +903,7 @@ function MyPage({ setPage }: any) {
             <div key={t.id} className={`bg-white rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 p-6 border-r-8 ${t.status === 'approved' ? 'border-green-500' : t.status === 'rejected' ? 'border-red-500' : 'border-yellow-500'} transform hover:-translate-y-1`}>
               <div className="flex justify-between items-start mb-4">
                 <div>
-                  <h3 className="text-2xl font-black text-blue-600 mb-1">{t.subcategory_name}</h3>
+                  <h3 className="text-2xl font-black text-[#8A1538] mb-1">{t.subcategory_name}</h3>
                   <p className="text-gray-600 font-semibold">{t.category_name}</p>
                 </div>
                 <span className={`px-4 py-2 rounded-xl font-bold shadow-md text-sm ${t.status === 'approved' ? 'bg-green-100 text-green-800' : t.status === 'rejected' ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800'}`}>
@@ -1203,9 +911,9 @@ function MyPage({ setPage }: any) {
                 </span>
               </div>
               <div className="space-y-2">
-                <p className="flex items-center gap-2"><strong className="text-blue-600">المستوى:</strong> <span className="font-semibold">{t.proficiency}</span></p>
-                <p className="flex items-center gap-2"><strong className="text-blue-600">سنوات الخبرة:</strong> <span className="font-semibold">{t.years_of_experience}</span></p>
-                <p className="flex items-center gap-2 text-sm"><strong className="text-blue-600">التاريخ:</strong> <span className="font-semibold">{new Date(t.created_at).toLocaleDateString('ar-SA')}</span></p>
+                <p className="flex items-center gap-2"><strong className="text-[#8A1538]">المستوى:</strong> <span className="font-semibold">{t.proficiency}</span></p>
+                <p className="flex items-center gap-2"><strong className="text-[#8A1538]">سنوات الخبرة:</strong> <span className="font-semibold">{t.years_of_experience}</span></p>
+                <p className="flex items-center gap-2 text-sm"><strong className="text-[#8A1538]">التاريخ:</strong> <span className="font-semibold">{new Date(t.created_at).toLocaleDateString('ar-SA')}</span></p>
               </div>
             </div>
           ))}
@@ -1285,17 +993,17 @@ function AnnouncementsPage() {
     }
   };
 
-  if (loading) return <div className="flex items-center justify-center min-h-screen"><div className="animate-spin rounded-full h-16 w-16 border-4 border-blue-600 border-t-transparent"></div></div>;
+  if (loading) return <div className="flex items-center justify-center min-h-screen"><div className="animate-spin rounded-full h-16 w-16 border-4 border-[#8A1538] border-t-transparent"></div></div>;
 
   return (
     <div className="container mx-auto px-4 py-12" dir="rtl">
-      <button onClick={() => window.location.href = '/'} className="flex items-center gap-3 bg-white text-blue-600 hover:text-white hover:bg-gradient-to-r hover:from-[#8A1538] hover:to-[#A5763F] px-6 py-3 rounded-xl font-bold mb-8 shadow-lg hover:shadow-xl transition-all transform hover:scale-105 border-2 border-blue-600">
+      <button onClick={() => window.location.href = '/'} className="flex items-center gap-3 bg-white text-[#8A1538] hover:text-white hover:bg-gradient-to-r hover:from-[#8A1538] hover:to-[#A5763F] px-6 py-3 rounded-xl font-bold mb-8 shadow-lg hover:shadow-xl transition-all transform hover:scale-105 border-2 border-[#8A1538]">
         <ArrowRight className="w-5 h-5" />
         <span>العودة للرئيسية</span>
       </button>
 
       <div className="text-center mb-12">
-        <h1 className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-blue-500 mb-4">الإعلانات والمسابقات</h1>
+        <h1 className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#8A1538] to-[#A5763F] mb-4">الإعلانات والمسابقات</h1>
         <p className="text-xl text-gray-700 font-semibold">تابع آخر الأخبار والمسابقات</p>
       </div>
 
@@ -1326,7 +1034,7 @@ function AnnouncementsPage() {
               {announcement.registration_open && announcement.type === 'competition' && (
                 <button
                   onClick={() => setSelectedAnnouncement(announcement)}
-                  className="w-full bg-gradient-to-r from-blue-600 to-blue-500 text-white py-3 rounded-lg font-bold hover:shadow-lg transition"
+                  className="w-full bg-gradient-to-r from-[#8A1538] to-[#A5763F] text-white py-3 rounded-lg font-bold hover:shadow-lg transition"
                 >
                   سجّل الآن
                 </button>
@@ -1339,7 +1047,7 @@ function AnnouncementsPage() {
       {selectedAnnouncement && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4" onClick={() => setSelectedAnnouncement(null)}>
           <div className="bg-white rounded-3xl shadow-2xl w-full max-w-md p-8" onClick={(e) => e.stopPropagation()} dir="rtl">
-            <h2 className="text-2xl font-black text-blue-600 mb-4">التسجيل في {selectedAnnouncement.title}</h2>
+            <h2 className="text-2xl font-black text-[#8A1538] mb-4">التسجيل في {selectedAnnouncement.title}</h2>
             <div className="space-y-4">
               <div>
                 <label className="block text-gray-700 font-semibold mb-2">ملاحظات (اختياري)</label>
@@ -1356,7 +1064,7 @@ function AnnouncementsPage() {
                 <button
                   onClick={() => handleRegister(selectedAnnouncement.id)}
                   disabled={registering}
-                  className="flex-1 bg-gradient-to-r from-blue-600 to-blue-500 text-white py-3 rounded-lg font-bold disabled:opacity-50"
+                  className="flex-1 bg-gradient-to-r from-[#8A1538] to-[#A5763F] text-white py-3 rounded-lg font-bold disabled:opacity-50"
                 >
                   {registering ? 'جارٍ التسجيل...' : 'تأكيد التسجيل'}
                 </button>
@@ -1403,17 +1111,17 @@ function HonorsPage() {
     };
   }, []);
 
-  if (loading) return <div className="flex items-center justify-center min-h-screen"><div className="animate-spin rounded-full h-16 w-16 border-4 border-blue-600 border-t-transparent"></div></div>;
+  if (loading) return <div className="flex items-center justify-center min-h-screen"><div className="animate-spin rounded-full h-16 w-16 border-4 border-[#8A1538] border-t-transparent"></div></div>;
 
   return (
     <div className="container mx-auto px-4 py-12" dir="rtl">
-      <button onClick={() => window.location.href = '/'} className="flex items-center gap-3 bg-white text-blue-600 hover:text-white hover:bg-gradient-to-r hover:from-[#8A1538] hover:to-[#A5763F] px-6 py-3 rounded-xl font-bold mb-8 shadow-lg hover:shadow-xl transition-all transform hover:scale-105 border-2 border-blue-600">
+      <button onClick={() => window.location.href = '/'} className="flex items-center gap-3 bg-white text-[#8A1538] hover:text-white hover:bg-gradient-to-r hover:from-[#8A1538] hover:to-[#A5763F] px-6 py-3 rounded-xl font-bold mb-8 shadow-lg hover:shadow-xl transition-all transform hover:scale-105 border-2 border-[#8A1538]">
         <ArrowRight className="w-5 h-5" />
         <span>العودة للرئيسية</span>
       </button>
 
       <div className="text-center mb-12">
-        <h1 className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-blue-500 mb-4">التكريمات</h1>
+        <h1 className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#8A1538] to-[#A5763F] mb-4">التكريمات</h1>
         <p className="text-xl text-gray-700 font-semibold">إنجازاتنا وتكريماتنا</p>
       </div>
 
@@ -1536,11 +1244,11 @@ function TeacherDashboard() {
   return (
     <div className="container mx-auto px-4 py-12" dir="rtl">
       <div className="text-center mb-8">
-        <h1 className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-blue-500 mb-4">لوحة المعلم</h1>
+        <h1 className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#8A1538] to-[#A5763F] mb-4">لوحة المعلم</h1>
         <p className="text-lg text-gray-600 font-semibold">مشاهدة طلبات الطلاب والإحصائيات</p>
       </div>
 
-      <div className="bg-white rounded-2xl shadow-xl p-6 mb-6 border-t-4 border-blue-600">
+      <div className="bg-white rounded-2xl shadow-xl p-6 mb-6 border-t-4 border-[#8A1538]">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
           <div className="relative">
             <Search className="absolute right-3 top-3 text-gray-400 w-5 h-5" />
@@ -1555,15 +1263,15 @@ function TeacherDashboard() {
             {categories.map(c => <option key={c.id} value={c.name_ar}>{c.name_ar}</option>)}
           </select>
         </div>
-        <button onClick={() => setShowModal(true)} className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-blue-500 text-white px-6 py-3 rounded-lg font-bold">
+        <button onClick={() => setShowModal(true)} className="flex items-center gap-2 bg-gradient-to-r from-[#8A1538] to-[#A5763F] text-white px-6 py-3 rounded-lg font-bold">
           <Plus className="w-5 h-5" />
           اقتراح موهبة جديدة
         </button>
       </div>
 
-      <div className="bg-white rounded-2xl shadow-xl overflow-x-auto border-t-4 border-blue-600">
+      <div className="bg-white rounded-2xl shadow-xl overflow-x-auto border-t-4 border-[#8A1538]">
         <table className="w-full">
-          <thead className="bg-gradient-to-r from-blue-600 to-blue-500 text-white">
+          <thead className="bg-gradient-to-r from-[#8A1538] to-[#A5763F] text-white">
             <tr>
               <th className="px-4 py-3 text-right text-sm">الطالب</th>
               <th className="px-4 py-3 text-right text-sm">الصف</th>
@@ -1604,7 +1312,7 @@ function TeacherDashboard() {
       {showModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={() => setShowModal(false)}>
           <div className="bg-white rounded-2xl p-8 max-w-md w-full" onClick={(e) => e.stopPropagation()}>
-            <h2 className="text-2xl font-bold text-blue-600 mb-6">اقتراح موهبة جديدة</h2>
+            <h2 className="text-2xl font-bold text-[#8A1538] mb-6">اقتراح موهبة جديدة</h2>
             <div className="space-y-4">
               <select value={newSub.categoryId} onChange={(e) => setNewSub({ ...newSub, categoryId: e.target.value })} className="w-full px-4 py-3 border rounded-lg">
                 <option value="">اختر القسم</option>
@@ -1613,7 +1321,7 @@ function TeacherDashboard() {
               <input type="text" value={newSub.name} onChange={(e) => setNewSub({ ...newSub, name: e.target.value })} className="w-full px-4 py-3 border rounded-lg" placeholder="اسم التخصص" />
               <div className="flex gap-4">
                 <button onClick={() => setShowModal(false)} className="flex-1 bg-gray-200 py-3 rounded-lg font-bold">إلغاء</button>
-                <button onClick={handleSuggest} className="flex-1 bg-gradient-to-r from-blue-600 to-blue-500 text-white py-3 rounded-lg font-bold">إرسال</button>
+                <button onClick={handleSuggest} className="flex-1 bg-gradient-to-r from-[#8A1538] to-[#A5763F] text-white py-3 rounded-lg font-bold">إرسال</button>
               </div>
             </div>
           </div>
@@ -1896,7 +1604,7 @@ function AdminDashboard() {
   return (
     <div className="container mx-auto px-4 py-12" dir="rtl">
       <div className="text-center mb-8">
-        <h1 className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-blue-500 mb-4">لوحة الإدارة</h1>
+        <h1 className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#8A1538] to-[#A5763F] mb-4">لوحة الإدارة</h1>
         <p className="text-lg text-gray-600 font-semibold">مشاهدة جميع الطلبات والإحصائيات</p>
       </div>
 
@@ -1909,7 +1617,7 @@ function AdminDashboard() {
           { key: 'honors', label: 'إدارة التكريمات' },
           { key: 'settings', label: 'إعدادات التطبيق' }
         ].map(t => (
-          <button key={t.key} onClick={() => setTab(t.key as any)} className={`px-6 py-3 rounded-xl font-black transition-all whitespace-nowrap shadow-lg transform hover:scale-105 ${tab === t.key ? 'bg-gradient-to-r from-blue-600 to-blue-500 text-white shadow-xl' : 'bg-white text-gray-700 hover:bg-gray-50'}`}>
+          <button key={t.key} onClick={() => setTab(t.key as any)} className={`px-6 py-3 rounded-xl font-black transition-all whitespace-nowrap shadow-lg transform hover:scale-105 ${tab === t.key ? 'bg-gradient-to-r from-[#8A1538] to-[#A5763F] text-white shadow-xl' : 'bg-white text-gray-700 hover:bg-gray-50'}`}>
             {t.label}
           </button>
         ))}
@@ -1939,14 +1647,14 @@ function AdminDashboard() {
       )}
 
       {tab === 'requests' && (
-        <div className="bg-white rounded-2xl shadow-xl p-6 border-t-4 border-blue-600">
+        <div className="bg-white rounded-2xl shadow-xl p-6 border-t-4 border-[#8A1538]">
           <button onClick={exportCSV} className="mb-4 flex items-center gap-2 bg-green-500 text-white px-6 py-3 rounded-lg font-bold hover:bg-green-600">
             <Download className="w-5 h-5" />
             تصدير CSV
           </button>
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-gradient-to-r from-blue-600 to-blue-500 text-white">
+              <thead className="bg-gradient-to-r from-[#8A1538] to-[#A5763F] text-white">
                 <tr>
                   <th className="px-4 py-3 text-right text-sm">الطالب</th>
                   <th className="px-4 py-3 text-right text-sm">القسم</th>
@@ -1992,7 +1700,7 @@ function AdminDashboard() {
               setNewAnnouncement({ title: '', description: '', type: 'announcement', image_url: '', registration_open: false, end_date: '' });
               setShowAnnouncementModal(true);
             }}
-            className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-blue-500 text-white px-6 py-3 rounded-lg font-bold shadow-lg hover:shadow-xl"
+            className="flex items-center gap-2 bg-gradient-to-r from-[#8A1538] to-[#A5763F] text-white px-6 py-3 rounded-lg font-bold shadow-lg hover:shadow-xl"
           >
             <Plus className="w-5 h-5" />
             إضافة إعلان جديد
@@ -2046,7 +1754,7 @@ function AdminDashboard() {
               setNewHonor({ title: '', description: '', image_url: '', video_url: '', media_type: 'image', honor_date: '' });
               setShowHonorModal(true);
             }}
-            className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-blue-500 text-white px-6 py-3 rounded-lg font-bold shadow-lg hover:shadow-xl"
+            className="flex items-center gap-2 bg-gradient-to-r from-[#8A1538] to-[#A5763F] text-white px-6 py-3 rounded-lg font-bold shadow-lg hover:shadow-xl"
           >
             <Plus className="w-5 h-5" />
             إضافة تكريم جديد
@@ -2087,9 +1795,9 @@ function AdminDashboard() {
       )}
 
       {tab === 'settings' && (
-        <div className="bg-white rounded-2xl shadow-xl p-8 border-t-4 border-blue-600">
+        <div className="bg-white rounded-2xl shadow-xl p-8 border-t-4 border-[#8A1538]">
           <div className="flex items-center gap-3 mb-6">
-            <Settings className="w-8 h-8 text-blue-600" />
+            <Settings className="w-8 h-8 text-[#8A1538]" />
             <h2 className="text-2xl font-black text-gray-800">إعدادات التطبيق</h2>
           </div>
           <div className="space-y-4">
@@ -2116,9 +1824,9 @@ function AdminDashboard() {
       )}
 
       {tab === 'suggestions' && (
-        <div className="bg-white rounded-2xl shadow-xl overflow-x-auto border-t-4 border-blue-600">
+        <div className="bg-white rounded-2xl shadow-xl overflow-x-auto border-t-4 border-[#8A1538]">
           <table className="w-full">
-            <thead className="bg-gradient-to-r from-blue-600 to-blue-500 text-white">
+            <thead className="bg-gradient-to-r from-[#8A1538] to-[#A5763F] text-white">
               <tr>
                 <th className="px-4 py-3 text-right text-sm">اسم الموهبة</th>
                 <th className="px-4 py-3 text-right text-sm">القسم</th>
@@ -2156,7 +1864,7 @@ function AdminDashboard() {
       {showAnnouncementModal && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4" onClick={() => setShowAnnouncementModal(false)}>
           <div className="bg-white rounded-3xl shadow-2xl w-full max-w-2xl p-8 max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()} dir="rtl">
-            <h2 className="text-2xl font-black text-blue-600 mb-6">{editingItem ? 'تعديل الإعلان' : 'إضافة إعلان جديد'}</h2>
+            <h2 className="text-2xl font-black text-[#8A1538] mb-6">{editingItem ? 'تعديل الإعلان' : 'إضافة إعلان جديد'}</h2>
             <div className="space-y-4">
               <div>
                 <label className="block text-gray-700 font-semibold mb-2">العنوان *</label>
@@ -2216,7 +1924,7 @@ function AdminDashboard() {
                     type="checkbox"
                     checked={newAnnouncement.registration_open}
                     onChange={(e) => setNewAnnouncement({ ...newAnnouncement, registration_open: e.target.checked })}
-                    className="w-5 h-5 text-blue-600 focus:ring-[#8A1538]"
+                    className="w-5 h-5 text-[#8A1538] focus:ring-[#8A1538]"
                     id="registration-open"
                   />
                   <label htmlFor="registration-open" className="text-gray-700 font-semibold">التسجيل مفتوح</label>
@@ -2226,7 +1934,7 @@ function AdminDashboard() {
                     type="checkbox"
                     checked={newAnnouncement.is_published}
                     onChange={(e) => setNewAnnouncement({ ...newAnnouncement, is_published: e.target.checked })}
-                    className="w-5 h-5 text-blue-600 focus:ring-[#8A1538]"
+                    className="w-5 h-5 text-[#8A1538] focus:ring-[#8A1538]"
                     id="is-published"
                   />
                   <label htmlFor="is-published" className="text-gray-700 font-semibold">نشر الإعلان</label>
@@ -2234,7 +1942,7 @@ function AdminDashboard() {
               </div>
               <div className="flex gap-4 pt-4">
                 <button onClick={() => setShowAnnouncementModal(false)} className="flex-1 bg-gray-200 py-3 rounded-lg font-bold">إلغاء</button>
-                <button onClick={handleSaveAnnouncement} className="flex-1 bg-gradient-to-r from-blue-600 to-blue-500 text-white py-3 rounded-lg font-bold">
+                <button onClick={handleSaveAnnouncement} className="flex-1 bg-gradient-to-r from-[#8A1538] to-[#A5763F] text-white py-3 rounded-lg font-bold">
                   {editingItem ? 'تحديث' : 'إضافة'}
                 </button>
               </div>
@@ -2246,7 +1954,7 @@ function AdminDashboard() {
       {showHonorModal && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4" onClick={() => setShowHonorModal(false)}>
           <div className="bg-white rounded-3xl shadow-2xl w-full max-w-2xl p-8 max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()} dir="rtl">
-            <h2 className="text-2xl font-black text-blue-600 mb-6">{editingItem ? 'تعديل التكريم' : 'إضافة تكريم جديد'}</h2>
+            <h2 className="text-2xl font-black text-[#8A1538] mb-6">{editingItem ? 'تعديل التكريم' : 'إضافة تكريم جديد'}</h2>
             <div className="space-y-4">
               <div>
                 <label className="block text-gray-700 font-semibold mb-2">العنوان *</label>
@@ -2313,7 +2021,7 @@ function AdminDashboard() {
               )}
               <div className="flex gap-4 pt-4">
                 <button onClick={() => setShowHonorModal(false)} className="flex-1 bg-gray-200 py-3 rounded-lg font-bold">إلغاء</button>
-                <button onClick={handleSaveHonor} className="flex-1 bg-gradient-to-r from-blue-600 to-blue-500 text-white py-3 rounded-lg font-bold">
+                <button onClick={handleSaveHonor} className="flex-1 bg-gradient-to-r from-[#8A1538] to-[#A5763F] text-white py-3 rounded-lg font-bold">
                   {editingItem ? 'تحديث' : 'إضافة'}
                 </button>
               </div>
