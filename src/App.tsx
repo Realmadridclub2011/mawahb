@@ -557,25 +557,31 @@ function HomePage({ setCurrentSection }: { setCurrentSection: (section: string) 
   </div>
 </button>
 
-        <button onClick={() => setCurrentSection('announcements')} className="group relative rounded-2xl shadow-lg active:scale-95 transition-all duration-300 overflow-hidden h-32 md:h-40 bg-gradient-to-br from-blue-400 via-cyan-400 to-teal-400">
-          <div className="absolute inset-0 bg-gradient-to-t from-black/5 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300"></div>
-          <div className="relative z-10 h-full flex flex-col items-center justify-center p-3">
-            <div className="w-10 h-10 mb-2 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-md transform group-active:scale-110 transition-all duration-300 p-2">
-              <img src="https://img.icons8.com/color/96/bullhorn.png" alt="megaphone" className="w-full h-full object-contain" />
-            </div>
-            <h3 className="text-base md:text-xl font-black text-white mb-1 drop-shadow-md">الإعلانات</h3>
-            <p className="text-white/90 text-xs md:text-sm font-semibold drop-shadow hidden md:block">تابع الأخبار</p>
+        <button
+          onClick={() => setCurrentSection('announcements')}
+          className="group ui-card ui-card-hover overflow-hidden h-32 md:h-40 active:scale-[0.99]"
+        >
+          <div className="h-full flex flex-col items-center justify-center p-3">
+            <UiIconCircle className="mb-2">
+              <img src="https://img.icons8.com/color/96/bullhorn.png" alt="megaphone" className="w-7 h-7 object-contain" />
+            </UiIconCircle>
+
+            <h3 className="text-base md:text-xl font-black text-slate-900 mb-1">الإعلانات</h3>
+            <p className="text-slate-500 text-xs md:text-sm font-semibold hidden md:block">تابع الأخبار</p>
           </div>
         </button>
 
-        <button onClick={() => setCurrentSection('honors')} className="group relative rounded-2xl shadow-lg active:scale-95 transition-all duration-300 overflow-hidden h-32 md:h-40 col-span-2 md:col-span-1 bg-gradient-to-br from-purple-400 via-pink-400 to-rose-400">
-          <div className="absolute inset-0 bg-gradient-to-t from-black/5 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300"></div>
-          <div className="relative z-10 h-full flex flex-col items-center justify-center p-3">
-            <div className="w-10 h-10 mb-2 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-md transform group-active:scale-110 transition-all duration-300 p-2">
-              <img src="https://img.icons8.com/color/96/trophy.png" alt="trophy" className="w-full h-full object-contain" />
-            </div>
-            <h3 className="text-base md:text-xl font-black text-white mb-1 drop-shadow-md">التكريمات</h3>
-            <p className="text-white/90 text-xs md:text-sm font-semibold drop-shadow hidden md:block">إنجازات مدرستنا</p>
+        <button
+          onClick={() => setCurrentSection('honors')}
+          className="group ui-card ui-card-hover overflow-hidden h-32 md:h-40 col-span-2 md:col-span-1 active:scale-[0.99]"
+        >
+          <div className="h-full flex flex-col items-center justify-center p-3">
+            <UiIconCircle className="mb-2">
+              <img src="https://img.icons8.com/color/96/trophy.png" alt="trophy" className="w-7 h-7 object-contain" />
+            </UiIconCircle>
+
+            <h3 className="text-base md:text-xl font-black text-slate-900 mb-1">التكريمات</h3>
+            <p className="text-slate-500 text-xs md:text-sm font-semibold hidden md:block">إنجازات مدرستنا</p>
           </div>
         </button>
       </div>
@@ -657,17 +663,19 @@ const getIconImage = (iconNameOrArabic: string) => {
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
-        {categories.map((cat, i) => {
-          const scheme = colorSchemes[i % colorSchemes.length];
+        {categories.map((cat) => {
           return (
-            <button key={cat.id} onClick={() => { setSelectedCategory(cat.id); setPage('subcategories'); }} className={`group relative bg-gradient-to-br ${scheme.gradient} rounded-2xl shadow-md active:scale-95 transition-all duration-300 overflow-hidden h-36 md:h-44`}>
-              <div className="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-              <div className="p-3 flex flex-col items-center justify-center relative z-10 h-full">
-                <div className="mb-3 w-10 h-10 bg-white/95 backdrop-blur-sm rounded-full flex items-center justify-center shadow-md transform group-active:scale-110 transition-all duration-300 p-2">
-                  <img src={getIconImage(cat.icon)} alt={cat.name_ar} className="w-full h-full object-contain" />
-                </div>
-                <h3 className="text-base md:text-lg font-black text-white mb-1 drop-shadow-md">{cat.name_ar}</h3>
-                <div className="w-10 h-0.5 bg-white/50 rounded-full"></div>
+            <button
+              key={cat.id}
+              onClick={() => { setSelectedCategory(cat.id); setPage('subcategories'); }}
+              className="group ui-card ui-card-hover overflow-hidden h-36 md:h-44 active:scale-[0.99]"
+            >
+              <div className="p-3 flex flex-col items-center justify-center h-full">
+                <UiIconCircle className="mb-3">
+                  <img src={getIconImage(cat.icon)} alt={cat.name_ar} className="w-7 h-7 object-contain" />
+                </UiIconCircle>
+                <h3 className="text-base md:text-lg font-black text-slate-900 mb-1">{cat.name_ar}</h3>
+                <div className="w-10 h-0.5 bg-slate-200 rounded-full"></div>
               </div>
             </button>
           );
@@ -715,14 +723,17 @@ function SubcategoriesPage({ categoryId, setPage, setSelectedSubcategory }: any)
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 max-w-5xl mx-auto">
-        {subcategories.map((sub, idx) => (
-          <button key={sub.id} onClick={() => { setSelectedSubcategory(sub.id); setPage('register'); }} className={`group relative bg-gradient-to-br ${subColors[idx % subColors.length]} rounded-2xl shadow-md active:scale-95 transition-all duration-300 overflow-hidden border-2 border-white/20 h-36 md:h-40`}>
-            <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-            <div className="p-3 flex flex-col items-center justify-center relative z-10 h-full">
-              <div className="w-12 h-12 md:w-14 md:h-14 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg transform group-active:scale-110 transition-all duration-300 mb-2">
-                <Award className="w-6 h-6 md:w-7 md:h-7 drop-shadow-lg" style={{color: '#8A1538'}} />
-              </div>
-              <h3 className="text-sm md:text-base font-black text-white drop-shadow-md text-center">{sub.name_ar}</h3>
+        {subcategories.map((sub) => (
+          <button
+            key={sub.id}
+            onClick={() => { setSelectedSubcategory(sub.id); setPage('register'); }}
+            className="group ui-card ui-card-hover overflow-hidden h-36 md:h-40 active:scale-[0.99]"
+          >
+            <div className="p-3 flex flex-col items-center justify-center h-full">
+              <UiIconCircle className="mb-2">
+                <Award className="w-6 h-6 md:w-7 md:h-7" style={{color: '#8A1538'}} />
+              </UiIconCircle>
+              <h3 className="text-sm md:text-base font-black text-slate-900 text-center">{sub.name_ar}</h3>
             </div>
           </button>
         ))}
@@ -740,7 +751,7 @@ function RegisterPage({ categoryId, subcategoryId, setPage }: any) {
   if (!user) {
     return (
       <div className="container mx-auto px-4 py-16" dir="rtl">
-        <div className="max-w-md mx-auto bg-white rounded-3xl shadow-2xl p-12 text-center border-t-4 border-[#8A1538]">
+        <div className="max-w-md mx-auto ui-card p-12 text-center border-t-4 border-[#8A1538]">
           <LogIn className="w-16 h-16 text-[#8A1538] mx-auto mb-6" />
           <h2 className="text-3xl font-black text-gray-800 mb-4">يجب تسجيل الدخول</h2>
           <p className="text-gray-600 mb-8">لتسجيل موهبتك، يرجى تسجيل الدخول أولاً</p>
@@ -794,7 +805,7 @@ function RegisterPage({ categoryId, subcategoryId, setPage }: any) {
         <span>العودة</span>
       </button>
 
-      <div className="max-w-2xl mx-auto bg-white rounded-3xl shadow-2xl p-8 border-t-4 border-[#8A1538]">
+      <div className="max-w-2xl mx-auto ui-card p-8 border-t-4 border-[#8A1538]">
         <h1 className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#8A1538] to-[#A5763F] mb-8 text-center">نموذج تسجيل الموهبة</h1>
 
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -894,7 +905,7 @@ function MyPage({ setPage }: any) {
       </div>
 
       {talents.length === 0 ? (
-        <div className="bg-white rounded-3xl shadow-2xl p-16 text-center border-t-4 border-[#8A1538] max-w-2xl mx-auto">
+        <div className="ui-card p-16 text-center border-t-4 border-[#8A1538] max-w-2xl mx-auto">
           <FileText className="w-24 h-24 text-gray-400 mx-auto mb-6" />
           <h2 className="text-3xl font-black text-gray-800 mb-4">لم تسجل أي موهبة بعد</h2>
           <p className="text-gray-600 mb-8 text-lg">ابدأ رحلتك في اكتشاف مواهبك الآن</p>
@@ -905,7 +916,7 @@ function MyPage({ setPage }: any) {
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 max-w-5xl mx-auto">
           {talents.map(t => (
-            <div key={t.id} className={`bg-white rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 p-6 border-r-8 ${t.status === 'approved' ? 'border-green-500' : t.status === 'rejected' ? 'border-red-500' : 'border-yellow-500'} transform hover:-translate-y-1`}>
+            <div key={t.id} className={`ui-card ui-card-hover p-6 border-r-8 ${t.status === 'approved' ? 'border-green-500' : t.status === 'rejected' ? 'border-red-500' : 'border-yellow-500'}`}>
               <div className="flex justify-between items-start mb-4">
                 <div>
                   <h3 className="text-2xl font-black text-[#8A1538] mb-1">{t.subcategory_name}</h3>
@@ -1014,7 +1025,7 @@ function AnnouncementsPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
         {announcements.map(announcement => (
-          <div key={announcement.id} className="bg-white rounded-2xl shadow-xl overflow-hidden transform hover:-translate-y-2 transition-all border-t-4 border-blue-500">
+          <div key={announcement.id} className="ui-card ui-card-hover overflow-hidden border-t-4 border-blue-500">
             {announcement.image_url && (
               <img src={announcement.image_url} alt={announcement.title} className="w-full h-48 object-cover" />
             )}
@@ -1132,7 +1143,7 @@ function HonorsPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
         {honors.map(honor => (
-          <div key={honor.id} className="bg-white rounded-2xl shadow-xl overflow-hidden transform hover:-translate-y-2 transition-all border-t-4 border-amber-500">
+          <div key={honor.id} className="ui-card ui-card-hover overflow-hidden border-t-4 border-amber-500">
             {honor.media_type === 'image' ? (
               <img src={honor.media_url} alt={honor.title} className="w-full h-56 object-cover" />
             ) : (
@@ -1253,7 +1264,7 @@ function TeacherDashboard() {
         <p className="text-lg text-gray-600 font-semibold">مشاهدة طلبات الطلاب والإحصائيات</p>
       </div>
 
-      <div className="bg-white rounded-2xl shadow-xl p-6 mb-6 border-t-4 border-[#8A1538]">
+      <div className="ui-card p-6 mb-6 border-t-4 border-[#8A1538]">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
           <div className="relative">
             <Search className="absolute right-3 top-3 text-gray-400 w-5 h-5" />
@@ -1274,7 +1285,7 @@ function TeacherDashboard() {
         </button>
       </div>
 
-      <div className="bg-white rounded-2xl shadow-xl overflow-x-auto border-t-4 border-[#8A1538]">
+      <div className="ui-card overflow-x-auto border-t-4 border-[#8A1538]">
         <table className="w-full">
           <thead className="bg-gradient-to-r from-[#8A1538] to-[#A5763F] text-white">
             <tr>
@@ -1636,14 +1647,14 @@ function AdminDashboard() {
             { icon: Clock, label: 'قيد المراجعة', value: stats.pending, color: 'from-yellow-500 to-orange-500', borderColor: 'border-yellow-500' },
             { icon: TrendingUp, label: 'الأكثر تسجيلاً', value: stats.topTalent, color: 'from-rose-500 to-pink-500', borderColor: 'border-rose-500' }
           ].map((stat, i) => (
-            <div key={i} className={`bg-white rounded-2xl shadow-xl hover:shadow-2xl p-6 transform hover:-translate-y-2 transition-all duration-300 border-t-4 ${stat.borderColor}`}>
+            <div key={i} className={`ui-card ui-card-hover p-6 border-t-4 ${stat.borderColor}`}>
               <div className="flex items-center gap-4">
-                <div className={`w-16 h-16 bg-gradient-to-br ${stat.color} rounded-2xl flex items-center justify-center text-white shadow-lg`}>
-                  <stat.icon className="w-8 h-8" />
-                </div>
+                <UiIconCircle className="w-16 h-16">
+                  <stat.icon className="w-8 h-8" style={{ color: '#8A1538' }} />
+                </UiIconCircle>
                 <div>
-                  <p className="text-gray-600 font-semibold text-sm mb-1">{stat.label}</p>
-                  <p className="text-3xl font-black text-gray-800">{stat.value}</p>
+                  <p className="text-slate-600 font-semibold text-sm mb-1">{stat.label}</p>
+                  <p className="text-3xl font-black text-slate-900">{stat.value}</p>
                 </div>
               </div>
             </div>
@@ -1652,7 +1663,7 @@ function AdminDashboard() {
       )}
 
       {tab === 'requests' && (
-        <div className="bg-white rounded-2xl shadow-xl p-6 border-t-4 border-[#8A1538]">
+        <div className="ui-card p-6 border-t-4 border-[#8A1538]">
           <button onClick={exportCSV} className="mb-4 flex items-center gap-2 bg-green-500 text-white px-6 py-3 rounded-lg font-bold hover:bg-green-600">
             <Download className="w-5 h-5" />
             تصدير CSV
@@ -1713,7 +1724,7 @@ function AdminDashboard() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {announcements.map(announcement => (
-              <div key={announcement.id} className="bg-white rounded-2xl shadow-xl overflow-hidden border-t-4 border-blue-500">
+              <div key={announcement.id} className="ui-card overflow-hidden border-t-4 border-blue-500">
                 {announcement.image_url && (
                   <img src={announcement.image_url} alt={announcement.title} className="w-full h-48 object-cover" />
                 )}
@@ -1767,7 +1778,7 @@ function AdminDashboard() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {honors.map(honor => (
-              <div key={honor.id} className="bg-white rounded-2xl shadow-xl overflow-hidden border-t-4 border-amber-500">
+              <div key={honor.id} className="ui-card overflow-hidden border-t-4 border-amber-500">
                 {honor.media_type === 'image' ? (
                   honor.media_url && <img src={honor.media_url} alt={honor.title} className="w-full h-48 object-cover" />
                 ) : (
@@ -1800,7 +1811,7 @@ function AdminDashboard() {
       )}
 
       {tab === 'settings' && (
-        <div className="bg-white rounded-2xl shadow-xl p-8 border-t-4 border-[#8A1538]">
+        <div className="ui-card p-8 border-t-4 border-[#8A1538]">
           <div className="flex items-center gap-3 mb-6">
             <Settings className="w-8 h-8 text-[#8A1538]" />
             <h2 className="text-2xl font-black text-gray-800">إعدادات التطبيق</h2>
@@ -1829,7 +1840,7 @@ function AdminDashboard() {
       )}
 
       {tab === 'suggestions' && (
-        <div className="bg-white rounded-2xl shadow-xl overflow-x-auto border-t-4 border-[#8A1538]">
+        <div className="ui-card overflow-x-auto border-t-4 border-[#8A1538]">
           <table className="w-full">
             <thead className="bg-gradient-to-r from-[#8A1538] to-[#A5763F] text-white">
               <tr>
