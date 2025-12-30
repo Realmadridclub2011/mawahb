@@ -134,23 +134,23 @@ function Header({ showLogin, setShowLogin }: { showLogin?: boolean; setShowLogin
   };
 
   return (
-    <header className="bg-gradient-to-r from-[#8A1538] via-[#9A2545] to-[#A5763F] text-white shadow-2xl border-b-2 md:border-b-4 border-amber-400" dir="rtl">
+    <header className="bg-gradient-to-r from-slate-800 via-teal-700 to-cyan-700 text-white shadow-2xl border-b-2 md:border-b-4 border-teal-400" dir="rtl">
       <div className="container mx-auto px-3 py-3 md:px-4 md:py-4">
         <div className="flex items-center justify-between gap-2">
           <div className="flex items-center">
             {user ? (
               <div className="flex items-center gap-2 bg-white/15 backdrop-blur-md px-2 py-1.5 md:px-4 md:py-2 rounded-lg shadow-lg border border-white/20">
-                <div className="w-7 h-7 md:w-9 md:h-9 rounded-full bg-gradient-to-br from-amber-400 to-yellow-500 flex items-center justify-center shadow-lg">
-                  <User className="w-4 h-4 md:w-5 md:h-5 text-[#8A1538]" />
+                <div className="w-7 h-7 md:w-9 md:h-9 rounded-full bg-gradient-to-br from-teal-400 to-cyan-400 flex items-center justify-center shadow-lg">
+                  <User className="w-4 h-4 md:w-5 md:h-5 text-slate-800" />
                 </div>
                 <div className="hidden sm:block">
                   <p className="font-black text-xs md:text-sm leading-tight">{user.full_name}</p>
-                  <p className="text-[10px] md:text-xs text-amber-200 font-semibold">{getRoleName(user.role)}</p>
+                  <p className="text-[10px] md:text-xs text-teal-200 font-semibold">{getRoleName(user.role)}</p>
                 </div>
               </div>
             ) : (
               <div className="flex items-center gap-1.5">
-                <Star className="w-6 h-6 md:w-7 md:h-7 text-amber-400" />
+                <Star className="w-6 h-6 md:w-7 md:h-7 text-teal-300" />
                 <span className="font-black text-sm md:text-lg">المواهب</span>
               </div>
             )}
@@ -184,7 +184,7 @@ function BottomNav({ currentSection, setCurrentSection }: { currentSection: stri
   ];
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-white border-t-2 md:border-t-4 border-[#8A1538] shadow-2xl z-40" dir="rtl">
+    <nav className="fixed bottom-0 left-0 right-0 bg-gradient-to-r from-slate-50 via-teal-50 to-cyan-50 border-t-2 md:border-t-4 border-teal-600 shadow-2xl z-40" dir="rtl">
       <div className="container mx-auto px-1">
         <div className="grid grid-cols-4 gap-0.5">
           {navItems.map(item => (
@@ -193,8 +193,8 @@ function BottomNav({ currentSection, setCurrentSection }: { currentSection: stri
               onClick={() => setCurrentSection(item.id)}
               className={`flex flex-col items-center justify-center py-2 transition-all ${
                 currentSection === item.id
-                  ? 'text-[#8A1538] bg-amber-50'
-                  : 'text-gray-600 hover:text-[#8A1538] hover:bg-amber-50/50'
+                  ? 'text-teal-700 bg-teal-100/60'
+                  : 'text-gray-600 hover:text-teal-700 hover:bg-teal-100/40'
               }`}
             >
               <item.icon className={`w-5 h-5 md:w-6 md:h-6 mb-0.5 ${currentSection === item.id ? 'scale-110' : ''} transition-transform`} />
