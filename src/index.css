@@ -2,19 +2,88 @@
 @tailwind components;
 @tailwind utilities;
 
+/* === Gym Pro-ish design system (Style ONLY) === */
+:root{
+  --bg: #f6fbfb;
+  --card: #ffffff;
+  --text: #0f172a;
+  --muted: #64748b;
+
+  --border: rgba(15, 23, 42, 0.10);
+  --border2: rgba(15, 23, 42, 0.14);
+
+  --shadow: 0 10px 26px rgba(2, 6, 23, 0.06);
+  --shadow2: 0 16px 40px rgba(2, 6, 23, 0.10);
+
+  --radius: 18px;
+}
+
+html, body {
+  height: 100%;
+}
+
+body{
+  color: var(--text);
+  background: var(--bg);
+}
+
+/* خلفية ناعمة زي الصورة الثانية */
+.app-bg{
+  background:
+    radial-gradient(1200px 600px at 18% 0%, rgba(16,185,129,.10), transparent 60%),
+    radial-gradient(900px 520px at 82% 14%, rgba(59,130,246,.10), transparent 55%),
+    radial-gradient(900px 520px at 40% 100%, rgba(20,184,166,.08), transparent 55%),
+    var(--bg);
+  min-height: 100vh;
+}
+
+/* Card base */
+.ui-card{
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+/* Card hover */
+.ui-card-hover{
+  transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+}
+.ui-card-hover:hover{
+  transform: translateY(-3px);
+  box-shadow: var(--shadow2);
+  border-color: var(--border2);
+}
+
+/* Pills (chips / badge style) */
+.ui-pill{
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,.75);
+  backdrop-filter: blur(10px);
+}
+
+/* Icon circle */
+.ui-icon-circle{
+  width: 46px;
+  height: 46px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--border);
+  background: linear-gradient(180deg, rgba(255,255,255,.95), rgba(255,255,255,.78));
+  box-shadow: 0 10px 22px rgba(2,6,23,.07);
+}
+
+/* Small helper */
+.soft-muted{
+  color: var(--muted);
+}
+
 @layer utilities {
   @keyframes slide-in {
-    from {
-      transform: translateX(-100%);
-      opacity: 0;
-    }
-    to {
-      transform: translateX(0);
-      opacity: 1;
-    }
+    from { transform: translateX(-100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
   }
-
-  .animate-slide-in {
-    animation: slide-in 0.3s ease-out;
-  }
+  .animate-slide-in { animation: slide-in 0.3s ease-out; }
 }
