@@ -1381,14 +1381,15 @@ function AdminDashboard() {
   const [announcements, setAnnouncements] = useState<any[]>([]);
   const [honors, setHonors] = useState<any[]>([]);
   const [settings, setSettings] = useState<any[]>([]);
-  const [tab, setTab] = useState<'stats' | 'requests' | 'suggestions' | 'announcements' | 'honors' | 'settings'>('stats');
+  const [accounts, setAccounts] = useState<any[]>([]);
+  const [tab, setTab] = useState<'stats' | 'requests' | 'suggestions' | 'announcements' | 'honors' | 'settings' | 'accounts'>('stats');
   const [showAnnouncementModal, setShowAnnouncementModal] = useState(false);
   const [showHonorModal, setShowHonorModal] = useState(false);
   const [editingItem, setEditingItem] = useState<any>(null);
   const [newAnnouncement, setNewAnnouncement] = useState({ title: '', description: '', type: 'announcement', image_url: '', registration_open: false, end_date: '', is_published: true });
   const [newHonor, setNewHonor] = useState({ title: '', description: '', image_url: '', video_url: '', media_type: 'image', honor_date: '' });
 
-  useEffect(() => { loadData(); loadAnnouncements(); loadHonors(); loadSettings(); }, []);
+  useEffect(() => { loadData(); loadAnnouncements(); loadHonors(); loadSettings(); loadAccounts(); }, []);
 
   const loadData = async () => {
     const [talRes, subsRes] = await Promise.all([
@@ -1468,6 +1469,21 @@ function AdminDashboard() {
   const loadSettings = async () => {
     const { data } = await supabase.from('app_settings').select('*').order('key', { ascending: true });
     setSettings(data || []);
+  };
+
+  const loadAccounts = async () => {
+    const { data } = await supabase.from('users').select('*').order('created_at', { ascending: false });
+    setAccounts(data || []);
+  };
+
+  const handleUpdateUserRole = async (userId: string, newRole: string) => {
+    const { error } = await supabase.from('users').update({ role: newRole }).eq('id', userId);
+    if (error) {
+      showError('فشل تحديث الدور');
+    } else {
+      showSuccess('تم تحديث الدور بنجاح');
+      loadAccounts();
+    }
   };
 
   const handleSaveAnnouncement = async () => {
@@ -1656,6 +1672,7 @@ function AdminDashboard() {
           { key: 'suggestions', label: 'اقتراحات المعلمين' },
           { key: 'announcements', label: 'إدارة الإعلانات' },
           { key: 'honors', label: 'إدارة التكريمات' },
+          { key: 'accounts', label: 'إدارة الحسابات' },
           { key: 'settings', label: 'إعدادات التطبيق' }
         ].map(t => (
           <button key={t.key} onClick={() => setTab(t.key as any)} className={`px-6 py-3 rounded-xl font-black transition-all whitespace-nowrap shadow-lg transform hover:scale-105 ${tab === t.key ? 'bg-gradient-to-r from-emerald-600 to-cyan-600 text-white shadow-xl' : 'bg-white text-gray-700 hover:bg-gray-50'}`}>
@@ -1860,6 +1877,66 @@ function AdminDashboard() {
                 <p className="text-sm text-gray-500 mt-1">المفتاح: {setting.key}</p>
               </div>
             ))}
+          </div>
+        </div>
+      )}
+
+      {tab === 'accounts' && (
+        <div className="ui-card p-6 border-t-4 border-[#8A1538]">
+          <div className="flex items-center gap-3 mb-6">
+            <Users className="w-8 h-8 text-[#8A1538]" />
+            <h2 className="text-2xl font-black text-gray-800">إدارة الحسابات</h2>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-gradient-to-r from-emerald-600 to-cyan-600 text-white">
+                <tr>
+                  <th className="px-4 py-3 text-right text-sm">الاسم الكامل</th>
+                  <th className="px-4 py-3 text-right text-sm">البريد الإلكتروني</th>
+                  <th className="px-4 py-3 text-right text-sm">الصف</th>
+                  <th className="px-4 py-3 text-right text-sm">الفصل</th>
+                  <th className="px-4 py-3 text-right text-sm">رقم الجوال</th>
+                  <th className="px-4 py-3 text-right text-sm">الدور الحالي</th>
+                  <th className="px-4 py-3 text-right text-sm">تغيير الدور</th>
+                </tr>
+              </thead>
+              <tbody>
+                {accounts.map((account, i) => (
+                  <tr key={account.id} className={i % 2 === 0 ? 'bg-gray-50' : 'bg-white'}>
+                    <td className="px-4 py-3 font-semibold text-sm">{account.full_name || '-'}</td>
+                    <td className="px-4 py-3 text-sm">{account.email}</td>
+                    <td className="px-4 py-3 text-sm">{account.grade || '-'}</td>
+                    <td className="px-4 py-3 text-sm">{account.class || '-'}</td>
+                    <td className="px-4 py-3 text-sm">{account.phone || '-'}</td>
+                    <td className="px-4 py-3">
+                      <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                        account.role === 'admin' ? 'bg-red-100 text-red-800' :
+                        account.role === 'teacher' ? 'bg-blue-100 text-blue-800' :
+                        account.role === 'guardian' ? 'bg-purple-100 text-purple-800' :
+                        'bg-green-100 text-green-800'
+                      }`}>
+                        {account.role === 'admin' ? 'إداري' :
+                         account.role === 'teacher' ? 'معلم' :
+                         account.role === 'guardian' ? 'ولي أمر' :
+                         'طالب'}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3">
+                      <select
+                        value={account.role}
+                        onChange={(e) => handleUpdateUserRole(account.id, e.target.value)}
+                        className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#8A1538] font-semibold"
+                      >
+                        <option value="student">طالب</option>
+                        <option value="guardian">ولي أمر</option>
+                        <option value="teacher">معلم</option>
+                        <option value="admin">إداري</option>
+                      </select>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
       )}
