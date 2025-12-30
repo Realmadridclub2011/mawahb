@@ -586,10 +586,10 @@ function HomePage({ setCurrentSection }: { setCurrentSection: (section: string) 
         </button>
       </div>
 
-      <div className="mt-6 bg-gradient-to-r from-[#8A1538] to-[#A5763F] rounded-2xl shadow-lg p-4 md:p-6 text-center text-white max-w-4xl mx-auto">
+      <div className="mt-6 bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 rounded-2xl shadow-lg p-4 md:p-6 text-center text-white max-w-4xl mx-auto">
         <h2 className="text-lg md:text-2xl font-black mb-2">ابدأ رحلتك الآن</h2>
         <p className="text-sm md:text-lg mb-3">استخدم الشريط السفلي للتنقل بين الأقسام</p>
-        <div className="flex items-center justify-center gap-2 md:gap-4 text-amber-300">
+        <div className="flex items-center justify-center gap-2 md:gap-4 text-emerald-200">
           <ArrowRight className="w-4 h-4 md:w-6 md:h-6 animate-bounce rotate-180" />
           <span className="font-bold text-xs md:text-base">اضغط على الأيقونات بالأسفل</span>
           <ArrowRight className="w-4 h-4 md:w-6 md:h-6 animate-bounce rotate-180" />
