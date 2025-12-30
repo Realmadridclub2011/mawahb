@@ -1385,7 +1385,10 @@ function AdminDashboard() {
   const [tab, setTab] = useState<'stats' | 'requests' | 'suggestions' | 'announcements' | 'honors' | 'settings' | 'accounts'>('stats');
   const [showAnnouncementModal, setShowAnnouncementModal] = useState(false);
   const [showHonorModal, setShowHonorModal] = useState(false);
+  const [showResetPasswordModal, setShowResetPasswordModal] = useState(false);
   const [editingItem, setEditingItem] = useState<any>(null);
+  const [selectedAccount, setSelectedAccount] = useState<any>(null);
+  const [newPassword, setNewPassword] = useState('');
   const [newAnnouncement, setNewAnnouncement] = useState({ title: '', description: '', type: 'announcement', image_url: '', registration_open: false, end_date: '', is_published: true });
   const [newHonor, setNewHonor] = useState({ title: '', description: '', image_url: '', video_url: '', media_type: 'image', honor_date: '' });
 
@@ -1483,6 +1486,43 @@ function AdminDashboard() {
     } else {
       showSuccess('تم تحديث الدور بنجاح');
       loadAccounts();
+    }
+  };
+
+  const handleResetPassword = async () => {
+    if (!newPassword || newPassword.length < 6) {
+      showError('كلمة المرور يجب أن تكون 6 أحرف على الأقل');
+      return;
+    }
+
+    try {
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+      const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+      const response = await fetch(`${supabaseUrl}/functions/v1/update-admin-password`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${supabaseAnonKey}`,
+        },
+        body: JSON.stringify({
+          email: selectedAccount.email,
+          newPassword: newPassword,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || 'فشل إعادة تعيين كلمة المرور');
+      }
+
+      showSuccess('تم إعادة تعيين كلمة المرور بنجاح');
+      setShowResetPasswordModal(false);
+      setNewPassword('');
+      setSelectedAccount(null);
+    } catch (error: any) {
+      showError(error.message || 'حدث خطأ أثناء إعادة تعيين كلمة المرور');
     }
   };
 
@@ -1898,6 +1938,7 @@ function AdminDashboard() {
                   <th className="px-4 py-3 text-right text-sm">رقم الجوال</th>
                   <th className="px-4 py-3 text-right text-sm">الدور الحالي</th>
                   <th className="px-4 py-3 text-right text-sm">تغيير الدور</th>
+                  <th className="px-4 py-3 text-right text-sm">إعادة تعيين كلمة المرور</th>
                 </tr>
               </thead>
               <tbody>
@@ -1932,6 +1973,17 @@ function AdminDashboard() {
                         <option value="teacher">معلم</option>
                         <option value="admin">إداري</option>
                       </select>
+                    </td>
+                    <td className="px-4 py-3">
+                      <button
+                        onClick={() => {
+                          setSelectedAccount(account);
+                          setShowResetPasswordModal(true);
+                        }}
+                        className="bg-orange-500 text-white px-3 py-2 rounded-lg text-xs hover:bg-orange-600 font-semibold transition-colors"
+                      >
+                        إعادة تعيين
+                      </button>
                     </td>
                   </tr>
                 ))}
@@ -2141,6 +2193,45 @@ function AdminDashboard() {
                 <button onClick={() => setShowHonorModal(false)} className="flex-1 bg-gray-200 py-3 rounded-lg font-bold">إلغاء</button>
                 <button onClick={handleSaveHonor} className="flex-1 bg-gradient-to-r from-emerald-600 to-cyan-600 text-white py-3 rounded-lg font-bold">
                   {editingItem ? 'تحديث' : 'إضافة'}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showResetPasswordModal && (
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4" onClick={() => setShowResetPasswordModal(false)}>
+          <div className="bg-white rounded-3xl shadow-2xl w-full max-w-md p-8" onClick={(e) => e.stopPropagation()} dir="rtl">
+            <h2 className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-cyan-600 mb-6">إعادة تعيين كلمة المرور</h2>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-gray-700 font-semibold mb-2">الحساب</label>
+                <input
+                  type="text"
+                  value={selectedAccount?.email || ''}
+                  disabled
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-100 text-gray-600"
+                />
+              </div>
+              <div>
+                <label className="block text-gray-700 font-semibold mb-2">كلمة المرور الجديدة *</label>
+                <input
+                  type="password"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8A1538]"
+                  placeholder="أدخل كلمة المرور الجديدة (6 أحرف على الأقل)"
+                />
+              </div>
+              <div className="flex gap-4 pt-4">
+                <button onClick={() => {
+                  setShowResetPasswordModal(false);
+                  setNewPassword('');
+                  setSelectedAccount(null);
+                }} className="flex-1 bg-gray-200 py-3 rounded-lg font-bold hover:bg-gray-300">إلغاء</button>
+                <button onClick={handleResetPassword} className="flex-1 bg-gradient-to-r from-orange-500 to-red-500 text-white py-3 rounded-lg font-bold hover:from-orange-600 hover:to-red-600">
+                  إعادة تعيين
                 </button>
               </div>
             </div>
