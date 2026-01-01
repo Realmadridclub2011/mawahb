@@ -191,14 +191,20 @@ function BottomNav({ currentSection, setCurrentSection }: { currentSection: stri
             <button
               key={item.id}
               onClick={() => setCurrentSection(item.id)}
-              className={`flex flex-col items-center justify-center py-2 transition-all ${
+              className={`flex flex-col items-center justify-center py-2 transition-all duration-300 ease-in-out transform ${
                 currentSection === item.id
-                  ? 'text-teal-700 bg-teal-100/60'
-                  : 'text-gray-600 hover:text-teal-700 hover:bg-teal-100/40'
+                  ? 'text-teal-700 bg-gradient-to-b from-teal-100 to-teal-50 shadow-inner scale-95'
+                  : 'text-gray-600 hover:text-teal-700 hover:bg-teal-50 hover:scale-110 active:scale-95 hover:shadow-lg'
               }`}
             >
-              <item.icon className={`w-5 h-5 md:w-6 md:h-6 mb-0.5 ${currentSection === item.id ? 'scale-110' : ''} transition-transform`} />
-              <span className="text-[9px] md:text-xs font-bold leading-tight">{item.label}</span>
+              <item.icon className={`w-5 h-5 md:w-6 md:h-6 mb-0.5 transition-all duration-300 ${
+                currentSection === item.id
+                  ? 'scale-110 drop-shadow-md'
+                  : 'group-hover:scale-125 group-hover:rotate-3'
+              }`} />
+              <span className={`text-[9px] md:text-xs font-bold leading-tight transition-all duration-300 ${
+                currentSection === item.id ? 'scale-105' : ''
+              }`}>{item.label}</span>
             </button>
           ))}
         </div>
@@ -519,61 +525,81 @@ function MainApp() {
             <div className="grid grid-cols-5 gap-0.5">
               <button
                 onClick={() => setCurrentSection('home')}
-                className={`flex flex-col items-center justify-center py-2 transition-all ${
+                className={`flex flex-col items-center justify-center py-2 transition-all duration-300 ease-in-out transform ${
                   currentSection === 'home'
-                    ? 'text-teal-700 bg-teal-100/60'
-                    : 'text-gray-600 hover:text-teal-700 hover:bg-teal-100/40'
+                    ? 'text-teal-700 bg-gradient-to-b from-teal-100 to-teal-50 shadow-inner scale-95'
+                    : 'text-gray-600 hover:text-teal-700 hover:bg-teal-50 hover:scale-110 active:scale-95 hover:shadow-lg'
                 }`}
               >
-                <Home className={`w-5 h-5 md:w-6 md:h-6 mb-0.5 ${currentSection === 'home' ? 'scale-110' : ''} transition-transform`} />
-                <span className="text-[10px] md:text-xs font-bold">الرئيسية</span>
+                <Home className={`w-5 h-5 md:w-6 md:h-6 mb-0.5 transition-all duration-300 ${
+                  currentSection === 'home' ? 'scale-110 drop-shadow-md' : ''
+                }`} />
+                <span className={`text-[10px] md:text-xs font-bold transition-all duration-300 ${
+                  currentSection === 'home' ? 'scale-105' : ''
+                }`}>الرئيسية</span>
               </button>
               <button
                 onClick={() => {
                   setCurrentSection('talents');
                   setPage('talents');
                 }}
-                className={`flex flex-col items-center justify-center py-2 transition-all ${
+                className={`flex flex-col items-center justify-center py-2 transition-all duration-300 ease-in-out transform ${
                   currentSection === 'talents'
-                    ? 'text-teal-700 bg-teal-100/60'
-                    : 'text-gray-600 hover:text-teal-700 hover:bg-teal-100/40'
+                    ? 'text-teal-700 bg-gradient-to-b from-teal-100 to-teal-50 shadow-inner scale-95'
+                    : 'text-gray-600 hover:text-teal-700 hover:bg-teal-50 hover:scale-110 active:scale-95 hover:shadow-lg'
                 }`}
               >
-                <Star className={`w-5 h-5 md:w-6 md:h-6 mb-0.5 ${currentSection === 'talents' ? 'scale-110' : ''} transition-transform`} />
-                <span className="text-[10px] md:text-xs font-bold">المواهب</span>
+                <Star className={`w-5 h-5 md:w-6 md:h-6 mb-0.5 transition-all duration-300 ${
+                  currentSection === 'talents' ? 'scale-110 drop-shadow-md' : ''
+                }`} />
+                <span className={`text-[10px] md:text-xs font-bold transition-all duration-300 ${
+                  currentSection === 'talents' ? 'scale-105' : ''
+                }`}>المواهب</span>
               </button>
               <button
                 onClick={() => setCurrentSection('announcements')}
-                className={`flex flex-col items-center justify-center py-2 transition-all ${
+                className={`flex flex-col items-center justify-center py-2 transition-all duration-300 ease-in-out transform ${
                   currentSection === 'announcements'
-                    ? 'text-teal-700 bg-teal-100/60'
-                    : 'text-gray-600 hover:text-teal-700 hover:bg-teal-100/40'
+                    ? 'text-teal-700 bg-gradient-to-b from-teal-100 to-teal-50 shadow-inner scale-95'
+                    : 'text-gray-600 hover:text-teal-700 hover:bg-teal-50 hover:scale-110 active:scale-95 hover:shadow-lg'
                 }`}
               >
-                <Megaphone className={`w-5 h-5 md:w-6 md:h-6 mb-0.5 ${currentSection === 'announcements' ? 'scale-110' : ''} transition-transform`} />
-                <span className="text-[10px] md:text-xs font-bold">الإعلانات</span>
+                <Megaphone className={`w-5 h-5 md:w-6 md:h-6 mb-0.5 transition-all duration-300 ${
+                  currentSection === 'announcements' ? 'scale-110 drop-shadow-md' : ''
+                }`} />
+                <span className={`text-[10px] md:text-xs font-bold transition-all duration-300 ${
+                  currentSection === 'announcements' ? 'scale-105' : ''
+                }`}>الإعلانات</span>
               </button>
               <button
                 onClick={() => setCurrentSection('honors')}
-                className={`flex flex-col items-center justify-center py-2 transition-all ${
+                className={`flex flex-col items-center justify-center py-2 transition-all duration-300 ease-in-out transform ${
                   currentSection === 'honors'
-                    ? 'text-teal-700 bg-teal-100/60'
-                    : 'text-gray-600 hover:text-teal-700 hover:bg-teal-100/40'
+                    ? 'text-teal-700 bg-gradient-to-b from-teal-100 to-teal-50 shadow-inner scale-95'
+                    : 'text-gray-600 hover:text-teal-700 hover:bg-teal-50 hover:scale-110 active:scale-95 hover:shadow-lg'
                 }`}
               >
-                <Trophy className={`w-5 h-5 md:w-6 md:h-6 mb-0.5 ${currentSection === 'honors' ? 'scale-110' : ''} transition-transform`} />
-                <span className="text-[10px] md:text-xs font-bold">التكريمات</span>
+                <Trophy className={`w-5 h-5 md:w-6 md:h-6 mb-0.5 transition-all duration-300 ${
+                  currentSection === 'honors' ? 'scale-110 drop-shadow-md' : ''
+                }`} />
+                <span className={`text-[10px] md:text-xs font-bold transition-all duration-300 ${
+                  currentSection === 'honors' ? 'scale-105' : ''
+                }`}>التكريمات</span>
               </button>
               <button
                 onClick={() => setCurrentSection('admin-dashboard')}
-                className={`flex flex-col items-center justify-center py-2 transition-all ${
+                className={`flex flex-col items-center justify-center py-2 transition-all duration-300 ease-in-out transform ${
                   currentSection === 'admin-dashboard'
-                    ? 'text-teal-700 bg-teal-100/60'
-                    : 'text-gray-600 hover:text-teal-700 hover:bg-teal-100/40'
+                    ? 'text-teal-700 bg-gradient-to-b from-teal-100 to-teal-50 shadow-inner scale-95'
+                    : 'text-gray-600 hover:text-teal-700 hover:bg-teal-50 hover:scale-110 active:scale-95 hover:shadow-lg'
                 }`}
               >
-                <LayoutDashboard className={`w-5 h-5 md:w-6 md:h-6 mb-0.5 ${currentSection === 'admin-dashboard' ? 'scale-110' : ''} transition-transform`} />
-                <span className="text-[10px] md:text-xs font-bold">لوحة التحكم</span>
+                <LayoutDashboard className={`w-5 h-5 md:w-6 md:h-6 mb-0.5 transition-all duration-300 ${
+                  currentSection === 'admin-dashboard' ? 'scale-110 drop-shadow-md' : ''
+                }`} />
+                <span className={`text-[10px] md:text-xs font-bold transition-all duration-300 ${
+                  currentSection === 'admin-dashboard' ? 'scale-105' : ''
+                }`}>لوحة التحكم</span>
               </button>
             </div>
           </div>
