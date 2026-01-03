@@ -1194,7 +1194,7 @@ function AnnouncementsPage() {
       {selectedAnnouncement && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4" onClick={() => setSelectedAnnouncement(null)}>
           <div className="bg-white rounded-3xl shadow-2xl w-full max-w-md p-8" onClick={(e) => e.stopPropagation()} dir="rtl">
-            <h2 className="text-2xl font-black text-[#8A1538] mb-4">التسجيل في {selectedAnnouncement.title}</h2>
+            <h2 className="text-2xl font-black text-teal-700 mb-4">التسجيل في {selectedAnnouncement.title}</h2>
             <div className="space-y-4">
               <div>
                 <label className="block text-gray-700 font-semibold mb-2">ملاحظات (اختياري)</label>
@@ -1459,7 +1459,7 @@ function TeacherDashboard() {
       {showModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={() => setShowModal(false)}>
           <div className="bg-white rounded-2xl p-8 max-w-md w-full" onClick={(e) => e.stopPropagation()}>
-            <h2 className="text-2xl font-bold text-[#8A1538] mb-6">اقتراح موهبة جديدة</h2>
+            <h2 className="text-2xl font-bold text-teal-700 mb-6">اقتراح موهبة جديدة</h2>
             <div className="space-y-4">
               <select value={newSub.categoryId} onChange={(e) => setNewSub({ ...newSub, categoryId: e.target.value })} className="w-full px-4 py-3 border rounded-lg">
                 <option value="">اختر القسم</option>
