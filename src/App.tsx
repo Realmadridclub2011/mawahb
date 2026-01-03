@@ -420,7 +420,15 @@ function LoginModal({ showLogin, setShowLogin }: { showLogin: boolean; setShowLo
 
             <div>
               <label className="block text-gray-700 font-semibold mb-1 text-sm">رقم الجوال (اختياري)</label>
-              <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-600" placeholder="05xxxxxxxx" dir="ltr" />
+              <input
+                type="tel"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-600"
+                placeholder="+974 XXXX XXXX"
+                pattern="(\+974|974)?[0-9]{8}"
+                dir="ltr"
+              />
             </div>
 
             <div>
