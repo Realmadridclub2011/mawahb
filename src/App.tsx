@@ -1,7 +1,6 @@
 import { useState, useEffect, createContext, useContext } from 'react';
 import { UiCard, UiIconCircle } from "./components/ui/UiCard";
 import { createClient } from '@supabase/supabase-js';
-import { AppShell } from "./components/AppShell";
 import { LogIn, LogOut, User, FileText, Users, LayoutDashboard, ArrowRight, CheckCircle, XCircle, Clock, TrendingUp, Plus, MessageSquare, Search, Download, X, Info, Award, Dumbbell, Palette, BookOpen, Microscope, Cpu, Home, Megaphone, Trophy, Star, CreditCard as Edit, Trash2, Settings, Image } from 'lucide-react';
 
 const supabase = createClient(
@@ -421,15 +420,7 @@ function LoginModal({ showLogin, setShowLogin }: { showLogin: boolean; setShowLo
 
             <div>
               <label className="block text-gray-700 font-semibold mb-1 text-sm">رقم الجوال (اختياري)</label>
-              <input
-                type="tel"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-600"
-                placeholder="+974 XXXX XXXX"
-                pattern="(\+974|974)?[0-9]{8}"
-                dir="ltr"
-              />
+              <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-600" placeholder="05xxxxxxxx" dir="ltr" />
             </div>
 
             <div>
@@ -484,7 +475,6 @@ function MainApp() {
   const { user } = useAuth();
   const [currentSection, setCurrentSection] = useState('home');
   const [showLogin, setShowLogin] = useState(false);
-
   const [page, setPage] = useState<string>('home');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedSubcategory, setSelectedSubcategory] = useState<string | null>(null);
@@ -494,207 +484,221 @@ function MainApp() {
       setCurrentSection('teacher-dashboard');
     } else if (user?.role === 'admin') {
       setCurrentSection('admin-dashboard');
-    } else {
-      setCurrentSection('home');
     }
   }, [user]);
 
-  // ====== TEACHER ======
   if (user?.role === 'teacher') {
     return (
-      <AppShell navPadding={true}>
+<div className="app-bg">
+
         <Header />
-        <div className="ui-container">
+        <div className="pb-20">
           <TeacherDashboard />
         </div>
-      </AppShell>
+      </div>
     );
   }
 
-  // ====== ADMIN ======
   if (user?.role === 'admin') {
     return (
-      <AppShell navPadding={true}>
+      <div className="app-bg">
         <Header />
-
-        <div className="ui-container">
+        <div className="pb-20">
           {currentSection === 'admin-dashboard' && <AdminDashboard />}
-
-          {currentSection === 'home' && (
-            <HomePage
-              setCurrentSection={(section) => {
-                setCurrentSection(section);
-                if (section === 'talents') setPage('talents');
-              }}
-            />
-          )}
-
+          {currentSection === 'home' && <HomePage setCurrentSection={(section) => {
+            setCurrentSection(section);
+            if (section === 'talents') setPage('talents');
+          }} />}
           {currentSection === 'talents' && (
             <>
-              {page === 'talents' && (
-                <TalentsHomePage
-                  setPage={setPage}
-                  setSelectedCategory={setSelectedCategory}
-                />
-              )}
-
-              {page === 'subcategories' && (
-                <SubcategoriesPage
-                  categoryId={selectedCategory!}
-                  setPage={setPage}
-                  setSelectedSubcategory={setSelectedSubcategory}
-                  setSelectedCategory={setSelectedCategory}
-                />
-              )}
-
-              {page === 'register' && (
-                <RegisterPage
-                  categoryId={selectedCategory!}
-                  subcategoryId={selectedSubcategory!}
-                  setPage={setPage}
-                />
-              )}
-
+              {page === 'talents' && <TalentsHomePage setPage={setPage} setSelectedCategory={setSelectedCategory} />}
+              {page === 'subcategories' && <SubcategoriesPage categoryId={selectedCategory!} setPage={setPage} setSelectedSubcategory={setSelectedSubcategory} setSelectedCategory={setSelectedCategory} />}
+              {page === 'register' && <RegisterPage categoryId={selectedCategory!} subcategoryId={selectedSubcategory!} setPage={setPage} />}
               {page === 'mypage' && <MyPage setPage={setPage} />}
             </>
           )}
-
           {currentSection === 'announcements' && <AnnouncementsPage />}
           {currentSection === 'honors' && <HonorsPage />}
         </div>
-
-        {/* ✅ سيبت الـ Admin Nav زي ما هو عندك (بدون كسر أي حاجة) */}
-        <nav
-          className="fixed bottom-0 left-0 right-0 bg-gradient-to-r from-slate-50 via-teal-50 to-cyan-50 border-t-2 md:border-t-4 border-teal-600 shadow-2xl z-40"
-          dir="rtl"
-        >
+        <nav className="fixed bottom-0 left-0 right-0 bg-gradient-to-r from-slate-50 via-teal-50 to-cyan-50 border-t-2 md:border-t-4 border-teal-600 shadow-2xl z-40" dir="rtl">
           <div className="container mx-auto px-1">
             <div className="grid grid-cols-5 gap-0.5">
-              {/* ... نفس أزرارك زي ما هي بالضبط ... */}
+              <button
+                onClick={() => setCurrentSection('home')}
+                className={`flex flex-col items-center justify-center py-2 transition-all duration-300 ease-in-out transform ${
+                  currentSection === 'home'
+                    ? 'text-teal-700 bg-gradient-to-b from-teal-100 to-teal-50 shadow-inner scale-95'
+                    : 'text-gray-600 hover:text-teal-700 hover:bg-teal-50 hover:scale-110 active:scale-95 hover:shadow-lg'
+                }`}
+              >
+                <Home className={`w-5 h-5 md:w-6 md:h-6 mb-0.5 transition-all duration-300 ${
+                  currentSection === 'home' ? 'scale-110 drop-shadow-md' : ''
+                }`} />
+                <span className={`text-[10px] md:text-xs font-bold transition-all duration-300 ${
+                  currentSection === 'home' ? 'scale-105' : ''
+                }`}>الرئيسية</span>
+              </button>
+              <button
+                onClick={() => {
+                  setCurrentSection('talents');
+                  setPage('talents');
+                }}
+                className={`flex flex-col items-center justify-center py-2 transition-all duration-300 ease-in-out transform ${
+                  currentSection === 'talents'
+                    ? 'text-teal-700 bg-gradient-to-b from-teal-100 to-teal-50 shadow-inner scale-95'
+                    : 'text-gray-600 hover:text-teal-700 hover:bg-teal-50 hover:scale-110 active:scale-95 hover:shadow-lg'
+                }`}
+              >
+                <Star className={`w-5 h-5 md:w-6 md:h-6 mb-0.5 transition-all duration-300 ${
+                  currentSection === 'talents' ? 'scale-110 drop-shadow-md' : ''
+                }`} />
+                <span className={`text-[10px] md:text-xs font-bold transition-all duration-300 ${
+                  currentSection === 'talents' ? 'scale-105' : ''
+                }`}>المواهب</span>
+              </button>
+              <button
+                onClick={() => setCurrentSection('announcements')}
+                className={`flex flex-col items-center justify-center py-2 transition-all duration-300 ease-in-out transform ${
+                  currentSection === 'announcements'
+                    ? 'text-teal-700 bg-gradient-to-b from-teal-100 to-teal-50 shadow-inner scale-95'
+                    : 'text-gray-600 hover:text-teal-700 hover:bg-teal-50 hover:scale-110 active:scale-95 hover:shadow-lg'
+                }`}
+              >
+                <Megaphone className={`w-5 h-5 md:w-6 md:h-6 mb-0.5 transition-all duration-300 ${
+                  currentSection === 'announcements' ? 'scale-110 drop-shadow-md' : ''
+                }`} />
+                <span className={`text-[10px] md:text-xs font-bold transition-all duration-300 ${
+                  currentSection === 'announcements' ? 'scale-105' : ''
+                }`}>الإعلانات</span>
+              </button>
+              <button
+                onClick={() => setCurrentSection('honors')}
+                className={`flex flex-col items-center justify-center py-2 transition-all duration-300 ease-in-out transform ${
+                  currentSection === 'honors'
+                    ? 'text-teal-700 bg-gradient-to-b from-teal-100 to-teal-50 shadow-inner scale-95'
+                    : 'text-gray-600 hover:text-teal-700 hover:bg-teal-50 hover:scale-110 active:scale-95 hover:shadow-lg'
+                }`}
+              >
+                <Trophy className={`w-5 h-5 md:w-6 md:h-6 mb-0.5 transition-all duration-300 ${
+                  currentSection === 'honors' ? 'scale-110 drop-shadow-md' : ''
+                }`} />
+                <span className={`text-[10px] md:text-xs font-bold transition-all duration-300 ${
+                  currentSection === 'honors' ? 'scale-105' : ''
+                }`}>التكريمات</span>
+              </button>
+              <button
+                onClick={() => setCurrentSection('admin-dashboard')}
+                className={`flex flex-col items-center justify-center py-2 transition-all duration-300 ease-in-out transform ${
+                  currentSection === 'admin-dashboard'
+                    ? 'text-teal-700 bg-gradient-to-b from-teal-100 to-teal-50 shadow-inner scale-95'
+                    : 'text-gray-600 hover:text-teal-700 hover:bg-teal-50 hover:scale-110 active:scale-95 hover:shadow-lg'
+                }`}
+              >
+                <LayoutDashboard className={`w-5 h-5 md:w-6 md:h-6 mb-0.5 transition-all duration-300 ${
+                  currentSection === 'admin-dashboard' ? 'scale-110 drop-shadow-md' : ''
+                }`} />
+                <span className={`text-[10px] md:text-xs font-bold transition-all duration-300 ${
+                  currentSection === 'admin-dashboard' ? 'scale-105' : ''
+                }`}>لوحة التحكم</span>
+              </button>
             </div>
           </div>
         </nav>
-      </AppShell>
+      </div>
     );
   }
 
-  // ====== PUBLIC / STUDENT / GUARDIAN ======
   return (
-    <AppShell navPadding={true}>
+    <div className="app-bg">
       <Header showLogin={showLogin} setShowLogin={setShowLogin} />
       <LoginModal showLogin={showLogin} setShowLogin={setShowLogin} />
 
-      <div className="ui-container">
-        {currentSection === 'home' && (
-          <HomePage
-            setCurrentSection={(section) => {
-              setCurrentSection(section);
-              if (section === 'talents') setPage('talents');
-            }}
-          />
-        )}
-
+      <div className="pb-20">
+        {currentSection === 'home' && <HomePage setCurrentSection={(section) => {
+          setCurrentSection(section);
+          if (section === 'talents') setPage('talents');
+        }} />}
         {currentSection === 'talents' && (
           <>
-            {page === 'talents' && (
-              <TalentsHomePage
-                setPage={setPage}
-                setSelectedCategory={setSelectedCategory}
-              />
-            )}
-            {page === 'subcategories' && (
-              <SubcategoriesPage
-                categoryId={selectedCategory!}
-                setPage={setPage}
-                setSelectedSubcategory={setSelectedSubcategory}
-                setSelectedCategory={setSelectedCategory}
-              />
-            )}
-            {page === 'register' && (
-              <RegisterPage
-                categoryId={selectedCategory!}
-                subcategoryId={selectedSubcategory!}
-                setPage={setPage}
-              />
-            )}
+            {page === 'talents' && <TalentsHomePage setPage={setPage} setSelectedCategory={setSelectedCategory} />}
+            {page === 'subcategories' && <SubcategoriesPage categoryId={selectedCategory!} setPage={setPage} setSelectedSubcategory={setSelectedSubcategory} setSelectedCategory={setSelectedCategory} />}
+            {page === 'register' && <RegisterPage categoryId={selectedCategory!} subcategoryId={selectedSubcategory!} setPage={setPage} />}
             {page === 'mypage' && <MyPage setPage={setPage} />}
           </>
         )}
-
         {currentSection === 'announcements' && <AnnouncementsPage />}
         {currentSection === 'honors' && <HonorsPage />}
       </div>
 
-      <BottomNav
-        currentSection={currentSection}
-        setCurrentSection={(section) => {
-          setCurrentSection(section);
-          if (section === 'talents') setPage('talents');
-        }}
-      />
-    </AppShell>
+      <BottomNav currentSection={currentSection} setCurrentSection={(section) => {
+        setCurrentSection(section);
+        if (section === 'talents') setPage('talents');
+      }} />
+    </div>
   );
 }
 
 function HomePage({ setCurrentSection }: { setCurrentSection: (section: string) => void }) {
   return (
-    <div dir="rtl">
+    <div className="container mx-auto px-3 py-6" dir="rtl">
       <div className="text-center mb-6">
-        <h1 className="text-2xl md:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 mb-2 drop-shadow-sm">
-          مرحباً بك في كنوز قطر
-        </h1>
-        <p className="text-sm md:text-lg text-gray-600 font-semibold mb-4">
-          اكتشف مواهبك، سجل في المسابقات، واحتفل بالإنجازات
-        </p>
+        <h1 className="text-2xl md:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 mb-2 drop-shadow-sm">مرحباً بك في كنوز قطر</h1>
+        <p className="text-sm md:text-lg text-gray-600 font-semibold mb-4">اكتشف مواهبك، سجل في المسابقات، واحتفل بالإنجازات</p>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-3 gap-3 max-w-4xl mx-auto mb-6">
-        <button onClick={() => setCurrentSection('talents')} className="text-right">
-          <UiCard variant="amber" hover className="overflow-hidden h-32 md:h-40 active:scale-[0.99]">
-            <div className="h-full flex flex-col items-center justify-center p-3">
-              <UiIconCircle className="mb-2">
-                <Star className="w-6 h-6" />
-              </UiIconCircle>
-              <h3 className="text-base md:text-xl font-black text-slate-900 mb-1">اكتشف موهبتك</h3>
-              <p className="text-slate-500 text-xs md:text-sm font-semibold hidden md:block">سجل موهبتك الآن</p>
+        <button
+          onClick={() => setCurrentSection('talents')}
+          className="group ui-card ui-card-hover ui-card-amber overflow-hidden h-32 md:h-40 active:scale-[0.99]"
+        >
+          <div className="h-full flex flex-col items-center justify-center p-3">
+            <div className="mb-2 w-12 h-12 rounded-full bg-gradient-to-br from-amber-400 to-yellow-500 flex items-center justify-center shadow-md">
+              <Star className="w-6 h-6 text-white" />
             </div>
-          </UiCard>
+
+            <h3 className="text-base md:text-xl font-black text-slate-900 mb-1">اكتشف موهبتك</h3>
+            <p className="text-slate-500 text-xs md:text-sm font-semibold hidden md:block">سجل موهبتك الآن</p>
+          </div>
         </button>
 
-        <button onClick={() => setCurrentSection('announcements')} className="text-right">
-          <UiCard variant="cyan" hover className="overflow-hidden h-32 md:h-40 active:scale-[0.99]">
-            <div className="h-full flex flex-col items-center justify-center p-3">
-              <UiIconCircle className="mb-2">
-                <Megaphone className="w-6 h-6" />
-              </UiIconCircle>
-              <h3 className="text-base md:text-xl font-black text-slate-900 mb-1">الإعلانات</h3>
-              <p className="text-slate-500 text-xs md:text-sm font-semibold hidden md:block">تابع الأخبار</p>
+        <button
+          onClick={() => setCurrentSection('announcements')}
+          className="group ui-card ui-card-hover ui-card-cyan overflow-hidden h-32 md:h-40 active:scale-[0.99]"
+        >
+          <div className="h-full flex flex-col items-center justify-center p-3">
+            <div className="mb-2 w-12 h-12 rounded-full bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center shadow-md">
+              <Megaphone className="w-6 h-6 text-white" />
             </div>
-          </UiCard>
+
+            <h3 className="text-base md:text-xl font-black text-slate-900 mb-1">الإعلانات</h3>
+            <p className="text-slate-500 text-xs md:text-sm font-semibold hidden md:block">تابع الأخبار</p>
+          </div>
         </button>
 
-        <button onClick={() => setCurrentSection('honors')} className="text-right col-span-2 md:col-span-1">
-          <UiCard variant="rose" hover className="overflow-hidden h-32 md:h-40 active:scale-[0.99]">
-            <div className="h-full flex flex-col items-center justify-center p-3">
-              <UiIconCircle className="mb-2">
-                <Trophy className="w-6 h-6" />
-              </UiIconCircle>
-              <h3 className="text-base md:text-xl font-black text-slate-900 mb-1">التكريمات</h3>
-              <p className="text-slate-500 text-xs md:text-sm font-semibold hidden md:block">إنجازات مدرستنا</p>
+        <button
+          onClick={() => setCurrentSection('honors')}
+          className="group ui-card ui-card-hover ui-card-rose overflow-hidden h-32 md:h-40 col-span-2 md:col-span-1 active:scale-[0.99]"
+        >
+          <div className="h-full flex flex-col items-center justify-center p-3">
+            <div className="mb-2 w-12 h-12 rounded-full bg-gradient-to-br from-rose-400 to-pink-500 flex items-center justify-center shadow-md">
+              <Trophy className="w-6 h-6 text-white" />
             </div>
-          </UiCard>
+
+            <h3 className="text-base md:text-xl font-black text-slate-900 mb-1">التكريمات</h3>
+            <p className="text-slate-500 text-xs md:text-sm font-semibold hidden md:block">إنجازات مدرستنا</p>
+          </div>
         </button>
       </div>
 
-      <UiCard variant="teal" hover={false} className="max-w-4xl mx-auto p-4 md:p-6 text-center">
+      <div className="mt-6 bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 rounded-2xl shadow-lg p-4 md:p-6 text-center text-white max-w-4xl mx-auto">
         <h2 className="text-lg md:text-2xl font-black mb-2">ابدأ رحلتك الآن</h2>
-        <p className="text-sm md:text-lg mb-3 soft-muted">استخدم الشريط السفلي للتنقل بين الأقسام</p>
-        <div className="flex items-center justify-center gap-2 md:gap-4">
+        <p className="text-sm md:text-lg mb-3">استخدم الشريط السفلي للتنقل بين الأقسام</p>
+        <div className="flex items-center justify-center gap-2 md:gap-4 text-emerald-200">
           <ArrowRight className="w-4 h-4 md:w-6 md:h-6 animate-bounce rotate-180" />
           <span className="font-bold text-xs md:text-base">اضغط على الأيقونات بالأسفل</span>
           <ArrowRight className="w-4 h-4 md:w-6 md:h-6 animate-bounce rotate-180" />
         </div>
-      </UiCard>
+      </div>
     </div>
   );
 }
@@ -876,13 +880,11 @@ function RegisterPage({ categoryId, subcategoryId, setPage }: any) {
   if (!user) {
     return (
       <div className="container mx-auto px-4 py-16" dir="rtl">
-        <div className="max-w-md mx-auto bg-white rounded-2xl shadow-2xl p-12 text-center border-t-4 border-teal-600">
-          <div className="bg-gradient-to-br from-teal-100 to-cyan-100 rounded-full w-24 h-24 flex items-center justify-center mx-auto mb-6">
-            <LogIn className="w-12 h-12 text-teal-700" />
-          </div>
+        <div className="max-w-md mx-auto ui-card p-12 text-center border-t-4 border-[#8A1538]">
+          <LogIn className="w-16 h-16 text-[#8A1538] mx-auto mb-6" />
           <h2 className="text-3xl font-black text-gray-800 mb-4">يجب تسجيل الدخول</h2>
           <p className="text-gray-600 mb-8">لتسجيل موهبتك، يرجى تسجيل الدخول أولاً</p>
-          <button onClick={() => setPage('talents')} className="bg-gradient-to-r from-teal-600 to-cyan-600 text-white px-8 py-3 rounded-xl font-bold shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 hover:from-teal-700 hover:to-cyan-700 active:scale-95">
+          <button onClick={() => setPage('talents')} className="bg-gradient-to-r from-[#8A1538] to-[#A5763F] text-white px-8 py-3 rounded-xl font-bold shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all">
             العودة للأقسام
           </button>
         </div>
@@ -1190,7 +1192,7 @@ function AnnouncementsPage() {
       {selectedAnnouncement && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4" onClick={() => setSelectedAnnouncement(null)}>
           <div className="bg-white rounded-3xl shadow-2xl w-full max-w-md p-8" onClick={(e) => e.stopPropagation()} dir="rtl">
-            <h2 className="text-2xl font-black text-teal-700 mb-4">التسجيل في {selectedAnnouncement.title}</h2>
+            <h2 className="text-2xl font-black text-[#8A1538] mb-4">التسجيل في {selectedAnnouncement.title}</h2>
             <div className="space-y-4">
               <div>
                 <label className="block text-gray-700 font-semibold mb-2">ملاحظات (اختياري)</label>
@@ -1455,7 +1457,7 @@ function TeacherDashboard() {
       {showModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={() => setShowModal(false)}>
           <div className="bg-white rounded-2xl p-8 max-w-md w-full" onClick={(e) => e.stopPropagation()}>
-            <h2 className="text-2xl font-bold text-teal-700 mb-6">اقتراح موهبة جديدة</h2>
+            <h2 className="text-2xl font-bold text-[#8A1538] mb-6">اقتراح موهبة جديدة</h2>
             <div className="space-y-4">
               <select value={newSub.categoryId} onChange={(e) => setNewSub({ ...newSub, categoryId: e.target.value })} className="w-full px-4 py-3 border rounded-lg">
                 <option value="">اختر القسم</option>
@@ -1934,18 +1936,10 @@ function AdminDashboard() {
         <div className="space-y-6">
           <button
             onClick={() => {
-  setEditingItem(null);
-  setNewAnnouncement({
-    title: '',
-    description: '',
-    type: 'announcement',
-    image_url: '',
-    registration_open: false,
-    end_date: '',
-    is_published: true, // ✅ مهم جدًا
-  });
-  setShowAnnouncementModal(true);
-}}
+              setEditingItem(null);
+              setNewAnnouncement({ title: '', description: '', type: 'announcement', image_url: '', registration_open: false, end_date: '' });
+              setShowAnnouncementModal(true);
+            }}
             className="flex items-center gap-2 bg-gradient-to-r from-emerald-600 to-cyan-600 text-white px-6 py-3 rounded-lg font-bold shadow-lg hover:shadow-xl"
           >
             <Plus className="w-5 h-5" />
