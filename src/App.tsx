@@ -498,14 +498,11 @@ function MainApp() {
 
   if (user?.role === 'teacher') {
     return (
-<div className="app-bg">
-
-        <Header />
-        <div className="pb-20">
-          <TeacherDashboard />
-        </div>
-      </div>
-    );
+  <AppShell navPadding={true}>
+    <Header />
+    <TeacherDashboard />
+  </AppShell>
+);
   }
 
   if (user?.role === 'admin') {
