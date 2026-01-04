@@ -879,14 +879,24 @@ function RegisterPage({ categoryId, subcategoryId, setPage }: any) {
 
   if (!user) {
     return (
-      <div className="container mx-auto px-4 py-16" dir="rtl">
-        <div className="max-w-md mx-auto ui-card p-12 text-center border-t-4 border-[#8A1538]">
-          <LogIn className="w-16 h-16 text-[#8A1538] mx-auto mb-6" />
-          <h2 className="text-3xl font-black text-gray-800 mb-4">يجب تسجيل الدخول</h2>
-          <p className="text-gray-600 mb-8">لتسجيل موهبتك، يرجى تسجيل الدخول أولاً</p>
-          <button onClick={() => setPage('talents')} className="bg-gradient-to-r from-[#8A1538] to-[#A5763F] text-white px-8 py-3 rounded-xl font-bold shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all">
-            العودة للأقسام
-          </button>
+      <div className="app-bg min-h-screen flex items-center justify-center px-4 py-16" dir="rtl">
+        <div className="max-w-md w-full">
+          <div className="ui-card p-12 text-center relative overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-rose-50/50 via-transparent to-amber-50/50 pointer-events-none"></div>
+            <div className="relative z-10">
+              <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-rose-500 to-amber-500 flex items-center justify-center shadow-2xl animate-icon-appear">
+                <LogIn className="w-10 h-10 text-white" strokeWidth={2} />
+              </div>
+              <h2 className="text-3xl font-black text-gray-800 mb-3">يجب تسجيل الدخول</h2>
+              <p className="text-gray-600 mb-8 text-lg">لتسجيل موهبتك، يرجى تسجيل الدخول أولاً</p>
+              <button
+                onClick={() => setPage('talents')}
+                className="bg-gradient-to-r from-rose-600 to-amber-600 text-white px-8 py-4 rounded-xl font-bold shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 hover:-translate-y-1"
+              >
+                العودة للأقسام
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     );
