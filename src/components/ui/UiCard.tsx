@@ -1,133 +1,84 @@
 // src/components/ui/UiCard.tsx
 import React from "react";
 
-/** className join helper */
-function cn(...xs: Array<string | undefined | null | false>) {
-  return xs.filter(Boolean).join(" ");
+type CardVariant = "teal" | "cyan" | "blue" | "amber" | "rose" | "purple" | "slate" | "white";
+type CardPadding = "none" | "sm" | "md" | "lg";
+
+type Props<T extends keyof JSX.IntrinsicElements = "div"> =
+  React.ComponentPropsWithoutRef<T> & {
+    as?: T;
+    variant?: CardVariant; // ui-card-teal ... etc
+    hover?: boolean;       // ui-card-hover
+    accent?: boolean;      // ui-card-accent (اختياري لو عامل له CSS)
+    padding?: CardPadding; // ui-pad-*
+  };
+
+function cx(...classes: Array<string | false | null | undefined>) {
+  return classes.filter(Boolean).join(" ");
 }
 
-type AsTag = keyof JSX.IntrinsicElements;
-
-type UiCardProps = React.HTMLAttributes<HTMLElement> & {
-  as?: AsTag;
-  /** نفس فكرة shadcn: لو عايز تمرر class للمكوّن ابن بدل ما يعمل wrapper */
-  asChild?: boolean;
-
-  /** شكل الكارد */
-  variant?: "base" | "teal" | "blue" | "purple" | "amber" | "rose" | "cyan" | "glass";
-
-  /** خط accent أعلى الكارد */
-  accent?: boolean;
-
-  /** padding جاهز */
-  padding?: "none" | "sm" | "md" | "lg";
+const variantClass: Record<CardVariant, string> = {
+  teal: "ui-card-teal",
+  cyan: "ui-card-cyan",
+  blue: "ui-card-blue",
+  amber: "ui-card-amber",
+  rose: "ui-card-rose",
+  purple: "ui-card-purple",
+  slate: "ui-card-slate",
+  white: "ui-card-white",
 };
 
-export function UiCard({
-  as: Tag = "div",
-  asChild = false,
-  className = "",
-  variant = "base",
+const padClass: Record<CardPadding, string> = {
+  none: "ui-pad-none",
+  sm: "ui-pad-sm",
+  md: "ui-pad-md",
+  lg: "ui-pad-lg",
+};
+
+export function UiCard<T extends keyof JSX.IntrinsicElements = "div">({
+  as,
+  className,
+  variant = "white",
+  hover = true,
   accent = false,
-  padding = "md",
+  padding = "none",
   ...props
-}: UiCardProps) {
-  const paddingClass =
-    padding === "none"
-      ? ""
-      : padding === "sm"
-      ? "p-3"
-      : padding === "lg"
-      ? "p-6"
-      : "p-4";
-
-  const variantClass =
-    variant === "teal"
-      ? "ui-card-teal"
-      : variant === "blue"
-      ? "ui-card-blue"
-      : variant === "purple"
-      ? "ui-card-purple"
-      : variant === "amber"
-      ? "ui-card-amber"
-      : variant === "rose"
-      ? "ui-card-rose"
-      : variant === "cyan"
-      ? "ui-card-cyan"
-      : variant === "glass"
-      ? "ui-glass"
-      : ""; // base = ui-card
-
-  // لو asChild = true هنرجّع Fragment؟ لا، الأفضل نخليها بسيطة: asChild يعني أنت بتمرر Tag بنفسك
-  // فخلّيه نفس behavior: Tag بيتغير بالـ as prop.
-  return React.createElement(Tag, {
-    ...props,
-    className: cn(
-      // base style
-      variant === "glass" ? "ui-glass ui-card-hover" : "ui-card ui-card-hover",
-      // variant gradient
-      variantClass,
-      // accent top line
-      accent && "ui-accent",
-      // spacing
-      paddingClass,
-      className
-    ),
-  });
-}
-
-type UiIconCircleProps = React.HTMLAttributes<HTMLDivElement> & {
-  size?: "sm" | "md" | "lg";
-};
-
-export function UiIconCircle({
-  className = "",
-  size = "md",
-  ...props
-}: UiIconCircleProps) {
-  const sizeClass =
-    size === "sm"
-      ? "w-10 h-10"
-      : size === "lg"
-      ? "w-14 h-14"
-      : "w-[46px] h-[46px]";
+}: Props<T>) {
+  const Tag = (as ?? "div") as any;
 
   return (
-    <div className={cn("ui-icon-circle", sizeClass, className)} {...props} />
+    <Tag
+      className={cx(
+        "ui-card",
+        hover && "ui-card-hover",
+        accent && "ui-card-accent",
+        variantClass[variant],
+        padClass[padding],
+        className
+      )}
+      {...props}
+    />
   );
 }
 
-/** مربع أكبر للرسومات/Illustration بدل الأيقونات الصغيرة */
+export function UiIconCircle({
+  className = "",
+  ...props
+}: React.HTMLAttributes<HTMLDivElement>) {
+  return <div className={cx("ui-icon-circle", className)} {...props} />;
+}
+
+export function UiPill({
+  className = "",
+  ...props
+}: React.HTMLAttributes<HTMLDivElement>) {
+  return <div className={cx("ui-pill", className)} {...props} />;
+}
+
+/** اختياري: دائرة/بلور للأيقونات الكبيرة (لو حابب تستخدمها) */
 export function UiIllus({
   className = "",
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) {
-  return <div className={cn("ui-illus", className)} {...props} />;
-}
-
-type UiPillProps = React.HTMLAttributes<HTMLDivElement> & {
-  tone?: "default" | "teal" | "blue" | "rose" | "amber" | "purple" | "cyan";
-};
-
-export function UiPill({
-  className = "",
-  tone = "default",
-  ...props
-}: UiPillProps) {
-  const toneClass =
-    tone === "teal"
-      ? "border-[rgba(20,184,166,.22)] bg-[rgba(20,184,166,.10)]"
-      : tone === "blue"
-      ? "border-[rgba(59,130,246,.22)] bg-[rgba(59,130,246,.10)]"
-      : tone === "rose"
-      ? "border-[rgba(244,63,94,.22)] bg-[rgba(244,63,94,.10)]"
-      : tone === "amber"
-      ? "border-[rgba(251,191,36,.25)] bg-[rgba(251,191,36,.12)]"
-      : tone === "purple"
-      ? "border-[rgba(168,85,247,.22)] bg-[rgba(168,85,247,.10)]"
-      : tone === "cyan"
-      ? "border-[rgba(6,182,212,.22)] bg-[rgba(6,182,212,.10)]"
-      : "";
-
-  return <div className={cn("ui-pill px-3 py-1", toneClass, className)} {...props} />;
+  return <div className={cx("ui-illus", className)} {...props} />;
 }
