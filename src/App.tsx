@@ -638,65 +638,63 @@ function MainApp() {
 
 function HomePage({ setCurrentSection }: { setCurrentSection: (section: string) => void }) {
   return (
-    <div className="container mx-auto px-3 py-6" dir="rtl">
-                 <div className="text-center mb-6">
-        <h1 className="text-2xl md:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 mb-2 drop-shadow-sm">مرحباً بك في كنوز قطر</h1>
-        <p className="text-sm md:text-lg text-gray-600 font-semibold mb-4">اكتشف مواهبك، سجل في المسابقات، واحتفل بالإنجازات</p>
+    <div dir="rtl">
+      <div className="text-center mb-6">
+        <h1 className="text-2xl md:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 mb-2 drop-shadow-sm">
+          مرحباً بك في كنوز قطر
+        </h1>
+        <p className="text-sm md:text-lg text-gray-600 font-semibold mb-4">
+          اكتشف مواهبك، سجل في المسابقات، واحتفل بالإنجازات
+        </p>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-3 gap-3 max-w-4xl mx-auto mb-6">
-        <button
-          onClick={() => setCurrentSection('talents')}
-          className="group ui-card ui-card-hover ui-card-amber overflow-hidden h-32 md:h-40 active:scale-[0.99]"
-        >
-          <div className="h-full flex flex-col items-center justify-center p-3">
-            <div className="mb-2 w-12 h-12 rounded-full bg-gradient-to-br from-amber-400 to-yellow-500 flex items-center justify-center shadow-md">
-              <Star className="w-6 h-6 text-white" />
+        <button onClick={() => setCurrentSection('talents')} className="text-right">
+          <UiCard variant="amber" hover className="overflow-hidden h-32 md:h-40 active:scale-[0.99]">
+            <div className="h-full flex flex-col items-center justify-center p-3">
+              <UiIconCircle className="mb-2">
+                <Star className="w-6 h-6" />
+              </UiIconCircle>
+              <h3 className="text-base md:text-xl font-black text-slate-900 mb-1">اكتشف موهبتك</h3>
+              <p className="text-slate-500 text-xs md:text-sm font-semibold hidden md:block">سجل موهبتك الآن</p>
             </div>
-
-            <h3 className="text-base md:text-xl font-black text-slate-900 mb-1">اكتشف موهبتك</h3>
-            <p className="text-slate-500 text-xs md:text-sm font-semibold hidden md:block">سجل موهبتك الآن</p>
-          </div>
+          </UiCard>
         </button>
 
-        <button
-          onClick={() => setCurrentSection('announcements')}
-          className="group ui-card ui-card-hover ui-card-cyan overflow-hidden h-32 md:h-40 active:scale-[0.99]"
-        >
-          <div className="h-full flex flex-col items-center justify-center p-3">
-            <div className="mb-2 w-12 h-12 rounded-full bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center shadow-md">
-              <Megaphone className="w-6 h-6 text-white" />
+        <button onClick={() => setCurrentSection('announcements')} className="text-right">
+          <UiCard variant="cyan" hover className="overflow-hidden h-32 md:h-40 active:scale-[0.99]">
+            <div className="h-full flex flex-col items-center justify-center p-3">
+              <UiIconCircle className="mb-2">
+                <Megaphone className="w-6 h-6" />
+              </UiIconCircle>
+              <h3 className="text-base md:text-xl font-black text-slate-900 mb-1">الإعلانات</h3>
+              <p className="text-slate-500 text-xs md:text-sm font-semibold hidden md:block">تابع الأخبار</p>
             </div>
-
-            <h3 className="text-base md:text-xl font-black text-slate-900 mb-1">الإعلانات</h3>
-            <p className="text-slate-500 text-xs md:text-sm font-semibold hidden md:block">تابع الأخبار</p>
-          </div>
+          </UiCard>
         </button>
 
-        <button
-          onClick={() => setCurrentSection('honors')}
-          className="group ui-card ui-card-hover ui-card-rose overflow-hidden h-32 md:h-40 col-span-2 md:col-span-1 active:scale-[0.99]"
-        >
-          <div className="h-full flex flex-col items-center justify-center p-3">
-            <div className="mb-2 w-12 h-12 rounded-full bg-gradient-to-br from-rose-400 to-pink-500 flex items-center justify-center shadow-md">
-              <Trophy className="w-6 h-6 text-white" />
+        <button onClick={() => setCurrentSection('honors')} className="text-right col-span-2 md:col-span-1">
+          <UiCard variant="rose" hover className="overflow-hidden h-32 md:h-40 active:scale-[0.99]">
+            <div className="h-full flex flex-col items-center justify-center p-3">
+              <UiIconCircle className="mb-2">
+                <Trophy className="w-6 h-6" />
+              </UiIconCircle>
+              <h3 className="text-base md:text-xl font-black text-slate-900 mb-1">التكريمات</h3>
+              <p className="text-slate-500 text-xs md:text-sm font-semibold hidden md:block">إنجازات مدرستنا</p>
             </div>
-
-            <h3 className="text-base md:text-xl font-black text-slate-900 mb-1">التكريمات</h3>
-            <p className="text-slate-500 text-xs md:text-sm font-semibold hidden md:block">إنجازات مدرستنا</p>
-          </div>
+          </UiCard>
         </button>
       </div>
 
-      <div className="mt-6 bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 rounded-2xl shadow-lg p-4 md:p-6 text-center text-white max-w-4xl mx-auto">
+      <UiCard variant="teal" hover={false} className="max-w-4xl mx-auto p-4 md:p-6 text-center">
         <h2 className="text-lg md:text-2xl font-black mb-2">ابدأ رحلتك الآن</h2>
-        <p className="text-sm md:text-lg mb-3">استخدم الشريط السفلي للتنقل بين الأقسام</p>
-        <div className="flex items-center justify-center gap-2 md:gap-4 text-emerald-200">
+        <p className="text-sm md:text-lg mb-3 soft-muted">استخدم الشريط السفلي للتنقل بين الأقسام</p>
+        <div className="flex items-center justify-center gap-2 md:gap-4">
           <ArrowRight className="w-4 h-4 md:w-6 md:h-6 animate-bounce rotate-180" />
           <span className="font-bold text-xs md:text-base">اضغط على الأيقونات بالأسفل</span>
           <ArrowRight className="w-4 h-4 md:w-6 md:h-6 animate-bounce rotate-180" />
         </div>
-      </div>
+      </UiCard>
     </div>
   );
 }
