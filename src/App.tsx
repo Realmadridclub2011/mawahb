@@ -743,7 +743,6 @@ function MainApp() {
   );
 }
 
-
 function HomePage({ setCurrentSection }: { setCurrentSection: (section: string) => void }) {
   return (
     <div className="container mx-auto px-3 py-6" dir="rtl">
