@@ -639,58 +639,105 @@ function MainApp() {
 }
 
 function HomePage({ setCurrentSection }: { setCurrentSection: (section: string) => void }) {
+  // صور Illustrations (مؤقتًا من icons8 — بعدين لو رفعت ملفاتك هنبدّلها محلي)
+  const tiles = [
+    {
+      id: "talents",
+      title: "اكتشف موهبتك",
+      sub: "سجّل موهبتك الآن",
+      badge: "ابدأ الآن",
+      variant: "maroon" as const,
+      img: "https://img.icons8.com/color/256/treasure-chest.png",
+    },
+    {
+      id: "announcements",
+      title: "الإعلانات والمسابقات",
+      sub: "تابع آخر الفرص",
+      badge: "التسجيل مفتوح",
+      variant: "cyan" as const,
+      img: "https://img.icons8.com/color/256/megaphone.png",
+    },
+    {
+      id: "honors",
+      title: "التكريمات",
+      sub: "إنجازات المدرسة",
+      badge: "شاهد المزيد",
+      variant: "emerald" as const,
+      img: "https://img.icons8.com/color/256/trophy.png",
+    },
+  ];
+
   return (
     <div className="container mx-auto px-3 py-6" dir="rtl">
       <div className="text-center mb-6">
-        <h1 className="text-2xl md:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 mb-2 drop-shadow-sm">مرحباً بك في كنوز قطر</h1>
-        <p className="text-sm md:text-lg text-gray-600 font-semibold mb-4">اكتشف مواهبك، سجل في المسابقات، واحتفل بالإنجازات</p>
+        <h1 className="text-2xl md:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 mb-2 drop-shadow-sm">
+          مرحباً بك في كنوز قطر
+        </h1>
+        <p className="text-sm md:text-lg text-gray-600 font-semibold">
+          اكتشف مواهبك، سجل في المسابقات، واحتفل بالإنجازات
+        </p>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-3 max-w-4xl mx-auto mb-6">
-        <button
-          onClick={() => setCurrentSection('talents')}
-          className="group ui-card ui-card-hover ui-card-amber overflow-hidden h-32 md:h-40 active:scale-[0.99]"
-        >
-          <div className="h-full flex flex-col items-center justify-center p-3">
-            <div className="mb-2 w-12 h-12 rounded-full bg-gradient-to-br from-amber-400 to-yellow-500 flex items-center justify-center shadow-md">
-              <Star className="w-6 h-6 text-white" />
+      {/* ✅ Tiles Grid مثل الصورة */}
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-3 max-w-5xl mx-auto">
+        {tiles.map((t) => (
+          <UiTile
+            key={t.id}
+            variant={t.variant}
+            onClick={() => setCurrentSection(t.id)}
+            className="p-3 md:p-4 min-h-[170px] md:min-h-[210px]"
+          >
+            <div className="flex items-start justify-between gap-2">
+              <span className="ui-badge">
+                <span className="inline-block w-2 h-2 rounded-full bg-emerald-500" />
+                {t.badge}
+              </span>
+
+              <div className="w-9 h-9 rounded-full bg-white/70 border border-white/60 shadow-md flex items-center justify-center">
+                <span className="text-xs font-black text-slate-700">★</span>
+              </div>
             </div>
 
-            <h3 className="text-base md:text-xl font-black text-slate-900 mb-1">اكتشف موهبتك</h3>
-            <p className="text-slate-500 text-xs md:text-sm font-semibold hidden md:block">سجل موهبتك الآن</p>
-          </div>
-        </button>
-
-        <button
-          onClick={() => setCurrentSection('announcements')}
-          className="group ui-card ui-card-hover ui-card-cyan overflow-hidden h-32 md:h-40 active:scale-[0.99]"
-        >
-          <div className="h-full flex flex-col items-center justify-center p-3">
-            <div className="mb-2 w-12 h-12 rounded-full bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center shadow-md">
-              <Megaphone className="w-6 h-6 text-white" />
+            <div className="mt-3 ui-tile-media">
+              <img src={t.img} alt={t.title} />
             </div>
 
-            <h3 className="text-base md:text-xl font-black text-slate-900 mb-1">الإعلانات</h3>
-            <p className="text-slate-500 text-xs md:text-sm font-semibold hidden md:block">تابع الأخبار</p>
-          </div>
-        </button>
-
-        <button
-          onClick={() => setCurrentSection('honors')}
-          className="group ui-card ui-card-hover ui-card-rose overflow-hidden h-32 md:h-40 col-span-2 md:col-span-1 active:scale-[0.99]"
-        >
-          <div className="h-full flex flex-col items-center justify-center p-3">
-            <div className="mb-2 w-12 h-12 rounded-full bg-gradient-to-br from-rose-400 to-pink-500 flex items-center justify-center shadow-md">
-              <Trophy className="w-6 h-6 text-white" />
+            <div className="mt-3">
+              <div className="ui-tile-title text-base md:text-lg">{t.title}</div>
+              <div className="ui-tile-sub text-xs md:text-sm mt-1">{t.sub}</div>
             </div>
+          </UiTile>
+        ))}
 
-            <h3 className="text-base md:text-xl font-black text-slate-900 mb-1">التكريمات</h3>
-            <p className="text-slate-500 text-xs md:text-sm font-semibold hidden md:block">إنجازات مدرستنا</p>
+        {/* ✅ بطاقة إضافية صغيرة (اختياري) لو تحب نفس فكرة “grid” في الصورة */}
+        <UiTile
+          variant="teal"
+          onClick={() => setCurrentSection("talents")}
+          className="col-span-2 md:col-span-1 p-3 md:p-4 min-h-[170px] md:min-h-[210px]"
+        >
+          <div className="flex items-start justify-between">
+            <span className="ui-badge">
+              <span className="inline-block w-2 h-2 rounded-full bg-teal-500" />
+              منصة المواهب
+            </span>
           </div>
-        </button>
+
+          <div className="mt-3 ui-tile-media">
+            <img
+              src="https://img.icons8.com/color/256/reading.png"
+              alt="منصة المواهب"
+            />
+          </div>
+
+          <div className="mt-3">
+            <div className="ui-tile-title text-base md:text-lg">مسارات متنوعة</div>
+            <div className="ui-tile-sub text-xs md:text-sm mt-1">رياضية • فنية • علمية • تقنية</div>
+          </div>
+        </UiTile>
       </div>
 
-      <div className="mt-6 bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 rounded-2xl shadow-lg p-4 md:p-6 text-center text-white max-w-4xl mx-auto">
+      {/* Footer Hint */}
+      <div className="mt-6 bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 rounded-2xl shadow-lg p-4 md:p-6 text-center text-white max-w-5xl mx-auto">
         <h2 className="text-lg md:text-2xl font-black mb-2">ابدأ رحلتك الآن</h2>
         <p className="text-sm md:text-lg mb-3">استخدم الشريط السفلي للتنقل بين الأقسام</p>
         <div className="flex items-center justify-center gap-2 md:gap-4 text-emerald-200">
