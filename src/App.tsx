@@ -507,26 +507,33 @@ function MainApp() {
 
   if (user?.role === 'admin') {
     return (
-      <div className="app-bg">
-        <Header />
-        <div className="pb-20">
-          {currentSection === 'admin-dashboard' && <AdminDashboard />}
-          {currentSection === 'home' && <HomePage setCurrentSection={(section) => {
-            setCurrentSection(section);
-            if (section === 'talents') setPage('talents');
-          }} />}
-          {currentSection === 'talents' && (
-            <>
-              {page === 'talents' && <TalentsHomePage setPage={setPage} setSelectedCategory={setSelectedCategory} />}
-              {page === 'subcategories' && <SubcategoriesPage categoryId={selectedCategory!} setPage={setPage} setSelectedSubcategory={setSelectedSubcategory} setSelectedCategory={setSelectedCategory} />}
-              {page === 'register' && <RegisterPage categoryId={selectedCategory!} subcategoryId={selectedSubcategory!} setPage={setPage} />}
-              {page === 'mypage' && <MyPage setPage={setPage} />}
-            </>
-          )}
-          {currentSection === 'announcements' && <AnnouncementsPage />}
-          {currentSection === 'honors' && <HonorsPage />}
-        </div>
-        <nav className="fixed bottom-0 left-0 right-0 bg-gradient-to-r from-slate-50 via-teal-50 to-cyan-50 border-t-2 md:border-t-4 border-teal-600 shadow-2xl z-40" dir="rtl">
+  <AppShell navPadding={true}>
+    <Header />
+    {/* محتوى الأدمن كما هو بدون ما تغيره */}
+    <div>
+      {currentSection === 'admin-dashboard' && <AdminDashboard />}
+      {currentSection === 'home' && <HomePage setCurrentSection={(section) => {
+        setCurrentSection(section);
+        if (section === 'talents') setPage('talents');
+      }} />}
+      {currentSection === 'talents' && (
+        <>
+          {page === 'talents' && <TalentsHomePage setPage={setPage} setSelectedCategory={setSelectedCategory} />}
+          {page === 'subcategories' && <SubcategoriesPage categoryId={selectedCategory!} setPage={setPage} setSelectedSubcategory={setSelectedSubcategory} setSelectedCategory={setSelectedCategory} />}
+          {page === 'register' && <RegisterPage categoryId={selectedCategory!} subcategoryId={selectedSubcategory!} setPage={setPage} />}
+          {page === 'mypage' && <MyPage setPage={setPage} />}
+        </>
+      )}
+      {currentSection === 'announcements' && <AnnouncementsPage />}
+      {currentSection === 'honors' && <HonorsPage />}
+    </div>
+
+    {/* الـ nav بتاع الأدمن كما هو */}
+    <nav className="fixed bottom-0 left-0 right-0 bg-gradient-to-r from-slate-50 via-teal-50 to-cyan-50 border-t-2 md:border-t-4 border-teal-600 shadow-2xl z-40" dir="rtl">
+      {/* ... نفس محتواه بالظبط ... */}
+    </nav>
+  </AppShell>
+);
           <div className="container mx-auto px-1">
             <div className="grid grid-cols-5 gap-0.5">
               <button
