@@ -484,6 +484,7 @@ function MainApp() {
   const { user } = useAuth();
   const [currentSection, setCurrentSection] = useState('home');
   const [showLogin, setShowLogin] = useState(false);
+
   const [page, setPage] = useState<string>('home');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedSubcategory, setSelectedSubcategory] = useState<string | null>(null);
@@ -493,40 +494,77 @@ function MainApp() {
       setCurrentSection('teacher-dashboard');
     } else if (user?.role === 'admin') {
       setCurrentSection('admin-dashboard');
+    } else {
+      setCurrentSection('home');
     }
   }, [user]);
 
+  // ====== TEACHER ======
   if (user?.role === 'teacher') {
     return (
-  <AppShell navPadding={true}>
-    <Header />
-    <TeacherDashboard />
-  </AppShell>
-);
+      <AppShell navPadding={true}>
+        <Header />
+        <TeacherDashboard />
+      </AppShell>
+    );
   }
 
+  // ====== ADMIN ======
   if (user?.role === 'admin') {
     return (
-      <div className="app-bg">
+      <AppShell navPadding={true}>
         <Header />
         <div className="pb-20">
           {currentSection === 'admin-dashboard' && <AdminDashboard />}
-          {currentSection === 'home' && <HomePage setCurrentSection={(section) => {
-            setCurrentSection(section);
-            if (section === 'talents') setPage('talents');
-          }} />}
+
+          {currentSection === 'home' && (
+            <HomePage
+              setCurrentSection={(section) => {
+                setCurrentSection(section);
+                if (section === 'talents') setPage('talents');
+              }}
+            />
+          )}
+
           {currentSection === 'talents' && (
             <>
-              {page === 'talents' && <TalentsHomePage setPage={setPage} setSelectedCategory={setSelectedCategory} />}
-              {page === 'subcategories' && <SubcategoriesPage categoryId={selectedCategory!} setPage={setPage} setSelectedSubcategory={setSelectedSubcategory} setSelectedCategory={setSelectedCategory} />}
-              {page === 'register' && <RegisterPage categoryId={selectedCategory!} subcategoryId={selectedSubcategory!} setPage={setPage} />}
+              {page === 'talents' && (
+                <TalentsHomePage
+                  setPage={setPage}
+                  setSelectedCategory={setSelectedCategory}
+                />
+              )}
+
+              {page === 'subcategories' && (
+                <SubcategoriesPage
+                  categoryId={selectedCategory!}
+                  setPage={setPage}
+                  setSelectedSubcategory={setSelectedSubcategory}
+                  setSelectedCategory={setSelectedCategory}
+                />
+              )}
+
+              {page === 'register' && (
+                <RegisterPage
+                  categoryId={selectedCategory!}
+                  subcategoryId={selectedSubcategory!}
+                  setPage={setPage}
+                />
+              )}
+
               {page === 'mypage' && <MyPage setPage={setPage} />}
             </>
           )}
+
           {currentSection === 'announcements' && <AnnouncementsPage />}
           {currentSection === 'honors' && <HonorsPage />}
         </div>
-        <nav className="fixed bottom-0 left-0 right-0 bg-gradient-to-r from-slate-50 via-teal-50 to-cyan-50 border-t-2 md:border-t-4 border-teal-600 shadow-2xl z-40" dir="rtl">
+
+        {/* ✅ نفس BottomNav بتاع المستخدم العادي لكن مع زر لوحة التحكم */}
+        <nav
+          className="fixed bottom-0 left-0 right-0 bg-gradient-to-r from-slate-50 via-teal-50 to-cyan-50 border-t-2 md:border-t-4 border-teal-600 shadow-2xl z-40"
+          dir="rtl"
+        >
           <div className="container mx-auto px-1">
             <div className="grid grid-cols-5 gap-0.5">
               <button
@@ -537,13 +575,20 @@ function MainApp() {
                     : 'text-gray-600 hover:text-teal-700 hover:bg-teal-50 hover:scale-110 active:scale-95 hover:shadow-lg'
                 }`}
               >
-                <Home className={`w-5 h-5 md:w-6 md:h-6 mb-0.5 transition-all duration-300 ${
-                  currentSection === 'home' ? 'scale-110 drop-shadow-md' : ''
-                }`} />
-                <span className={`text-[10px] md:text-xs font-bold transition-all duration-300 ${
-                  currentSection === 'home' ? 'scale-105' : ''
-                }`}>الرئيسية</span>
+                <Home
+                  className={`w-5 h-5 md:w-6 md:h-6 mb-0.5 transition-all duration-300 ${
+                    currentSection === 'home' ? 'scale-110 drop-shadow-md' : ''
+                  }`}
+                />
+                <span
+                  className={`text-[10px] md:text-xs font-bold transition-all duration-300 ${
+                    currentSection === 'home' ? 'scale-105' : ''
+                  }`}
+                >
+                  الرئيسية
+                </span>
               </button>
+
               <button
                 onClick={() => {
                   setCurrentSection('talents');
@@ -555,13 +600,20 @@ function MainApp() {
                     : 'text-gray-600 hover:text-teal-700 hover:bg-teal-50 hover:scale-110 active:scale-95 hover:shadow-lg'
                 }`}
               >
-                <Star className={`w-5 h-5 md:w-6 md:h-6 mb-0.5 transition-all duration-300 ${
-                  currentSection === 'talents' ? 'scale-110 drop-shadow-md' : ''
-                }`} />
-                <span className={`text-[10px] md:text-xs font-bold transition-all duration-300 ${
-                  currentSection === 'talents' ? 'scale-105' : ''
-                }`}>المواهب</span>
+                <Star
+                  className={`w-5 h-5 md:w-6 md:h-6 mb-0.5 transition-all duration-300 ${
+                    currentSection === 'talents' ? 'scale-110 drop-shadow-md' : ''
+                  }`}
+                />
+                <span
+                  className={`text-[10px] md:text-xs font-bold transition-all duration-300 ${
+                    currentSection === 'talents' ? 'scale-105' : ''
+                  }`}
+                >
+                  المواهب
+                </span>
               </button>
+
               <button
                 onClick={() => setCurrentSection('announcements')}
                 className={`flex flex-col items-center justify-center py-2 transition-all duration-300 ease-in-out transform ${
@@ -570,13 +622,20 @@ function MainApp() {
                     : 'text-gray-600 hover:text-teal-700 hover:bg-teal-50 hover:scale-110 active:scale-95 hover:shadow-lg'
                 }`}
               >
-                <Megaphone className={`w-5 h-5 md:w-6 md:h-6 mb-0.5 transition-all duration-300 ${
-                  currentSection === 'announcements' ? 'scale-110 drop-shadow-md' : ''
-                }`} />
-                <span className={`text-[10px] md:text-xs font-bold transition-all duration-300 ${
-                  currentSection === 'announcements' ? 'scale-105' : ''
-                }`}>الإعلانات</span>
+                <Megaphone
+                  className={`w-5 h-5 md:w-6 md:h-6 mb-0.5 transition-all duration-300 ${
+                    currentSection === 'announcements' ? 'scale-110 drop-shadow-md' : ''
+                  }`}
+                />
+                <span
+                  className={`text-[10px] md:text-xs font-bold transition-all duration-300 ${
+                    currentSection === 'announcements' ? 'scale-105' : ''
+                  }`}
+                >
+                  الإعلانات
+                </span>
               </button>
+
               <button
                 onClick={() => setCurrentSection('honors')}
                 className={`flex flex-col items-center justify-center py-2 transition-all duration-300 ease-in-out transform ${
@@ -585,13 +644,20 @@ function MainApp() {
                     : 'text-gray-600 hover:text-teal-700 hover:bg-teal-50 hover:scale-110 active:scale-95 hover:shadow-lg'
                 }`}
               >
-                <Trophy className={`w-5 h-5 md:w-6 md:h-6 mb-0.5 transition-all duration-300 ${
-                  currentSection === 'honors' ? 'scale-110 drop-shadow-md' : ''
-                }`} />
-                <span className={`text-[10px] md:text-xs font-bold transition-all duration-300 ${
-                  currentSection === 'honors' ? 'scale-105' : ''
-                }`}>التكريمات</span>
+                <Trophy
+                  className={`w-5 h-5 md:w-6 md:h-6 mb-0.5 transition-all duration-300 ${
+                    currentSection === 'honors' ? 'scale-110 drop-shadow-md' : ''
+                  }`}
+                />
+                <span
+                  className={`text-[10px] md:text-xs font-bold transition-all duration-300 ${
+                    currentSection === 'honors' ? 'scale-105' : ''
+                  }`}
+                >
+                  التكريمات
+                </span>
               </button>
+
               <button
                 onClick={() => setCurrentSection('admin-dashboard')}
                 className={`flex flex-col items-center justify-center py-2 transition-all duration-300 ease-in-out transform ${
@@ -600,49 +666,83 @@ function MainApp() {
                     : 'text-gray-600 hover:text-teal-700 hover:bg-teal-50 hover:scale-110 active:scale-95 hover:shadow-lg'
                 }`}
               >
-                <LayoutDashboard className={`w-5 h-5 md:w-6 md:h-6 mb-0.5 transition-all duration-300 ${
-                  currentSection === 'admin-dashboard' ? 'scale-110 drop-shadow-md' : ''
-                }`} />
-                <span className={`text-[10px] md:text-xs font-bold transition-all duration-300 ${
-                  currentSection === 'admin-dashboard' ? 'scale-105' : ''
-                }`}>لوحة التحكم</span>
+                <LayoutDashboard
+                  className={`w-5 h-5 md:w-6 md:h-6 mb-0.5 transition-all duration-300 ${
+                    currentSection === 'admin-dashboard'
+                      ? 'scale-110 drop-shadow-md'
+                      : ''
+                  }`}
+                />
+                <span
+                  className={`text-[10px] md:text-xs font-bold transition-all duration-300 ${
+                    currentSection === 'admin-dashboard' ? 'scale-105' : ''
+                  }`}
+                >
+                  لوحة التحكم
+                </span>
               </button>
             </div>
           </div>
         </nav>
-      </div>
+      </AppShell>
     );
   }
 
+  // ====== PUBLIC / STUDENT / GUARDIAN ======
   return (
-    <div className="app-bg">
+    <AppShell navPadding={true}>
       <Header showLogin={showLogin} setShowLogin={setShowLogin} />
       <LoginModal showLogin={showLogin} setShowLogin={setShowLogin} />
 
       <div className="pb-20">
-        {currentSection === 'home' && <HomePage setCurrentSection={(section) => {
-          setCurrentSection(section);
-          if (section === 'talents') setPage('talents');
-        }} />}
+        {currentSection === 'home' && (
+          <HomePage
+            setCurrentSection={(section) => {
+              setCurrentSection(section);
+              if (section === 'talents') setPage('talents');
+            }}
+          />
+        )}
+
         {currentSection === 'talents' && (
           <>
-            {page === 'talents' && <TalentsHomePage setPage={setPage} setSelectedCategory={setSelectedCategory} />}
-            {page === 'subcategories' && <SubcategoriesPage categoryId={selectedCategory!} setPage={setPage} setSelectedSubcategory={setSelectedSubcategory} setSelectedCategory={setSelectedCategory} />}
-            {page === 'register' && <RegisterPage categoryId={selectedCategory!} subcategoryId={selectedSubcategory!} setPage={setPage} />}
+            {page === 'talents' && (
+              <TalentsHomePage setPage={setPage} setSelectedCategory={setSelectedCategory} />
+            )}
+            {page === 'subcategories' && (
+              <SubcategoriesPage
+                categoryId={selectedCategory!}
+                setPage={setPage}
+                setSelectedSubcategory={setSelectedSubcategory}
+                setSelectedCategory={setSelectedCategory}
+              />
+            )}
+            {page === 'register' && (
+              <RegisterPage
+                categoryId={selectedCategory!}
+                subcategoryId={selectedSubcategory!}
+                setPage={setPage}
+              />
+            )}
             {page === 'mypage' && <MyPage setPage={setPage} />}
           </>
         )}
+
         {currentSection === 'announcements' && <AnnouncementsPage />}
         {currentSection === 'honors' && <HonorsPage />}
       </div>
 
-      <BottomNav currentSection={currentSection} setCurrentSection={(section) => {
-        setCurrentSection(section);
-        if (section === 'talents') setPage('talents');
-      }} />
-    </div>
+      <BottomNav
+        currentSection={currentSection}
+        setCurrentSection={(section) => {
+          setCurrentSection(section);
+          if (section === 'talents') setPage('talents');
+        }}
+      />
+    </AppShell>
   );
 }
+
 
 function HomePage({ setCurrentSection }: { setCurrentSection: (section: string) => void }) {
   return (
