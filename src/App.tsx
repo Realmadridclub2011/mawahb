@@ -649,6 +649,16 @@ function MainApp() {
 function HomePage({ setCurrentSection }: { setCurrentSection: (section: string) => void }) {
   return (
     <div className="container mx-auto px-3 py-6" dir="rtl">
+            {/* ✅ TEST: لو ui شغال هتشوف كارد شيك هنا */}
+      <UiCard variant="teal" accent padding="lg" className="mb-4 flex items-center gap-3">
+        <UiIconCircle className="shrink-0">
+          <Star className="w-5 h-5" />
+        </UiIconCircle>
+        <div className="flex-1">
+          <div className="font-black">تجربة الواجهة الجديدة</div>
+          <div className="soft-muted text-sm">لو شايف الكارد ده يبقى index.css شغال</div>
+        </div>
+      </UiCard>
       <div className="text-center mb-6">
         <h1 className="text-2xl md:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 mb-2 drop-shadow-sm">مرحباً بك في كنوز قطر</h1>
         <p className="text-sm md:text-lg text-gray-600 font-semibold mb-4">اكتشف مواهبك، سجل في المسابقات، واحتفل بالإنجازات</p>
