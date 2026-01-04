@@ -533,7 +533,6 @@ function MainApp() {
       {/* ... نفس محتواه بالظبط ... */}
     </nav>
   </AppShell>
-);
           <div className="container mx-auto px-1">
             <div className="grid grid-cols-5 gap-0.5">
               <button
