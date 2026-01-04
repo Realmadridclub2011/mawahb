@@ -1,4 +1,5 @@
 import { useState, useEffect, createContext, useContext } from 'react';
+import { UiCard, UiIconCircle } from "./components/ui/UiCard";
 import { createClient } from '@supabase/supabase-js';
 import { LogIn, LogOut, User, FileText, Users, LayoutDashboard, ArrowRight, CheckCircle, XCircle, Clock, TrendingUp, Plus, MessageSquare, Search, Download, X, Info, Award, Dumbbell, Palette, BookOpen, Microscope, Cpu, Home, Megaphone, Trophy, Star, CreditCard as Edit, Trash2, Settings, Image } from 'lucide-react';
 
@@ -419,7 +420,15 @@ function LoginModal({ showLogin, setShowLogin }: { showLogin: boolean; setShowLo
 
             <div>
               <label className="block text-gray-700 font-semibold mb-1 text-sm">رقم الجوال (اختياري)</label>
-              <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-600" placeholder="05xxxxxxxx" dir="ltr" />
+              <input
+                type="tel"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-600"
+                placeholder="+974 XXXX XXXX"
+                pattern="(\+974|974)?[0-9]{8}"
+                dir="ltr"
+              />
             </div>
 
             <div>
@@ -638,105 +647,58 @@ function MainApp() {
 }
 
 function HomePage({ setCurrentSection }: { setCurrentSection: (section: string) => void }) {
-  // صور Illustrations (مؤقتًا من icons8 — بعدين لو رفعت ملفاتك هنبدّلها محلي)
-  const tiles = [
-    {
-      id: "talents",
-      title: "اكتشف موهبتك",
-      sub: "سجّل موهبتك الآن",
-      badge: "ابدأ الآن",
-      variant: "maroon" as const,
-      img: "https://img.icons8.com/color/256/treasure-chest.png",
-    },
-    {
-      id: "announcements",
-      title: "الإعلانات والمسابقات",
-      sub: "تابع آخر الفرص",
-      badge: "التسجيل مفتوح",
-      variant: "cyan" as const,
-      img: "https://img.icons8.com/color/256/megaphone.png",
-    },
-    {
-      id: "honors",
-      title: "التكريمات",
-      sub: "إنجازات المدرسة",
-      badge: "شاهد المزيد",
-      variant: "emerald" as const,
-      img: "https://img.icons8.com/color/256/trophy.png",
-    },
-  ];
-
   return (
     <div className="container mx-auto px-3 py-6" dir="rtl">
       <div className="text-center mb-6">
-        <h1 className="text-2xl md:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 mb-2 drop-shadow-sm">
-          مرحباً بك في كنوز قطر
-        </h1>
-        <p className="text-sm md:text-lg text-gray-600 font-semibold">
-          اكتشف مواهبك، سجل في المسابقات، واحتفل بالإنجازات
-        </p>
+        <h1 className="text-2xl md:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 mb-2 drop-shadow-sm">مرحباً بك في كنوز قطر</h1>
+        <p className="text-sm md:text-lg text-gray-600 font-semibold mb-4">اكتشف مواهبك، سجل في المسابقات، واحتفل بالإنجازات</p>
       </div>
 
-      {/* ✅ Tiles Grid مثل الصورة */}
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-3 max-w-5xl mx-auto">
-        {tiles.map((t) => (
-          <UiTile
-            key={t.id}
-            variant={t.variant}
-            onClick={() => setCurrentSection(t.id)}
-            className="p-3 md:p-4 min-h-[170px] md:min-h-[210px]"
-          >
-            <div className="flex items-start justify-between gap-2">
-              <span className="ui-badge">
-                <span className="inline-block w-2 h-2 rounded-full bg-emerald-500" />
-                {t.badge}
-              </span>
-
-              <div className="w-9 h-9 rounded-full bg-white/70 border border-white/60 shadow-md flex items-center justify-center">
-                <span className="text-xs font-black text-slate-700">★</span>
-              </div>
-            </div>
-
-            <div className="mt-3 ui-tile-media">
-              <img src={t.img} alt={t.title} />
-            </div>
-
-            <div className="mt-3">
-              <div className="ui-tile-title text-base md:text-lg">{t.title}</div>
-              <div className="ui-tile-sub text-xs md:text-sm mt-1">{t.sub}</div>
-            </div>
-          </UiTile>
-        ))}
-
-        {/* ✅ بطاقة إضافية صغيرة (اختياري) لو تحب نفس فكرة “grid” في الصورة */}
-        <UiTile
-          variant="teal"
-          onClick={() => setCurrentSection("talents")}
-          className="col-span-2 md:col-span-1 p-3 md:p-4 min-h-[170px] md:min-h-[210px]"
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-3 max-w-4xl mx-auto mb-6">
+        <button
+          onClick={() => setCurrentSection('talents')}
+          className="group ui-card ui-card-hover ui-card-amber overflow-hidden h-32 md:h-40 active:scale-[0.99]"
         >
-          <div className="flex items-start justify-between">
-            <span className="ui-badge">
-              <span className="inline-block w-2 h-2 rounded-full bg-teal-500" />
-              منصة المواهب
-            </span>
-          </div>
+          <div className="h-full flex flex-col items-center justify-center p-3">
+            <div className="mb-2 w-12 h-12 rounded-full bg-gradient-to-br from-amber-400 to-yellow-500 flex items-center justify-center shadow-md">
+              <Star className="w-6 h-6 text-white" />
+            </div>
 
-          <div className="mt-3 ui-tile-media">
-            <img
-              src="https://img.icons8.com/color/256/reading.png"
-              alt="منصة المواهب"
-            />
+            <h3 className="text-base md:text-xl font-black text-slate-900 mb-1">اكتشف موهبتك</h3>
+            <p className="text-slate-500 text-xs md:text-sm font-semibold hidden md:block">سجل موهبتك الآن</p>
           </div>
+        </button>
 
-          <div className="mt-3">
-            <div className="ui-tile-title text-base md:text-lg">مسارات متنوعة</div>
-            <div className="ui-tile-sub text-xs md:text-sm mt-1">رياضية • فنية • علمية • تقنية</div>
+        <button
+          onClick={() => setCurrentSection('announcements')}
+          className="group ui-card ui-card-hover ui-card-cyan overflow-hidden h-32 md:h-40 active:scale-[0.99]"
+        >
+          <div className="h-full flex flex-col items-center justify-center p-3">
+            <div className="mb-2 w-12 h-12 rounded-full bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center shadow-md">
+              <Megaphone className="w-6 h-6 text-white" />
+            </div>
+
+            <h3 className="text-base md:text-xl font-black text-slate-900 mb-1">الإعلانات</h3>
+            <p className="text-slate-500 text-xs md:text-sm font-semibold hidden md:block">تابع الأخبار</p>
           </div>
-        </UiTile>
+        </button>
+
+        <button
+          onClick={() => setCurrentSection('honors')}
+          className="group ui-card ui-card-hover ui-card-rose overflow-hidden h-32 md:h-40 col-span-2 md:col-span-1 active:scale-[0.99]"
+        >
+          <div className="h-full flex flex-col items-center justify-center p-3">
+            <div className="mb-2 w-12 h-12 rounded-full bg-gradient-to-br from-rose-400 to-pink-500 flex items-center justify-center shadow-md">
+              <Trophy className="w-6 h-6 text-white" />
+            </div>
+
+            <h3 className="text-base md:text-xl font-black text-slate-900 mb-1">التكريمات</h3>
+            <p className="text-slate-500 text-xs md:text-sm font-semibold hidden md:block">إنجازات مدرستنا</p>
+          </div>
+        </button>
       </div>
 
-      {/* Footer Hint */}
-      <div className="mt-6 bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 rounded-2xl shadow-lg p-4 md:p-6 text-center text-white max-w-5xl mx-auto">
+      <div className="mt-6 bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 rounded-2xl shadow-lg p-4 md:p-6 text-center text-white max-w-4xl mx-auto">
         <h2 className="text-lg md:text-2xl font-black mb-2">ابدأ رحلتك الآن</h2>
         <p className="text-sm md:text-lg mb-3">استخدم الشريط السفلي للتنقل بين الأقسام</p>
         <div className="flex items-center justify-center gap-2 md:gap-4 text-emerald-200">
@@ -925,24 +887,16 @@ function RegisterPage({ categoryId, subcategoryId, setPage }: any) {
 
   if (!user) {
     return (
-      <div className="app-bg min-h-screen flex items-center justify-center px-4 py-16" dir="rtl">
-        <div className="max-w-md w-full">
-          <div className="ui-card p-12 text-center relative overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-br from-rose-50/50 via-transparent to-amber-50/50 pointer-events-none"></div>
-            <div className="relative z-10">
-              <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-rose-500 to-amber-500 flex items-center justify-center shadow-2xl animate-icon-appear">
-                <LogIn className="w-10 h-10 text-white" strokeWidth={2} />
-              </div>
-              <h2 className="text-3xl font-black text-gray-800 mb-3">يجب تسجيل الدخول</h2>
-              <p className="text-gray-600 mb-8 text-lg">لتسجيل موهبتك، يرجى تسجيل الدخول أولاً</p>
-              <button
-                onClick={() => setPage('talents')}
-                className="bg-gradient-to-r from-rose-600 to-amber-600 text-white px-8 py-4 rounded-xl font-bold shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 hover:-translate-y-1"
-              >
-                العودة للأقسام
-              </button>
-            </div>
+      <div className="container mx-auto px-4 py-16" dir="rtl">
+        <div className="max-w-md mx-auto bg-white rounded-2xl shadow-2xl p-12 text-center border-t-4 border-teal-600">
+          <div className="bg-gradient-to-br from-teal-100 to-cyan-100 rounded-full w-24 h-24 flex items-center justify-center mx-auto mb-6">
+            <LogIn className="w-12 h-12 text-teal-700" />
           </div>
+          <h2 className="text-3xl font-black text-gray-800 mb-4">يجب تسجيل الدخول</h2>
+          <p className="text-gray-600 mb-8">لتسجيل موهبتك، يرجى تسجيل الدخول أولاً</p>
+          <button onClick={() => setPage('talents')} className="bg-gradient-to-r from-teal-600 to-cyan-600 text-white px-8 py-3 rounded-xl font-bold shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 hover:from-teal-700 hover:to-cyan-700 active:scale-95">
+            العودة للأقسام
+          </button>
         </div>
       </div>
     );
@@ -1248,7 +1202,7 @@ function AnnouncementsPage() {
       {selectedAnnouncement && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4" onClick={() => setSelectedAnnouncement(null)}>
           <div className="bg-white rounded-3xl shadow-2xl w-full max-w-md p-8" onClick={(e) => e.stopPropagation()} dir="rtl">
-            <h2 className="text-2xl font-black text-[#8A1538] mb-4">التسجيل في {selectedAnnouncement.title}</h2>
+            <h2 className="text-2xl font-black text-teal-700 mb-4">التسجيل في {selectedAnnouncement.title}</h2>
             <div className="space-y-4">
               <div>
                 <label className="block text-gray-700 font-semibold mb-2">ملاحظات (اختياري)</label>
@@ -1513,7 +1467,7 @@ function TeacherDashboard() {
       {showModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={() => setShowModal(false)}>
           <div className="bg-white rounded-2xl p-8 max-w-md w-full" onClick={(e) => e.stopPropagation()}>
-            <h2 className="text-2xl font-bold text-[#8A1538] mb-6">اقتراح موهبة جديدة</h2>
+            <h2 className="text-2xl font-bold text-teal-700 mb-6">اقتراح موهبة جديدة</h2>
             <div className="space-y-4">
               <select value={newSub.categoryId} onChange={(e) => setNewSub({ ...newSub, categoryId: e.target.value })} className="w-full px-4 py-3 border rounded-lg">
                 <option value="">اختر القسم</option>
