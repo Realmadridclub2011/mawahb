@@ -21,7 +21,9 @@ type TalentsPageProps = {
 };
 
 export default function TalentsPage({ initialPage = "talents" }: TalentsPageProps) {
-  const [page, setPage] = useState<"talents" | "subcategories" | "register" | "mypage">(initialPage);
+  const [page, setPage] = useState<
+  "talents" | "subcategories" | "register"
+>(initialPage === "mypage" ? "talents" : initialPage);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedSubcategory, setSelectedSubcategory] = useState<string | null>(null);
 
