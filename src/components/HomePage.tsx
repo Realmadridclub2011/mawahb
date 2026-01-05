@@ -1,13 +1,11 @@
 // src/components/HomePage.tsx
 import React from "react";
-import { Trophy, Send, Star, FileText } from "lucide-react";
 
 type HomePageProps = {
   onGoTalents: () => void;
   onGoAnnouncements: () => void;
   onGoHonors: () => void;
 
-  // ✅ يظهر فقط لو المستخدم مسجل دخول
   showMyPageButton?: boolean;
   onGoMyPage?: () => void;
 };
@@ -30,7 +28,6 @@ export default function HomePage({
         </p>
       </div>
 
-      {/* ✅ 3 كروت نفس اللي قبل (ui-card) */}
       <div className="max-w-5xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5">
           {/* اكتشف موهبتك */}
@@ -39,13 +36,18 @@ export default function HomePage({
             className="group ui-card ui-card-hover ui-card-amber overflow-hidden h-32 md:h-40 active:scale-[0.99]"
           >
             <div className="h-full p-5 md:p-6 flex flex-col justify-center items-center text-center">
-              <div className="w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-lg mb-3 group-hover:scale-110 transition-transform">
-                <Star className="w-7 h-7 md:w-8 md:h-8 text-white" />
-              </div>
-              <h3 className="text-lg md:text-xl font-extrabold text-gray-800 mb-1">
+              <IconBadge
+                emoji="✨"
+                glowClass="bg-amber-500/25"
+                ringFrom="from-amber-400"
+                ringTo="to-orange-500"
+              />
+              <h3 className="text-lg md:text-xl font-extrabold text-gray-800 mb-1 mt-3">
                 اكتشف موهبتك
               </h3>
-              <p className="text-sm text-gray-600 font-medium">سجل موهبتك وابدأ رحلتك</p>
+              <p className="text-sm text-gray-600 font-medium">
+                سجل موهبتك وابدأ رحلتك
+              </p>
             </div>
           </button>
 
@@ -55,13 +57,18 @@ export default function HomePage({
             className="group ui-card ui-card-hover ui-card-cyan overflow-hidden h-32 md:h-40 active:scale-[0.99]"
           >
             <div className="h-full p-5 md:p-6 flex flex-col justify-center items-center text-center">
-              <div className="w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center shadow-lg mb-3 group-hover:scale-110 transition-transform">
-                <Send className="w-7 h-7 md:w-8 md:h-8 text-white" />
-              </div>
-              <h3 className="text-lg md:text-xl font-extrabold text-gray-800 mb-1">
+              <IconBadge
+                emoji="📣"
+                glowClass="bg-cyan-500/25"
+                ringFrom="from-cyan-400"
+                ringTo="to-blue-500"
+              />
+              <h3 className="text-lg md:text-xl font-extrabold text-gray-800 mb-1 mt-3">
                 الإعلانات
               </h3>
-              <p className="text-sm text-gray-600 font-medium">تابع الأخبار والتحديثات</p>
+              <p className="text-sm text-gray-600 font-medium">
+                تابع الأخبار والتحديثات
+              </p>
             </div>
           </button>
 
@@ -71,18 +78,23 @@ export default function HomePage({
             className="group ui-card ui-card-hover ui-card-rose overflow-hidden h-32 md:h-40 active:scale-[0.99]"
           >
             <div className="h-full p-5 md:p-6 flex flex-col justify-center items-center text-center">
-              <div className="w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-gradient-to-br from-rose-400 to-pink-500 flex items-center justify-center shadow-lg mb-3 group-hover:scale-110 transition-transform">
-                <Trophy className="w-7 h-7 md:w-8 md:h-8 text-white" />
-              </div>
-              <h3 className="text-lg md:text-xl font-extrabold text-gray-800 mb-1">
+              <IconBadge
+                emoji="🏆"
+                glowClass="bg-rose-500/25"
+                ringFrom="from-rose-400"
+                ringTo="to-pink-500"
+              />
+              <h3 className="text-lg md:text-xl font-extrabold text-gray-800 mb-1 mt-3">
                 التكريمات
               </h3>
-              <p className="text-sm text-gray-600 font-medium">إنجازات ونجاحات الطلاب</p>
+              <p className="text-sm text-gray-600 font-medium">
+                إنجازات ونجاحات الطلاب
+              </p>
             </div>
           </button>
         </div>
 
-        {/* ✅ كارت صفحتي (نفس الثيم) */}
+        {/* صفحتي */}
         {showMyPageButton && onGoMyPage && (
           <div className="mt-5">
             <button
@@ -90,9 +102,13 @@ export default function HomePage({
               className="group ui-card ui-card-hover ui-card-teal overflow-hidden w-full h-28 md:h-32 active:scale-[0.99]"
             >
               <div className="h-full p-5 md:p-6 flex items-center justify-center gap-4 text-center">
-                <div className="w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-gradient-to-br from-teal-400 to-emerald-500 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
-                  <FileText className="w-7 h-7 md:w-8 md:h-8 text-white" />
-                </div>
+                <IconBadge
+                  emoji="🧾"
+                  glowClass="bg-emerald-500/25"
+                  ringFrom="from-teal-400"
+                  ringTo="to-emerald-500"
+                  size="md"
+                />
                 <div>
                   <h3 className="text-lg md:text-xl font-extrabold text-gray-800 mb-1">
                     صفحتي
@@ -106,7 +122,7 @@ export default function HomePage({
           </div>
         )}
 
-        {/* نفس البانر القديم */}
+        {/* البانر */}
         <div className="mt-6 bg-gradient-to-r from-teal-600 to-teal-700 text-white rounded-3xl p-6 shadow-2xl max-w-5xl mx-auto">
           <div className="text-center">
             <h3 className="text-xl md:text-2xl font-extrabold mb-2">
@@ -122,6 +138,46 @@ export default function HomePage({
             <span className="text-2xl">→</span>
           </div>
         </div>
+      </div>
+    </div>
+  );
+}
+
+/** نفس فكرة الأيقونة الحديثة (Glass + Glow) */
+function IconBadge({
+  emoji,
+  glowClass,
+  ringFrom,
+  ringTo,
+  size = "lg",
+}: {
+  emoji: string;
+  glowClass: string;
+  ringFrom: string;
+  ringTo: string;
+  size?: "lg" | "md";
+}) {
+  const outer = size === "lg" ? "w-16 h-16 md:w-[72px] md:h-[72px]" : "w-14 h-14 md:w-16 md:h-16";
+  const inner = size === "lg" ? "w-[54px] h-[54px] md:w-[62px] md:h-[62px]" : "w-12 h-12 md:w-[54px] md:h-[54px]";
+  const emojiSize = size === "lg" ? "text-2xl md:text-[28px]" : "text-xl md:text-2xl";
+
+  return (
+    <div className={`relative ${outer} mx-auto`}>
+      {/* glow */}
+      <div
+        className={`absolute -inset-2 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity ${glowClass}`}
+      />
+      {/* ring */}
+      <div
+        className={`absolute inset-0 rounded-full bg-gradient-to-br ${ringFrom} ${ringTo} shadow-lg`}
+      />
+      {/* glass */}
+      <div className={`absolute inset-[6px] rounded-full bg-white/75 backdrop-blur-md shadow-inner`} />
+      {/* shine */}
+      <div className="absolute left-3 top-2 w-6 h-6 rounded-full bg-white/70 blur-[1px] opacity-90" />
+
+      <div className={`relative ${inner} mx-auto rounded-full flex items-center justify-center`}>
+        <span className={`${emojiSize} drop-shadow-sm`}>{emoji}</span>
       </div>
     </div>
   );
