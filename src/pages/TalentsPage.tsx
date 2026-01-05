@@ -73,10 +73,12 @@ function TalentsHomePage({
   setPage,
   setSelectedCategory,
   onGoMyPage,
+  onBackHome,
 }: {
   setPage: (p: PageId) => void;
   setSelectedCategory: (id: string) => void;
   onGoMyPage: () => void;
+  onBackHome?: () => void;
 }) {
   const { user } = useAuth();
   const [categories, setCategories] = useState<any[]>([]);
