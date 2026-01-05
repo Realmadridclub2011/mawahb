@@ -22,7 +22,12 @@ type TalentsPageProps = {
 
 type PageId = "talents" | "subcategories" | "register" | "mypage";
 
-export default function TalentsPage({ initialPage = "talents" }: TalentsPageProps) {
+eexport default function TalentsPage({
+  initialPage = "talents",
+  onBackHome,
+  onGoMyPage,
+  onRequestLogin,
+}: TalentsPageProps) {
   const [page, setPage] = useState<PageId>(initialPage);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedSubcategory, setSelectedSubcategory] = useState<string | null>(null);
