@@ -35,29 +35,34 @@ eexport default function TalentsPage({
   return (
     <>
       {page === "talents" && (
-        <TalentsHomePage
-          setPage={setPage}
-          setSelectedCategory={setSelectedCategory}
-          onGoMyPage={() => setPage("mypage")}
-        />
-      )}
+  <TalentsHomePage
+    setPage={setPage}
+    setSelectedCategory={setSelectedCategory}
+    onGoMyPage={() => (onGoMyPage ? onGoMyPage() : setPage("mypage"))}
+    onBackHome={onBackHome}
+    onRequestLogin={onRequestLogin}
+  />
+)}
 
       {page === "subcategories" && selectedCategory && (
-        <SubcategoriesPage
-          categoryId={selectedCategory}
-          setPage={setPage}
-          setSelectedSubcategory={setSelectedSubcategory}
-        />
-      )}
+  <SubcategoriesPage
+    categoryId={selectedCategory}
+    setPage={setPage}
+    setSelectedSubcategory={setSelectedSubcategory}
+    onBackHome={onBackHome}
+  />
+)}
 
       {page === "register" && selectedCategory && selectedSubcategory && (
-        <RegisterPage
-          categoryId={selectedCategory}
-          subcategoryId={selectedSubcategory}
-          setPage={setPage}
-          onGoMyPage={() => setPage("mypage")}
-        />
-      )}
+  <RegisterPage
+    categoryId={selectedCategory}
+    subcategoryId={selectedSubcategory}
+    setPage={setPage}
+    onGoMyPage={() => (onGoMyPage ? onGoMyPage() : setPage("mypage"))}
+    onBackHome={onBackHome}
+    onRequestLogin={onRequestLogin}
+  />
+)}
 
       {page === "mypage" && <MyPage setPage={setPage} />}
     </>
