@@ -1,20 +1,23 @@
 // src/pages/AnnouncementsPage.tsx
 import React, { useEffect, useState } from "react";
 import { ArrowRight } from "lucide-react";
-
-// ✅ عدّل المسارات حسب مشروعك لو مختلفة
-import { supabase } from "../lib/supabaseClient"; // أو "../lib/supabase" حسب عندك
-import { useAuth } from "../contexts/AuthContext"; // أو المسار الحقيقي عندك
-import { useToast } from "../components/ui/useToast"; // أو المسار الحقيقي عندك
+import { supabase } from "../lib/supabaseClient";
 
 type AnnouncementsPageProps = {
-  onBackHome?: () => void; // ✅ بدل window.location.href
+  onBackHome?: () => void;
+
+  // ✅ نستقبل المستخدم و التوست من App بدل import hooks غير موجودة
+  user?: { id: string } | null;
+  showSuccess?: (msg: string) => void;
+  showError?: (msg: string) => void;
 };
 
-export default function AnnouncementsPage({ onBackHome }: AnnouncementsPageProps) {
-  const { user } = useAuth();
-  const { showSuccess, showError } = useToast();
-
+export default function AnnouncementsPage({
+  onBackHome,
+  user,
+  showSuccess,
+  showError,
+}: AnnouncementsPageProps) {
   const [announcements, setAnnouncements] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedAnnouncement, setSelectedAnnouncement] = useState<any>(null);
@@ -42,19 +45,26 @@ export default function AnnouncementsPage({ onBackHome }: AnnouncementsPageProps
   }, []);
 
   const loadAnnouncements = async () => {
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from("announcements")
       .select("*")
       .eq("is_published", true)
       .order("created_at", { ascending: false });
+
+    if (error) {
+      showError?.("حدث خطأ أثناء تحميل الإعلانات");
+      setAnnouncements([]);
+      setLoading(false);
+      return;
+    }
 
     setAnnouncements(data || []);
     setLoading(false);
   };
 
   const handleRegister = async (announcementId: string) => {
-    if (!user) {
-      showError("يجب تسجيل الدخول أولاً");
+    if (!user?.id) {
+      showError?.("يجب تسجيل الدخول أولاً");
       return;
     }
 
@@ -69,17 +79,17 @@ export default function AnnouncementsPage({ onBackHome }: AnnouncementsPageProps
 
       if (error) {
         if ((error as any).code === "23505") {
-          showError("أنت مسجل بالفعل في هذه المسابقة");
+          showError?.("أنت مسجل بالفعل في هذه المسابقة");
         } else {
           throw error;
         }
       } else {
-        showSuccess("تم التسجيل بنجاح! جارٍ المراجعة");
+        showSuccess?.("تم التسجيل بنجاح! جارٍ المراجعة");
         setSelectedAnnouncement(null);
         setRegistrationNote("");
       }
-    } catch (err) {
-      showError("حدث خطأ أثناء التسجيل");
+    } catch {
+      showError?.("حدث خطأ أثناء التسجيل");
     } finally {
       setRegistering(false);
     }
@@ -88,14 +98,14 @@ export default function AnnouncementsPage({ onBackHome }: AnnouncementsPageProps
   if (loading)
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-16 w-16 border-4 border-[#8A1538] border-t-transparent"></div>
+        <div className="animate-spin rounded-full h-16 w-16 border-4 border-[#8A1538] border-t-transparent" />
       </div>
     );
 
   return (
     <div className="container mx-auto px-4 py-12" dir="rtl">
       <button
-        onClick={() => (onBackHome ? onBackHome() : null)}
+        onClick={() => onBackHome?.()}
         className="flex items-center gap-3 bg-white text-emerald-600 hover:text-white hover:bg-gradient-to-r hover:from-emerald-600 hover:to-cyan-600 px-6 py-3 rounded-xl font-bold mb-8 shadow-lg hover:shadow-xl transition-all transform hover:scale-105 border-2 border-emerald-600"
       >
         <ArrowRight className="w-5 h-5" />
@@ -106,7 +116,9 @@ export default function AnnouncementsPage({ onBackHome }: AnnouncementsPageProps
         <h1 className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 mb-4">
           الإعلانات والمسابقات
         </h1>
-        <p className="text-xl text-gray-600 font-semibold">تابع آخر الأخبار والمسابقات</p>
+        <p className="text-xl text-gray-600 font-semibold">
+          تابع آخر الأخبار والمسابقات
+        </p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
@@ -142,8 +154,13 @@ export default function AnnouncementsPage({ onBackHome }: AnnouncementsPageProps
                 )}
               </div>
 
-              <h3 className="text-xl font-black text-gray-800 mb-2">{announcement.title}</h3>
-              <p className="text-gray-600 mb-4 line-clamp-3">{announcement.description}</p>
+              <h3 className="text-xl font-black text-gray-800 mb-2">
+                {announcement.title}
+              </h3>
+
+              <p className="text-gray-600 mb-4 line-clamp-3">
+                {announcement.description}
+              </p>
 
               {announcement.end_date && (
                 <p className="text-sm text-gray-500 mb-4">
@@ -181,7 +198,9 @@ export default function AnnouncementsPage({ onBackHome }: AnnouncementsPageProps
 
             <div className="space-y-4">
               <div>
-                <label className="block text-gray-700 font-semibold mb-2">ملاحظات (اختياري)</label>
+                <label className="block text-gray-700 font-semibold mb-2">
+                  ملاحظات (اختياري)
+                </label>
                 <textarea
                   value={registrationNote}
                   onChange={(e) => setRegistrationNote(e.target.value)}
