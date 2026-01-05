@@ -625,9 +625,14 @@ function MainApp() {
           if (section === 'talents') setPage('talents');
         }} />}
         {currentSection === 'talents' && (
-  <TalentsPage />
-)}
-        {currentSection === 'announcements' && <AnnouncementsPage />}
+          <>
+            {page === 'talents' && <TalentsHomePage setPage={setPage} setSelectedCategory={setSelectedCategory} />}
+            {page === 'subcategories' && <SubcategoriesPage categoryId={selectedCategory!} setPage={setPage} setSelectedSubcategory={setSelectedSubcategory} setSelectedCategory={setSelectedCategory} />}
+            {page === 'register' && <RegisterPage categoryId={selectedCategory!} subcategoryId={selectedSubcategory!} setPage={setPage} />}
+            {page === 'mypage' && <MyPage setPage={setPage} />}
+          </>
+        )}
+            {currentSection === 'announcements' && <AnnouncementsPage />}
         {currentSection === 'honors' && <HonorsPage />}
       </div>
 
