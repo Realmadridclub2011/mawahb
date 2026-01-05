@@ -126,6 +126,15 @@ function TalentsHomePage({
 
   return (
     <div className="container mx-auto px-3 py-6" dir="rtl">
+          {onBackHome && (
+      <button
+        onClick={onBackHome}
+        className="flex items-center gap-3 bg-white text-emerald-600 hover:text-white hover:bg-gradient-to-r hover:from-emerald-600 hover:to-cyan-600 px-6 py-3 rounded-xl font-bold mb-6 shadow-lg hover:shadow-xl transition-all transform hover:scale-105 border-2 border-emerald-600"
+      >
+        <ArrowRight className="w-5 h-5" />
+        <span>العودة للرئيسية</span>
+      </button>
+    )}
       <div className="text-center mb-6">
         {user && (
           <div className="flex items-center justify-center gap-2 flex-wrap mb-4">
