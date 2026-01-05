@@ -5,12 +5,6 @@ import { createClient } from '@supabase/supabase-js';
 import { LogIn, LogOut, User, FileText, Users, LayoutDashboard, ArrowRight, CheckCircle, XCircle, Clock, TrendingUp, Plus, MessageSquare, Search, Download, X, Info, Award, Dumbbell, Palette, BookOpen, Microscope, Cpu, Home, Megaphone, Trophy, Star, CreditCard as Edit, Trash2, Settings, Image } from 'lucide-react';
 import AnnouncementsPage from "./pages/AnnouncementsPage";
 
-// ...
-{currentSection === "announcements" && (
-  <AnnouncementsPage onBackHome={() => setCurrentSection("home")} />
-)}
-
-
 const supabase = createClient(
   import.meta.env.VITE_SUPABASE_URL,
   import.meta.env.VITE_SUPABASE_ANON_KEY
@@ -560,7 +554,9 @@ function MainApp() {
     {page === "mypage" && <MyPage setPage={setPage} />}
   </>
 )}
-          {currentSection === 'announcements' && <AnnouncementsPage />}
+         {currentSection === "announcements" && (
+  <AnnouncementsPage onBackHome={() => setCurrentSection("home")} />
+)}
           {currentSection === 'honors' && <HonorsPage />}
         </div>
         <nav className="fixed bottom-0 left-0 right-0 bg-gradient-to-r from-slate-50 via-teal-50 to-cyan-50 border-t-2 md:border-t-4 border-teal-600 shadow-2xl z-40" dir="rtl">
