@@ -907,7 +907,7 @@ function MyPage({ setPage }: any) {
   );
 }
 
-Function TeacherDashboard() {
+function TeacherDashboard() {
   const { user } = useAuth();
   const { showSuccess, showError } = useToast();
   const [talents, setTalents] = useState<any[]>([]);
