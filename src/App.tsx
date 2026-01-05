@@ -516,7 +516,7 @@ function MainApp() {
             if (section === 'talents') setPage('talents');
           }} />}
           {currentSection === 'talents' && (
-  <TalentsPage />
+  <TalentsPage key={user?.id || "guest"} />
 )}
           {currentSection === 'announcements' && <AnnouncementsPage />}
           {currentSection === 'honors' && <HonorsPage />}
