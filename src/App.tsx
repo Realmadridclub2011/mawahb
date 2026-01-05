@@ -1,3 +1,4 @@
+import HomePage from "./components/HomePage";
 import { useState, useEffect, createContext, useContext } from 'react';
 import { UiCard, UiIconCircle } from "./components/ui/UiCard";
 import { createClient } from '@supabase/supabase-js';
@@ -513,10 +514,22 @@ function MainApp() {
         <Header />
         <div className="pb-20">
           {currentSection === 'admin-dashboard' && <AdminDashboard />}
-          {currentSection === 'home' && <HomePage setCurrentSection={(section) => {
-            setCurrentSection(section);
-            if (section === 'talents') setPage('talents');
-          }} />}
+          {currentSection === "home" && (
+  <HomePage
+    onGoHonors={() => setCurrentSection("honors")}
+    onGoAnnouncements={() => setCurrentSection("announcements")}
+    onGoTalents={() => {
+      setCurrentSection("talents");
+      setPage("talents");
+    }}
+    showMyPageButton={!!user}
+    onGoMyPage={() => {
+      setCurrentSection("talents");
+      setPage("mypage");
+    }}
+  />
+)}
+}
           {currentSection === 'talents' && (
             <>
               {page === 'talents' && <TalentsHomePage setPage={setPage} setSelectedCategory={setSelectedCategory} />}
