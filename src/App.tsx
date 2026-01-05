@@ -205,36 +205,52 @@ function Header({ showLogin, setShowLogin }: { showLogin?: boolean; setShowLogin
   );
 }
 
-function BottomNav({ currentSection, setCurrentSection }: { currentSection: string; setCurrentSection: (section: string) => void }) {
+function BottomNav({
+  currentSection,
+  setCurrentSection,
+  isAdmin,
+}: {
+  currentSection: string;
+  setCurrentSection: (section: string) => void;
+  isAdmin?: boolean;
+}) {
   const navItems = [
-    { id: 'home', label: 'الرئيسية', icon: Home },
-    { id: 'talents', label: 'اكتشف موهبتك', icon: Star },
-    { id: 'announcements', label: 'الإعلانات', icon: Megaphone },
-    { id: 'honors', label: 'التكريمات', icon: Trophy }
+    { id: "home", label: "الرئيسية", icon: Home },
+    { id: "talents", label: "اكتشف موهبتك", icon: Star },
+    { id: "announcements", label: "الإعلانات", icon: Megaphone },
+    { id: "honors", label: "التكريمات", icon: Trophy },
+    ...(isAdmin ? [{ id: "admin-dashboard", label: "لوحة الإدارة", icon: Settings }] : []),
   ];
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-gradient-to-r from-slate-50 via-teal-50 to-cyan-50 border-t-2 md:border-t-4 border-teal-600 shadow-2xl z-40" dir="rtl">
+    <nav
+      className="fixed bottom-0 left-0 right-0 bg-gradient-to-r from-slate-50 via-teal-50 to-cyan-50 border-t-2 md:border-t-4 border-teal-600 shadow-2xl z-40"
+      dir="rtl"
+    >
       <div className="container mx-auto px-1">
-        <div className="grid grid-cols-4 gap-0.5">
-          {navItems.map(item => (
+        <div className={`grid ${isAdmin ? "grid-cols-5" : "grid-cols-4"} gap-0.5`}>
+          {navItems.map((item) => (
             <button
               key={item.id}
               onClick={() => setCurrentSection(item.id)}
               className={`flex flex-col items-center justify-center py-2 transition-all duration-300 ease-in-out transform ${
                 currentSection === item.id
-                  ? 'text-teal-700 bg-gradient-to-b from-teal-100 to-teal-50 shadow-inner scale-95'
-                  : 'text-gray-600 hover:text-teal-700 hover:bg-teal-50 hover:scale-110 active:scale-95 hover:shadow-lg'
+                  ? "text-teal-700 bg-gradient-to-b from-teal-100 to-teal-50 shadow-inner scale-95"
+                  : "text-gray-600 hover:text-teal-700 hover:bg-teal-50 hover:scale-110 active:scale-95 hover:shadow-lg"
               }`}
             >
-              <item.icon className={`w-5 h-5 md:w-6 md:h-6 mb-0.5 transition-all duration-300 ${
-                currentSection === item.id
-                  ? 'scale-110 drop-shadow-md'
-                  : 'group-hover:scale-125 group-hover:rotate-3'
-              }`} />
-              <span className={`text-[9px] md:text-xs font-bold leading-tight transition-all duration-300 ${
-                currentSection === item.id ? 'scale-105' : ''
-              }`}>{item.label}</span>
+              <item.icon
+                className={`w-5 h-5 md:w-6 md:h-6 mb-0.5 transition-all duration-300 ${
+                  currentSection === item.id ? "scale-110 drop-shadow-md" : ""
+                }`}
+              />
+              <span
+                className={`text-[9px] md:text-xs font-bold leading-tight transition-all duration-300 ${
+                  currentSection === item.id ? "scale-105" : ""
+                }`}
+              >
+                {item.label}
+              </span>
             </button>
           ))}
         </div>
@@ -615,9 +631,10 @@ function MainApp() {
       </div>
 
       <BottomNav
-        currentSection={currentSection}
-        setCurrentSection={(section: string) => setCurrentSection(section as any)}
-      />
+  currentSection={currentSection}
+  setCurrentSection={(section: string) => setCurrentSection(section as any)}
+  isAdmin={user?.role === "admin"}
+/>
     </div>
   );
 }
