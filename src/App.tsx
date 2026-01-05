@@ -511,6 +511,7 @@ function App() {
 
 function MainApp() {
   const { user } = useAuth();
+
   const [currentSection, setCurrentSection] = useState<
     "home" | "talents" | "announcements" | "honors" | "mypage" | "teacher-dashboard" | "admin-dashboard"
   >("home");
@@ -850,81 +851,161 @@ function RegisterPage({ categoryId, subcategoryId, setPage }: any) {
     </div>
   );
 }
-function MyPage({ setPage }: any) {
+
+function MyPage({ onBackHome }: { onBackHome: () => void }) {
   const { user } = useAuth();
   const [talents, setTalents] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!user) return;
-    supabase.from('student_talents').select(`
-      id, proficiency, years_of_experience, status, created_at,
-      category_id, subcategory_id
-    `).eq('student_id', user.id).order('created_at', { ascending: false }).then(async ({ data }) => {
-      if (data && data.length > 0) {
-        const catIds = [...new Set(data.map(t => t.category_id))];
-        const subIds = [...new Set(data.map(t => t.subcategory_id))];
-
-        const [cats, subs] = await Promise.all([
-          supabase.from('talent_categories').select('id, name_ar').in('id', catIds),
-          supabase.from('talent_subcategories').select('id, name_ar').in('id', subIds)
-        ]);
-
-        const catsMap = new Map(cats.data?.map(c => [c.id, c.name_ar]));
-        const subsMap = new Map(subs.data?.map(s => [s.id, s.name_ar]));
-
-        const enriched = data.map(t => ({
-          ...t,
-          category_name: catsMap.get(t.category_id),
-          subcategory_name: subsMap.get(t.subcategory_id)
-        }));
-
-        setTalents(enriched);
-      }
+    if (!user) {
       setLoading(false);
-    });
+      return;
+    }
+
+    supabase
+      .from("student_talents")
+      .select(`id, proficiency, years_of_experience, status, created_at, category_id, subcategory_id`)
+      .eq("student_id", user.id)
+      .order("created_at", { ascending: false })
+      .then(async ({ data }) => {
+        if (data && data.length > 0) {
+          const catIds = [...new Set(data.map((t) => t.category_id))];
+          const subIds = [...new Set(data.map((t) => t.subcategory_id))];
+
+          const [cats, subs] = await Promise.all([
+            supabase.from("talent_categories").select("id, name_ar").in("id", catIds),
+            supabase.from("talent_subcategories").select("id, name_ar").in("id", subIds),
+          ]);
+
+          const catsMap = new Map(cats.data?.map((c) => [c.id, c.name_ar]));
+          const subsMap = new Map(subs.data?.map((s) => [s.id, s.name_ar]));
+
+          const enriched = data.map((t) => ({
+            ...t,
+            category_name: catsMap.get(t.category_id),
+            subcategory_name: subsMap.get(t.subcategory_id),
+          }));
+
+          setTalents(enriched);
+        }
+        setLoading(false);
+      });
   }, [user]);
 
-  if (loading) return <div className="flex items-center justify-center min-h-screen"><div className="animate-spin rounded-full h-16 w-16 border-4 border-[#8A1538] border-t-transparent"></div></div>;
+  if (!user) {
+    return (
+      <div className="container mx-auto px-4 py-16" dir="rtl">
+        <div className="max-w-md mx-auto bg-white rounded-2xl shadow-2xl p-10 text-center border-t-4 border-teal-600">
+          <div className="bg-gradient-to-br from-teal-100 to-cyan-100 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-5">
+            <LogIn className="w-10 h-10 text-teal-700" />
+          </div>
+          <h2 className="text-2xl font-black text-gray-800 mb-3">سجّل دخول أولاً</h2>
+          <p className="text-gray-600 mb-6">علشان تشوف “صفحتي” ومواهبي المسجلة</p>
+          <button
+            onClick={onBackHome}
+            className="bg-gradient-to-r from-teal-600 to-cyan-600 text-white px-8 py-3 rounded-xl font-bold shadow-xl hover:shadow-2xl active:scale-95"
+          >
+            رجوع للرئيسية
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="animate-spin rounded-full h-16 w-16 border-4 border-[#8A1538] border-t-transparent"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto px-4 py-12" dir="rtl">
-      <button onClick={() => setPage('talents')} className="flex items-center gap-3 bg-white text-emerald-600 hover:text-white hover:bg-gradient-to-r hover:from-emerald-600 hover:to-cyan-600 px-6 py-3 rounded-xl font-bold mb-8 shadow-lg hover:shadow-xl transition-all transform hover:scale-105 border-2 border-emerald-600">
+      <button
+        onClick={onBackHome}
+        className="flex items-center gap-3 bg-white text-emerald-600 hover:text-white hover:bg-gradient-to-r hover:from-emerald-600 hover:to-cyan-600 px-6 py-3 rounded-xl font-bold mb-8 shadow-lg border-2 border-emerald-600"
+      >
         <ArrowRight className="w-5 h-5" />
         <span>العودة</span>
       </button>
 
-      <div className="text-center mb-12">
-        <h1 className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 mb-4">صفحتي</h1>
-        <p className="text-xl text-gray-600 font-semibold">مواهبك المسجلة وحالة الطلبات</p>
+      <div className="text-center mb-10">
+        <h1 className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 mb-3">
+          صفحتي
+        </h1>
+        <p className="text-lg text-gray-600 font-semibold">مواهبك المسجلة وحالة الطلبات</p>
       </div>
 
       {talents.length === 0 ? (
-        <div className="ui-card p-16 text-center border-t-4 border-emerald-600 max-w-2xl mx-auto">
-          <FileText className="w-24 h-24 text-gray-400 mx-auto mb-6" />
-          <h2 className="text-3xl font-black text-gray-800 mb-4">لم تسجل أي موهبة بعد</h2>
-          <p className="text-gray-600 mb-8 text-lg">ابدأ رحلتك في اكتشاف مواهبك الآن</p>
-          <button onClick={() => setPage('talents')} className="bg-gradient-to-r from-emerald-600 to-cyan-600 text-white px-10 py-4 rounded-xl font-black text-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all">
+        <div className="ui-card p-12 text-center border-t-4 border-emerald-600 max-w-2xl mx-auto">
+          <FileText className="w-20 h-20 text-gray-400 mx-auto mb-5" />
+          <h2 className="text-2xl font-black text-gray-800 mb-3">لم تسجل أي موهبة بعد</h2>
+          <p className="text-gray-600 mb-6">ابدأ رحلتك في اكتشاف مواهبك الآن</p>
+          <button
+            onClick={() => (window.location.hash = "#talents")}
+            className="bg-gradient-to-r from-emerald-600 to-cyan-600 text-white px-10 py-4 rounded-xl font-black shadow-xl"
+          >
             سجّل موهبتك الآن
           </button>
         </div>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 max-w-5xl mx-auto">
-          {talents.map(t => (
-            <div key={t.id} className={`ui-card ui-card-hover ${t.status === 'approved' ? 'ui-card-teal border-green-500' : t.status === 'rejected' ? 'ui-card-rose border-red-500' : 'ui-card-amber border-yellow-500'} p-6 border-r-8`}>
+          {talents.map((t) => (
+            <div
+              key={t.id}
+              className={`ui-card ui-card-hover ${
+                t.status === "approved"
+                  ? "ui-card-teal border-green-500"
+                  : t.status === "rejected"
+                  ? "ui-card-rose border-red-500"
+                  : "ui-card-amber border-yellow-500"
+              } p-6 border-r-8`}
+            >
               <div className="flex justify-between items-start mb-4">
                 <div>
-                  <h3 className="text-2xl font-black text-[#8A1538] mb-1">{t.subcategory_name}</h3>
+                  <h3 className="text-xl font-black text-[#8A1538] mb-1">{t.subcategory_name}</h3>
                   <p className="text-gray-600 font-semibold">{t.category_name}</p>
                 </div>
-                <span className={`px-4 py-2 rounded-xl font-bold shadow-md text-sm ${t.status === 'approved' ? 'bg-green-100 text-green-800' : t.status === 'rejected' ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800'}`}>
-                  {t.status === 'approved' ? <span className="flex items-center gap-1"><CheckCircle className="w-4 h-4" /> مقبول</span> : t.status === 'rejected' ? <span className="flex items-center gap-1"><XCircle className="w-4 h-4" /> مرفوض</span> : <span className="flex items-center gap-1"><Clock className="w-4 h-4" /> قيد المراجعة</span>}
+                <span
+                  className={`px-4 py-2 rounded-xl font-bold shadow-md text-sm ${
+                    t.status === "approved"
+                      ? "bg-green-100 text-green-800"
+                      : t.status === "rejected"
+                      ? "bg-red-100 text-red-800"
+                      : "bg-yellow-100 text-yellow-800"
+                  }`}
+                >
+                  {t.status === "approved" ? (
+                    <span className="flex items-center gap-1">
+                      <CheckCircle className="w-4 h-4" /> مقبول
+                    </span>
+                  ) : t.status === "rejected" ? (
+                    <span className="flex items-center gap-1">
+                      <XCircle className="w-4 h-4" /> مرفوض
+                    </span>
+                  ) : (
+                    <span className="flex items-center gap-1">
+                      <Clock className="w-4 h-4" /> قيد المراجعة
+                    </span>
+                  )}
                 </span>
               </div>
+
               <div className="space-y-2">
-                <p className="flex items-center gap-2"><strong className="text-[#8A1538]">المستوى:</strong> <span className="font-semibold">{t.proficiency}</span></p>
-                <p className="flex items-center gap-2"><strong className="text-[#8A1538]">سنوات الخبرة:</strong> <span className="font-semibold">{t.years_of_experience}</span></p>
-                <p className="flex items-center gap-2 text-sm"><strong className="text-[#8A1538]">التاريخ:</strong> <span className="font-semibold">{new Date(t.created_at).toLocaleDateString('ar-SA')}</span></p>
+                <p className="flex items-center gap-2">
+                  <strong className="text-[#8A1538]">المستوى:</strong>{" "}
+                  <span className="font-semibold">{t.proficiency}</span>
+                </p>
+                <p className="flex items-center gap-2">
+                  <strong className="text-[#8A1538]">سنوات الخبرة:</strong>{" "}
+                  <span className="font-semibold">{t.years_of_experience}</span>
+                </p>
+                <p className="flex items-center gap-2 text-sm">
+                  <strong className="text-[#8A1538]">التاريخ:</strong>{" "}
+                  <span className="font-semibold">{new Date(t.created_at).toLocaleDateString("ar-SA")}</span>
+                </p>
               </div>
             </div>
           ))}
@@ -933,7 +1014,6 @@ function MyPage({ setPage }: any) {
     </div>
   );
 }
-
 function TeacherDashboard() {
   const { user } = useAuth();
   const { showSuccess, showError } = useToast();
