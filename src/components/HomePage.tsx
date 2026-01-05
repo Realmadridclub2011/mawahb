@@ -1,5 +1,6 @@
 // src/components/HomePage.tsx
 import React from "react";
+import { Trophy, Send, Star, FileText } from "lucide-react";
 
 type HomePageProps = {
   onGoTalents: () => void;
@@ -9,6 +10,79 @@ type HomePageProps = {
   showMyPageButton?: boolean;
   onGoMyPage?: () => void;
 };
+
+function IconBubble({
+  children,
+  tone = "teal",
+}: {
+  children: React.ReactNode;
+  tone?: "amber" | "cyan" | "rose" | "teal";
+}) {
+  const toneClasses: Record<string, string> = {
+    amber:
+      "bg-amber-50/60 ring-1 ring-amber-200/70 shadow-[0_18px_50px_rgba(245,158,11,0.18)]",
+    cyan: "bg-cyan-50/60 ring-1 ring-cyan-200/70 shadow-[0_18px_50px_rgba(34,211,238,0.18)]",
+    rose: "bg-rose-50/60 ring-1 ring-rose-200/70 shadow-[0_18px_50px_rgba(244,63,94,0.18)]",
+    teal: "bg-teal-50/60 ring-1 ring-teal-200/70 shadow-[0_18px_50px_rgba(20,184,166,0.18)]",
+  };
+
+  return (
+    <div
+      className={[
+        "relative w-14 h-14 md:w-16 md:h-16 rounded-2xl",
+        "flex items-center justify-center",
+        "backdrop-blur-md",
+        toneClasses[tone],
+      ].join(" ")}
+    >
+      {/* highlight */}
+      <span className="pointer-events-none absolute -top-1.5 -left-1.5 w-8 h-8 rounded-full bg-white/60 blur-[1px]" />
+      {/* inner glass */}
+      <div className="w-10 h-10 md:w-11 md:h-11 rounded-xl bg-white/70 ring-1 ring-white/60 shadow-inner flex items-center justify-center">
+        {children}
+      </div>
+    </div>
+  );
+}
+
+function HomeCard({
+  onClick,
+  title,
+  subtitle,
+  tone,
+  icon,
+  cardClass,
+}: {
+  onClick: () => void;
+  title: string;
+  subtitle: string;
+  tone: "amber" | "cyan" | "rose" | "teal";
+  icon: React.ReactNode;
+  cardClass: string;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className={[
+        "group ui-card ui-card-hover overflow-hidden",
+        "h-32 md:h-40 active:scale-[0.99]",
+        "flex items-center justify-center text-center",
+        cardClass,
+      ].join(" ")}
+    >
+      <div className="h-full p-5 md:p-6 flex flex-col justify-center items-center text-center gap-2">
+        <div className="group-hover:scale-[1.04] transition-transform duration-300">
+          <IconBubble tone={tone}>{icon}</IconBubble>
+        </div>
+
+        <h3 className="text-lg md:text-xl font-extrabold text-gray-800">
+          {title}
+        </h3>
+        <p className="text-sm text-gray-600 font-medium">{subtitle}</p>
+      </div>
+    </button>
+  );
+}
 
 export default function HomePage({
   onGoTalents,
@@ -31,92 +105,56 @@ export default function HomePage({
       <div className="max-w-5xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5">
           {/* اكتشف موهبتك */}
-          <button
+          <HomeCard
             onClick={onGoTalents}
-            className="group ui-card ui-card-hover ui-card-amber overflow-hidden h-32 md:h-40 active:scale-[0.99]"
-          >
-            <div className="h-full p-5 md:p-6 flex flex-col justify-center items-center text-center">
-              <IconBadge
-                emoji="✨"
-                glowClass="bg-amber-500/25"
-                ringFrom="from-amber-400"
-                ringTo="to-orange-500"
-              />
-              <h3 className="text-lg md:text-xl font-extrabold text-gray-800 mb-1 mt-3">
-                اكتشف موهبتك
-              </h3>
-              <p className="text-sm text-gray-600 font-medium">
-                سجل موهبتك وابدأ رحلتك
-              </p>
-            </div>
-          </button>
+            title="اكتشف موهبتك"
+            subtitle="سجل موهبتك وابدأ رحلتك"
+            tone="amber"
+            cardClass="ui-card-amber"
+            icon={<Star className="w-5 h-5 md:w-6 md:h-6 text-amber-600" />}
+          />
 
           {/* الإعلانات */}
-          <button
+          <HomeCard
             onClick={onGoAnnouncements}
-            className="group ui-card ui-card-hover ui-card-cyan overflow-hidden h-32 md:h-40 active:scale-[0.99]"
-          >
-            <div className="h-full p-5 md:p-6 flex flex-col justify-center items-center text-center">
-              <IconBadge
-                emoji="📣"
-                glowClass="bg-cyan-500/25"
-                ringFrom="from-cyan-400"
-                ringTo="to-blue-500"
-              />
-              <h3 className="text-lg md:text-xl font-extrabold text-gray-800 mb-1 mt-3">
-                الإعلانات
-              </h3>
-              <p className="text-sm text-gray-600 font-medium">
-                تابع الأخبار والتحديثات
-              </p>
-            </div>
-          </button>
+            title="الإعلانات"
+            subtitle="تابع الأخبار والتحديثات"
+            tone="cyan"
+            cardClass="ui-card-cyan"
+            icon={<Send className="w-5 h-5 md:w-6 md:h-6 text-cyan-700" />}
+          />
 
           {/* التكريمات */}
-          <button
+          <HomeCard
             onClick={onGoHonors}
-            className="group ui-card ui-card-hover ui-card-rose overflow-hidden h-32 md:h-40 active:scale-[0.99]"
-          >
-            <div className="h-full p-5 md:p-6 flex flex-col justify-center items-center text-center">
-              <IconBadge
-                emoji="🏆"
-                glowClass="bg-rose-500/25"
-                ringFrom="from-rose-400"
-                ringTo="to-pink-500"
-              />
-              <h3 className="text-lg md:text-xl font-extrabold text-gray-800 mb-1 mt-3">
-                التكريمات
-              </h3>
-              <p className="text-sm text-gray-600 font-medium">
-                إنجازات ونجاحات الطلاب
-              </p>
-            </div>
-          </button>
+            title="التكريمات"
+            subtitle="إنجازات ونجاحات الطلاب"
+            tone="rose"
+            cardClass="ui-card-rose"
+            icon={<Trophy className="w-5 h-5 md:w-6 md:h-6 text-rose-600" />}
+          />
         </div>
 
-        {/* صفحتي */}
+        {/* ✅ صفحتي نفس ستايل البطاقات (مفيش انحراف لليسار) */}
         {showMyPageButton && onGoMyPage && (
           <div className="mt-5">
             <button
               onClick={onGoMyPage}
               className="group ui-card ui-card-hover ui-card-teal overflow-hidden w-full h-28 md:h-32 active:scale-[0.99]"
             >
-              <div className="h-full p-5 md:p-6 flex items-center justify-center gap-4 text-center">
-                <IconBadge
-                  emoji="🧾"
-                  glowClass="bg-emerald-500/25"
-                  ringFrom="from-teal-400"
-                  ringTo="to-emerald-500"
-                  size="md"
-                />
-                <div>
-                  <h3 className="text-lg md:text-xl font-extrabold text-gray-800 mb-1">
-                    صفحتي
-                  </h3>
-                  <p className="text-sm text-gray-600 font-medium">
-                    عرض وتحديث بياناتي ومواهبي
-                  </p>
+              <div className="h-full p-5 md:p-6 flex flex-col items-center justify-center text-center gap-2">
+                <div className="group-hover:scale-[1.04] transition-transform duration-300">
+                  <IconBubble tone="teal">
+                    <FileText className="w-5 h-5 md:w-6 md:h-6 text-teal-700" />
+                  </IconBubble>
                 </div>
+
+                <h3 className="text-lg md:text-xl font-extrabold text-gray-800">
+                  صفحتي
+                </h3>
+                <p className="text-sm text-gray-600 font-medium">
+                  عرض وتحديث بياناتي ومواهبي
+                </p>
               </div>
             </button>
           </div>
@@ -138,46 +176,6 @@ export default function HomePage({
             <span className="text-2xl">→</span>
           </div>
         </div>
-      </div>
-    </div>
-  );
-}
-
-/** نفس فكرة الأيقونة الحديثة (Glass + Glow) */
-function IconBadge({
-  emoji,
-  glowClass,
-  ringFrom,
-  ringTo,
-  size = "lg",
-}: {
-  emoji: string;
-  glowClass: string;
-  ringFrom: string;
-  ringTo: string;
-  size?: "lg" | "md";
-}) {
-  const outer = size === "lg" ? "w-16 h-16 md:w-[72px] md:h-[72px]" : "w-14 h-14 md:w-16 md:h-16";
-  const inner = size === "lg" ? "w-[54px] h-[54px] md:w-[62px] md:h-[62px]" : "w-12 h-12 md:w-[54px] md:h-[54px]";
-  const emojiSize = size === "lg" ? "text-2xl md:text-[28px]" : "text-xl md:text-2xl";
-
-  return (
-    <div className={`relative ${outer} mx-auto`}>
-      {/* glow */}
-      <div
-        className={`absolute -inset-2 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity ${glowClass}`}
-      />
-      {/* ring */}
-      <div
-        className={`absolute inset-0 rounded-full bg-gradient-to-br ${ringFrom} ${ringTo} shadow-lg`}
-      />
-      {/* glass */}
-      <div className={`absolute inset-[6px] rounded-full bg-white/75 backdrop-blur-md shadow-inner`} />
-      {/* shine */}
-      <div className="absolute left-3 top-2 w-6 h-6 rounded-full bg-white/70 blur-[1px] opacity-90" />
-
-      <div className={`relative ${inner} mx-auto rounded-full flex items-center justify-center`}>
-        <span className={`${emojiSize} drop-shadow-sm`}>{emoji}</span>
       </div>
     </div>
   );
