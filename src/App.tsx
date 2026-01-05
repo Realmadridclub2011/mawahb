@@ -527,10 +527,16 @@ function App() {
 
 function MainApp() {
   const { user } = useAuth();
+  const toast = useToast(); // ✅ ناخد التوست مرة واحدة هنا
 
-  // ✅ زودنا Section جديد اسمه mypage
   const [currentSection, setCurrentSection] = useState<
-    "home" | "talents" | "announcements" | "honors" | "mypage" | "teacher-dashboard" | "admin-dashboard"
+    | "home"
+    | "talents"
+    | "announcements"
+    | "honors"
+    | "mypage"
+    | "teacher-dashboard"
+    | "admin-dashboard"
   >("home");
 
   const [showLogin, setShowLogin] = useState(false);
@@ -541,8 +547,10 @@ function MainApp() {
     } else if (user?.role === "admin") {
       setCurrentSection("admin-dashboard");
     } else {
-      // لو كان داخل dashboard وبعدين خرج/تغير، يرجع home
-      if (currentSection === "teacher-dashboard" || currentSection === "admin-dashboard") {
+      if (
+        currentSection === "teacher-dashboard" ||
+        currentSection === "admin-dashboard"
+      ) {
         setCurrentSection("home");
       }
     }
@@ -566,8 +574,13 @@ function MainApp() {
     return (
       <div className="app-bg">
         <Header />
+
         <div className="pb-20">
-          {currentSection === "admin-dashboard" && <AdminDashboard />}
+          {currentSection === "admin-dashboard" && (
+            <AdminDashboard
+              onBackHome={() => setCurrentSection("home")} // ✅ زر رجوع للوحة الادمن
+            />
+          )}
 
           {currentSection === "home" && (
             <HomePage
@@ -587,25 +600,32 @@ function MainApp() {
             />
           )}
 
-          {currentSection === "mypage" && <MyPage onBackHome={() => setCurrentSection("home")} />}
+          {currentSection === "mypage" && (
+            <MyPage onBackHome={() => setCurrentSection("home")} />
+          )}
 
           {currentSection === "announcements" && (
-  <AnnouncementsPage
-    onBackHome={() => setCurrentSection("home")}
-    user={user}
-    showSuccess={useToast().showSuccess}
-    showError={useToast().showError}
-  />
-)}
+            <AnnouncementsPage
+              onBackHome={() => setCurrentSection("home")}
+              user={user}
+              showSuccess={toast.showSuccess}
+              showError={toast.showError}
+            />
+          )}
 
-{currentSection === "honors" && (
-  <HonorsPage onBackHome={() => setCurrentSection("home")} />
-)}
-
+          {currentSection === "honors" && (
+            <HonorsPage onBackHome={() => setCurrentSection("home")} />
+          )}
         </div>
 
-        {/* ✅ سيب ناف الادمن زي ما هو عندك */}
-        {/* ... your admin bottom nav unchanged ... */}
+        {/* ✅ BottomNav لازم يكون جوه admin return عشان كان بيختفي */}
+        <BottomNav
+          currentSection={currentSection}
+          setCurrentSection={(section: string) =>
+            setCurrentSection(section as any)
+          }
+          isAdmin={true}
+        />
       </div>
     );
   }
@@ -635,17 +655,31 @@ function MainApp() {
           />
         )}
 
-        {currentSection === "mypage" && <MyPage onBackHome={() => setCurrentSection("home")} />}
+        {currentSection === "mypage" && (
+          <MyPage onBackHome={() => setCurrentSection("home")} />
+        )}
 
-        {currentSection === "announcements" && <AnnouncementsPage />}
-        {currentSection === "honors" && <HonorsPage />}
+        {currentSection === "announcements" && (
+          <AnnouncementsPage
+            onBackHome={() => setCurrentSection("home")}
+            user={user}
+            showSuccess={toast.showSuccess}
+            showError={toast.showError}
+          />
+        )}
+
+        {currentSection === "honors" && (
+          <HonorsPage onBackHome={() => setCurrentSection("home")} />
+        )}
       </div>
 
       <BottomNav
-  currentSection={currentSection}
-  setCurrentSection={(section: string) => setCurrentSection(section as any)}
-  isAdmin={user?.role === "admin"}
-/>
+        currentSection={currentSection}
+        setCurrentSection={(section: string) =>
+          setCurrentSection(section as any)
+        }
+        isAdmin={false}
+      />
     </div>
   );
 }
