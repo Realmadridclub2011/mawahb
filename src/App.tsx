@@ -537,7 +537,7 @@ function MainApp() {
               {page === 'register' && <RegisterPage categoryId={selectedCategory!} subcategoryId={selectedSubcategory!} setPage={setPage} />}
               {page === 'mypage' && <MyPage setPage={setPage} />}
             </>
-          )}
+          }
           {currentSection === 'announcements' && <AnnouncementsPage />}
           {currentSection === 'honors' && <HonorsPage />}
         </div>
