@@ -672,6 +672,184 @@ function MainApp() {
   );
 }
 
+function HomePage({ setCurrentSection }: { setCurrentSection: (section: string) => void }) {
+  return (
+    <div className="container mx-auto px-3 py-6" dir="rtl">
+      <div className="text-center mb-6">
+        <h1 className="text-2xl md:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 mb-2 drop-shadow-sm">مرحباً بك في كنوز قطر</h1>
+        <p className="text-sm md:text-lg text-gray-600 font-semibold mb-4">اكتشف مواهبك، سجل في المسابقات، واحتفل بالإنجازات</p>
+      </div>
+
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-3 max-w-4xl mx-auto mb-6">
+        <button
+          onClick={() => setCurrentSection('talents')}
+          className="group ui-card ui-card-hover ui-card-amber overflow-hidden h-32 md:h-40 active:scale-[0.99]"
+        >
+          <div className="h-full flex flex-col items-center justify-center p-3">
+            <div className="mb-2 w-12 h-12 rounded-full bg-gradient-to-br from-amber-400 to-yellow-500 flex items-center justify-center shadow-md">
+              <Star className="w-6 h-6 text-white" />
+            </div>
+
+            <h3 className="text-base md:text-xl font-black text-slate-900 mb-1">اكتشف موهبتك</h3>
+            <p className="text-slate-500 text-xs md:text-sm font-semibold hidden md:block">سجل موهبتك الآن</p>
+          </div>
+        </button>
+
+        <button
+          onClick={() => setCurrentSection('announcements')}
+          className="group ui-card ui-card-hover ui-card-cyan overflow-hidden h-32 md:h-40 active:scale-[0.99]"
+        >
+          <div className="h-full flex flex-col items-center justify-center p-3">
+            <div className="mb-2 w-12 h-12 rounded-full bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center shadow-md">
+              <Megaphone className="w-6 h-6 text-white" />
+            </div>
+
+            <h3 className="text-base md:text-xl font-black text-slate-900 mb-1">الإعلانات</h3>
+            <p className="text-slate-500 text-xs md:text-sm font-semibold hidden md:block">تابع الأخبار</p>
+          </div>
+        </button>
+
+        <button
+          onClick={() => setCurrentSection('honors')}
+          className="group ui-card ui-card-hover ui-card-rose overflow-hidden h-32 md:h-40 col-span-2 md:col-span-1 active:scale-[0.99]"
+        >
+          <div className="h-full flex flex-col items-center justify-center p-3">
+            <div className="mb-2 w-12 h-12 rounded-full bg-gradient-to-br from-rose-400 to-pink-500 flex items-center justify-center shadow-md">
+              <Trophy className="w-6 h-6 text-white" />
+            </div>
+
+            <h3 className="text-base md:text-xl font-black text-slate-900 mb-1">التكريمات</h3>
+            <p className="text-slate-500 text-xs md:text-sm font-semibold hidden md:block">إنجازات مدرستنا</p>
+          </div>
+        </button>
+      </div>
+
+      <div className="mt-6 bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 rounded-2xl shadow-lg p-4 md:p-6 text-center text-white max-w-4xl mx-auto">
+        <h2 className="text-lg md:text-2xl font-black mb-2">ابدأ رحلتك الآن</h2>
+        <p className="text-sm md:text-lg mb-3">استخدم الشريط السفلي للتنقل بين الأقسام</p>
+        <div className="flex items-center justify-center gap-2 md:gap-4 text-emerald-200">
+          <ArrowRight className="w-4 h-4 md:w-6 md:h-6 animate-bounce rotate-180" />
+          <span className="font-bold text-xs md:text-base">اضغط على الأيقونات بالأسفل</span>
+          <ArrowRight className="w-4 h-4 md:w-6 md:h-6 animate-bounce rotate-180" />
+        </div>
+      </div>
+    </div>
+  );
+}
+function RegisterPage({ categoryId, subcategoryId, setPage }: any) {
+  const { user } = useAuth();
+  const { showSuccess, showError } = useToast();
+  const [form, setForm] = useState({ proficiency: 'مبتدئ', years_of_experience: 0, attachment_url: '', consent_guardian: false });
+  const [loading, setLoading] = useState(false);
+
+  if (!user) {
+    return (
+      <div className="container mx-auto px-4 py-16" dir="rtl">
+        <div className="max-w-md mx-auto bg-white rounded-2xl shadow-2xl p-12 text-center border-t-4 border-teal-600">
+          <div className="bg-gradient-to-br from-teal-100 to-cyan-100 rounded-full w-24 h-24 flex items-center justify-center mx-auto mb-6">
+            <LogIn className="w-12 h-12 text-teal-700" />
+          </div>
+          <h2 className="text-3xl font-black text-gray-800 mb-4">يجب تسجيل الدخول</h2>
+          <p className="text-gray-600 mb-8">لتسجيل موهبتك، يرجى تسجيل الدخول أولاً</p>
+          <button onClick={() => setPage('talents')} className="bg-gradient-to-r from-teal-600 to-cyan-600 text-white px-8 py-3 rounded-xl font-bold shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 hover:from-teal-700 hover:to-cyan-700 active:scale-95">
+            العودة للأقسام
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!form.consent_guardian) {
+      showError('يجب الموافقة على إقرار ولي الأمر');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const { error } = await supabase.from('student_talents').insert({
+        student_id: user.id,
+        category_id: categoryId,
+        subcategory_id: subcategoryId,
+        proficiency: form.proficiency,
+        years_of_experience: form.years_of_experience,
+        attachment_url: form.attachment_url || null,
+        consent_guardian: form.consent_guardian,
+        status: 'pending'
+      });
+
+      if (error) throw error;
+
+      showSuccess('تم استلام طلبك بنجاح! جارٍ المراجعة');
+      setTimeout(() => setPage('mypage'), 2000);
+    } catch (err: any) {
+      if (err.code === '23505') {
+        showError('لديك طلب مماثل قيد المراجعة بالفعل');
+      } else {
+        showError('حدث خطأ أثناء التسجيل');
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="container mx-auto px-4 py-12" dir="rtl">
+      <button onClick={() => setPage('subcategories')} className="flex items-center gap-3 bg-white text-emerald-600 hover:text-white hover:bg-gradient-to-r hover:from-emerald-600 hover:to-cyan-600 px-6 py-3 rounded-xl font-bold mb-8 shadow-lg hover:shadow-xl transition-all transform hover:scale-105 border-2 border-emerald-600">
+        <ArrowRight className="w-5 h-5" />
+        <span>العودة</span>
+      </button>
+
+      <div className="max-w-2xl mx-auto ui-card p-8 border-t-4 border-emerald-600">
+        <h1 className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 mb-8 text-center">نموذج تسجيل الموهبة</h1>
+
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label className="block text-gray-700 font-semibold mb-2">الاسم الكامل</label>
+              <input type="text" value={user.full_name} disabled className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-50" />
+            </div>
+            <div>
+              <label className="block text-gray-700 font-semibold mb-2">الصف الدراسي</label>
+              <input type="text" value={user.grade || ''} disabled className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-50" />
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-gray-700 font-semibold mb-2">مستوى الإتقان *</label>
+            <select value={form.proficiency} onChange={(e) => setForm({ ...form, proficiency: e.target.value })} className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8A1538]" required>
+              <option value="مبتدئ">مبتدئ</option>
+              <option value="متوسط">متوسط</option>
+              <option value="متقدم">متقدم</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-gray-700 font-semibold mb-2">سنوات الخبرة *</label>
+            <input type="number" min="0" max="20" value={form.years_of_experience} onChange={(e) => setForm({ ...form, years_of_experience: parseInt(e.target.value) || 0 })} className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8A1538]" required />
+          </div>
+
+          <div>
+            <label className="block text-gray-700 font-semibold mb-2">رابط المرفق (اختياري)</label>
+            <input type="url" value={form.attachment_url} onChange={(e) => setForm({ ...form, attachment_url: e.target.value })} className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8A1538]" placeholder="https://example.com/file" dir="ltr" />
+          </div>
+
+          <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+            <label className="flex items-start gap-3 cursor-pointer">
+              <input type="checkbox" checked={form.consent_guardian} onChange={(e) => setForm({ ...form, consent_guardian: e.target.checked })} className="mt-1 w-5 h-5 text-[#8A1538]" required />
+              <span className="text-gray-700"><strong>موافقة ولي الأمر:</strong> أقر بأن ولي أمري على علم بتسجيل هذه الموهبة ويوافق على المشاركة *</span>
+            </label>
+          </div>
+
+          <button type="submit" disabled={loading || !form.consent_guardian} className="w-full bg-gradient-to-r from-emerald-600 to-cyan-600 text-white py-4 rounded-xl font-black text-lg hover:shadow-xl transition disabled:opacity-50">
+            {loading ? 'جارٍ التسجيل...' : 'تسجيل الموهبة'}
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+}
 function MyPage({ setPage }: any) {
   const { user } = useAuth();
   const [talents, setTalents] = useState<any[]>([]);
