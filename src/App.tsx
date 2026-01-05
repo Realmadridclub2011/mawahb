@@ -1,3 +1,6 @@
+import AnnouncementsPage from "./pages/AnnouncementsPage";
+import HonorsPage from "./pages/HonorsPage";
+import TalentsPage from "./pages/TalentsPage";
 import { useState, useEffect, createContext, useContext } from 'react';
 import { UiCard, UiIconCircle } from "./components/ui/UiCard";
 import { supabase } from "./lib/supabaseClient";
