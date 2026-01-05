@@ -215,11 +215,13 @@ function BottomNav({
   isAdmin?: boolean;
 }) {
   const navItems = [
-    { id: "home", label: "الرئيسية", icon: Home },
-    { id: "talents", label: "اكتشف موهبتك", icon: Star },
-    { id: "announcements", label: "الإعلانات", icon: Megaphone },
-    { id: "honors", label: "التكريمات", icon: Trophy },
-    ...(isAdmin ? [{ id: "admin-dashboard", label: "لوحة الإدارة", icon: Settings }] : []),
+    { id: "home", label: "الرئيسية", icon: Home, grad: "from-slate-600 to-slate-800" },
+    { id: "talents", label: "اكتشف موهبتك", icon: Star, grad: "from-amber-400 to-orange-500" },
+    { id: "announcements", label: "الإعلانات", icon: Megaphone, grad: "from-cyan-400 to-blue-500" },
+    { id: "honors", label: "التكريمات", icon: Trophy, grad: "from-rose-400 to-pink-500" },
+    ...(isAdmin
+      ? [{ id: "admin-dashboard", label: "لوحة الإدارة", icon: Settings, grad: "from-teal-500 to-emerald-600" }]
+      : []),
   ];
 
   const cols =
@@ -233,18 +235,17 @@ function BottomNav({
     <nav
       className={[
         "fixed bottom-0 left-0 right-0 z-40",
-        // glass + soft border
+        "bg-white/75 backdrop-blur-xl",
         "border-t border-teal-200/60",
-        "bg-white/70 backdrop-blur-xl",
-        "shadow-[0_-10px_30px_rgba(0,0,0,0.06)]",
+        "shadow-[0_-10px_25px_rgba(0,0,0,0.05)]",
       ].join(" ")}
       dir="rtl"
     >
-      {/* خط علوي لطيف */}
-      <div className="h-[2px] bg-gradient-to-r from-transparent via-teal-400/50 to-transparent" />
+      <div className="h-[2px] bg-gradient-to-r from-transparent via-teal-400/40 to-transparent" />
 
       <div className="container mx-auto px-2">
-        <div className={`grid ${cols} gap-1 py-1.5`}>
+        {/* ✅ أقل ارتفاع */}
+        <div className={`grid ${cols} gap-1 py-1`}>
           {navItems.map((item) => {
             const active = currentSection === item.id;
 
@@ -254,55 +255,75 @@ function BottomNav({
                 onClick={() => setCurrentSection(item.id)}
                 className={[
                   "relative flex flex-col items-center justify-center",
-                  "py-2.5 md:py-3",
-                  "rounded-2xl",
+                  "rounded-xl",
+                  "py-1.5 md:py-2", // ✅ أقل
                   "transition-all duration-200",
                   "active:scale-[0.98]",
-                  active
-                    ? "text-teal-800"
-                    : "text-slate-600 hover:text-teal-700 hover:bg-teal-50/60",
+                  active ? "text-teal-800" : "text-slate-600 hover:text-teal-700 hover:bg-teal-50/60",
                 ].join(" ")}
               >
-                {/* Active pill خلف الأيقونة بشكل هادي */}
+                {/* Active pill خلفية خفيفة */}
                 {active && (
                   <span
                     className={[
-                      "absolute inset-x-2 top-1 bottom-1",
-                      "rounded-2xl",
-                      "bg-gradient-to-b from-teal-100/80 to-white/40",
-                      "shadow-[inset_0_1px_0_rgba(255,255,255,0.7),0_6px_16px_rgba(13,148,136,0.12)]",
+                      "absolute inset-x-1.5 top-0.5 bottom-0.5",
+                      "rounded-xl",
+                      "bg-gradient-to-b from-teal-100/70 to-white/40",
                       "border border-teal-200/60",
+                      "shadow-[0_6px_14px_rgba(13,148,136,0.10)]",
                     ].join(" ")}
                   />
                 )}
 
-                {/* المحتوى */}
                 <span className="relative flex flex-col items-center">
+                  {/* ✅ أيقونة 3D ملونة */}
                   <span
                     className={[
-                      "w-10 h-10 md:w-11 md:h-11",
+                      "relative",
+                      "w-8 h-8 md:w-9 md:h-9", // ✅ أصغر
                       "rounded-2xl",
                       "flex items-center justify-center",
-                      "transition-all duration-200",
-                      active
-                        ? "bg-white/70 shadow-[0_8px_18px_rgba(2,132,199,0.10)]"
-                        : "bg-transparent",
+                      active ? "scale-[1.02]" : "",
+                      "transition-transform duration-200",
                     ].join(" ")}
                   >
+                    {/* الطبقة الأساسية المتدرجة */}
+                    <span
+                      className={[
+                        "absolute inset-0 rounded-2xl",
+                        "bg-gradient-to-br",
+                        item.grad,
+                        active ? "opacity-95" : "opacity-70",
+                        "shadow-[0_10px_18px_rgba(0,0,0,0.10)]",
+                      ].join(" ")}
+                    />
+                    {/* لمعة 3D */}
+                    <span
+                      className={[
+                        "absolute inset-[1px] rounded-2xl",
+                        "bg-gradient-to-b from-white/35 to-transparent",
+                        active ? "opacity-100" : "opacity-70",
+                      ].join(" ")}
+                    />
+                    {/* نقطة ضوء صغيرة */}
+                    <span className="absolute top-1 left-1 w-2 h-2 rounded-full bg-white/55 blur-[0.5px]" />
+
                     <item.icon
                       className={[
-                        "w-5 h-5 md:w-[22px] md:h-[22px]",
+                        "relative",
+                        "w-[18px] h-[18px] md:w-[20px] md:h-[20px]", // ✅ أصغر
+                        "text-white",
+                        active ? "drop-shadow-[0_6px_10px_rgba(0,0,0,0.18)]" : "opacity-95",
                         "transition-all duration-200",
-                        active ? "scale-110 drop-shadow-[0_6px_10px_rgba(13,148,136,0.18)]" : "",
                       ].join(" ")}
                     />
                   </span>
 
+                  {/* ✅ اللابل صغير وهادئ */}
                   <span
                     className={[
-                      "mt-0.5 text-[10px] md:text-xs font-bold leading-tight",
-                      "transition-all duration-200",
-                      active ? "opacity-100" : "opacity-80",
+                      "mt-0.5 text-[9px] md:text-[10px] font-bold leading-tight",
+                      active ? "opacity-100" : "opacity-75",
                     ].join(" ")}
                   >
                     {item.label}
@@ -314,8 +335,8 @@ function BottomNav({
         </div>
       </div>
 
-      {/* safe area لطيف للموبايلات */}
-      <div className="h-[max(8px,env(safe-area-inset-bottom))]" />
+      {/* safe area صغيرة */}
+      <div className="h-[max(6px,env(safe-area-inset-bottom))]" />
     </nav>
   );
 }
