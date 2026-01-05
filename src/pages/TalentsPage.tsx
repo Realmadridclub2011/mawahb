@@ -31,11 +31,16 @@ function twemojiUrl(hex: string, size: 72 | 96 = 72) {
 }
 
 function pickEmojiHexFromText(text?: string) {
-  const s = String(text || "")
-    .trim()
-    .toLowerCase();
+  const s = String(text || "").trim().toLowerCase();
 
-  // Sports
+  // ====== MAIN CATEGORIES (الأقسام الرئيسية) ======
+  if (/^رياضية$|رياضة|sports?/.test(s)) return "1f3c6"; // 🏆 كأس/بطولة
+  if (/^فنية$|فن|رسم|art|arts/.test(s)) return "1f3a8"; // 🎨 لوحة ألوان
+  if (/^أدبية$|ادبية|أدب|كتب|قراءة|literature|reading|poetry/.test(s)) return "1f4da"; // 📚 كتب
+  if (/^علمية$|علم|علوم|science|lab|مختبر/.test(s)) return "1f52c"; // 🔬 ميكروسكوب
+  if (/^تقنية$|تقنية|تقنيه|tech|technology|كمبيوتر|حاسوب|برمجة|coding/.test(s)) return "1f4bb"; // 💻 لابتوب
+
+  // ====== SPORTS (تفاصيل رياضية) ======
   if (/كرة القدم|فوتبول|football|soccer/.test(s)) return "26bd"; // ⚽
   if (/كرة السلة|basketball/.test(s)) return "1f3c0"; // 🏀
   if (/السباحة|سباحة|swim/.test(s)) return "1f3ca"; // 🏊
@@ -46,23 +51,38 @@ function pickEmojiHexFromText(text?: string) {
   if (/الفروسية|horse|equestrian/.test(s)) return "1f434"; // 🐴
   if (/تنس(?!\s*الطاولة)|tennis/.test(s)) return "1f3be"; // 🎾
   if (/كرة الطائرة|volleyball/.test(s)) return "1f3d0"; // 🏐
-  if (/رفع أثقال|حديد|weightlifting/.test(s)) return "1f3cb"; // 🏋️ (fallback: doesn't render variation here)
+  if (/رفع أثقال|حديد|weightlifting/.test(s)) return "1f3cb"; // 🏋️
   if (/ملاكمة|boxing/.test(s)) return "1f94a"; // 🥊
 
-  // Main categories
-  if (/رياضية|sports/.test(s)) return "1f3c5"; // 🏅
-  if (/فنية|art|arts|رسم/.test(s)) return "1f3a8"; // 🎨
-  if (/أدبية|كتب|reading|literature/.test(s)) return "1f4da"; // 📚
-  if (/علمية|science|مختبر/.test(s)) return "1f52c"; // 🔬
-  if (/تقنية|tech|كمبيوتر|computer/.test(s)) return "1f4bb"; // 💻
+  // ====== ART (فنية) ======
+  if (/تصميم|design/.test(s)) return "1f58c"; // 🖌️ فرشة
+  if (/تصوير|photo|camera/.test(s)) return "1f4f7"; // 📷 كاميرا
+  if (/موسيقى|music/.test(s)) return "1f3b5"; // 🎵
+  if (/تمثيل|مسرح|theater|theatre/.test(s)) return "1f3ad"; // 🎭
+  if (/خط عربي|خط|calligraphy/.test(s)) return "270d"; // ✍️ كتابة
+
+  // ====== LITERATURE (أدبية) ======
+  if (/قصة|قصص|story/.test(s)) return "1f4d6"; // 📖 كتاب مفتوح
+  if (/شعر|poem|poetry/.test(s)) return "1f4dd"; // 📝 مذكرة
+  if (/إلقاء|خطابة|speech/.test(s)) return "1f3a4"; // 🎤 ميكروفون
+
+  // ====== SCIENCE (علمية) ======
+  if (/روبوت|robot/.test(s)) return "1f916"; // 🤖
+  if (/كيمياء|chem/.test(s)) return "2697"; // ⚗️
+  if (/فيزياء|physics/.test(s)) return "1f4a1"; // 💡 فكرة
+  if (/فضاء|space|astronomy/.test(s)) return "1f680"; // 🚀
+  if (/رياضيات|math/.test(s)) return "1f522"; // 🔢
+
+  // ====== TECH (تقنية) ======
+  if (/برمجة|coding|code|developer/.test(s)) return "1f9d1-200d-1f4bb"; // 🧑‍💻
+  if (/ذكاء|ai|machine|ml/.test(s)) return "1f9e0"; // 🧠
+  if (/أمن سيبراني|cyber|security/.test(s)) return "1f512"; // 🔒
+  if (/هاتف|mobile|app/.test(s)) return "1f4f1"; // 📱
+  if (/شبكات|network/.test(s)) return "1f5a7"; // 🖧
 
   // Default
   return "2728"; // ✨
 }
-
-/** =========================
- *  Icon Badge (3D-ish + glass)
- *  ========================= */
 function IconBadge({
   label,
   tone = "teal",
