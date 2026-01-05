@@ -3,6 +3,13 @@ import { useState, useEffect, createContext, useContext } from 'react';
 import { UiCard, UiIconCircle } from "./components/ui/UiCard";
 import { createClient } from '@supabase/supabase-js';
 import { LogIn, LogOut, User, FileText, Users, LayoutDashboard, ArrowRight, CheckCircle, XCircle, Clock, TrendingUp, Plus, MessageSquare, Search, Download, X, Info, Award, Dumbbell, Palette, BookOpen, Microscope, Cpu, Home, Megaphone, Trophy, Star, CreditCard as Edit, Trash2, Settings, Image } from 'lucide-react';
+import AnnouncementsPage from "./pages/AnnouncementsPage";
+
+// ...
+{currentSection === "announcements" && (
+  <AnnouncementsPage onBackHome={() => setCurrentSection("home")} />
+)}
+
 
 const supabase = createClient(
   import.meta.env.VITE_SUPABASE_URL,
