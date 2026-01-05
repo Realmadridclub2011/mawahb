@@ -1,5 +1,5 @@
 // src/pages/AnnouncementsPage.tsx
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { ArrowRight } from "lucide-react";
 import { supabase } from "../lib/supabaseClient";
 
@@ -11,6 +11,14 @@ type AnnouncementsPageProps = {
   showSuccess?: (msg: string) => void;
   showError?: (msg: string) => void;
 };
+
+function fmtDateAr(d: string) {
+  try {
+    return new Date(d).toLocaleDateString("ar-SA");
+  } catch {
+    return "";
+  }
+}
 
 export default function AnnouncementsPage({
   onBackHome,
@@ -32,9 +40,7 @@ export default function AnnouncementsPage({
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "announcements" },
-        () => {
-          loadAnnouncements();
-        }
+        () => loadAnnouncements()
       )
       .subscribe();
 
@@ -45,6 +51,7 @@ export default function AnnouncementsPage({
   }, []);
 
   const loadAnnouncements = async () => {
+    setLoading(true);
     const { data, error } = await supabase
       .from("announcements")
       .select("*")
@@ -70,12 +77,14 @@ export default function AnnouncementsPage({
 
     setRegistering(true);
     try {
-      const { error } = await supabase.from("announcement_registrations").insert({
-        announcement_id: announcementId,
-        student_id: user.id,
-        notes: registrationNote,
-        status: "pending",
-      });
+      const { error } = await supabase
+        .from("announcement_registrations")
+        .insert({
+          announcement_id: announcementId,
+          student_id: user.id,
+          notes: registrationNote,
+          status: "pending",
+        });
 
       if (error) {
         if ((error as any).code === "23505") {
@@ -95,6 +104,29 @@ export default function AnnouncementsPage({
     }
   };
 
+  const getTone = (a: any) => {
+    // ألوان هادية حسب النوع
+    if (a?.type === "competition") {
+      return {
+        card: "border-emerald-200 bg-emerald-50/35",
+        chip: "bg-emerald-100 text-emerald-800",
+        ring: "ring-emerald-200/60",
+        btn: "from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700",
+      };
+    }
+    return {
+      card: "border-sky-200 bg-sky-50/35",
+      chip: "bg-sky-100 text-sky-800",
+      ring: "ring-sky-200/60",
+      btn: "from-sky-600 to-cyan-600 hover:from-sky-700 hover:to-cyan-700",
+    };
+  };
+
+  const canRegister = (a: any) =>
+    a?.type === "competition" && !!a?.registration_open;
+
+  const cards = useMemo(() => announcements || [], [announcements]);
+
   if (loading)
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -112,89 +144,143 @@ export default function AnnouncementsPage({
         <span>العودة للرئيسية</span>
       </button>
 
-      <div className="text-center mb-12">
-        <h1 className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 mb-4">
+      <div className="text-center mb-10">
+        <h1 className="text-4xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 mb-3">
           الإعلانات والمسابقات
         </h1>
-        <p className="text-xl text-gray-600 font-semibold">
+        <p className="text-base md:text-xl text-gray-600 font-semibold">
           تابع آخر الأخبار والمسابقات
         </p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-        {announcements.map((announcement) => (
-          <div
-            key={announcement.id}
-            className="ui-card ui-card-hover ui-card-blue overflow-hidden border-t-4 border-blue-500"
-          >
-            {announcement.image_url && (
-              <img
-                src={announcement.image_url}
-                alt={announcement.title}
-                className="w-full h-48 object-cover"
-              />
-            )}
+        {cards.map((a) => {
+          const tone = getTone(a);
+          const hasImage = !!a.image_url;
+          const open = !!a.registration_open;
+          const isComp = a.type === "competition";
 
-            <div className="p-6">
-              <div className="flex items-center gap-2 mb-3">
-                {announcement.type === "competition" ? (
-                  <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs font-bold">
-                    مسابقة
-                  </span>
-                ) : (
-                  <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-xs font-bold">
-                    إعلان
-                  </span>
-                )}
+          return (
+            <div
+              key={a.id}
+              className={`
+                ui-card ui-card-hover overflow-hidden
+                rounded-3xl border ${tone.card}
+                shadow-[0_10px_30px_rgba(2,6,23,0.08)]
+              `}
+            >
+              {/* صورة اختيارية */}
+              {hasImage ? (
+                <div className="relative">
+                  <img
+                    src={a.image_url}
+                    alt={a.title}
+                    className="w-full h-48 object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-black/0 to-black/0" />
+                </div>
+              ) : (
+                // Placeholder بسيط بدل الفراغ
+                <div className="h-20 bg-gradient-to-r from-white/40 to-white/10" />
+              )}
 
-                {announcement.registration_open && (
-                  <span className="bg-amber-100 text-amber-800 px-3 py-1 rounded-full text-xs font-bold">
-                    التسجيل مفتوح
-                  </span>
-                )}
-              </div>
+              <div className="p-6 flex flex-col min-h-[280px]">
+                {/* Chips */}
+                <div className="flex items-center justify-between gap-2 mb-4">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span
+                      className={`px-3 py-1 rounded-full text-xs font-black ${tone.chip}`}
+                    >
+                      {isComp ? "مسابقة" : "إعلان"}
+                    </span>
 
-              <h3 className="text-xl font-black text-gray-800 mb-2">
-                {announcement.title}
-              </h3>
+                    {isComp && (
+                      <span
+                        className={`px-3 py-1 rounded-full text-xs font-bold ${
+                          open
+                            ? "bg-amber-100 text-amber-800"
+                            : "bg-slate-100 text-slate-700"
+                        }`}
+                      >
+                        {open ? "التسجيل مفتوح" : "التسجيل مغلق"}
+                      </span>
+                    )}
+                  </div>
 
-              <p className="text-gray-600 mb-4 line-clamp-3">
-                {announcement.description}
-              </p>
+                  {/* تاريخ/نهاية */}
+                  {a.end_date ? (
+                    <span className="text-[11px] font-semibold text-gray-500 whitespace-nowrap">
+                      ينتهي: {fmtDateAr(a.end_date)}
+                    </span>
+                  ) : (
+                    <span className="text-[11px] font-semibold text-gray-400 whitespace-nowrap">
+                      —
+                    </span>
+                  )}
+                </div>
 
-              {announcement.end_date && (
-                <p className="text-sm text-gray-500 mb-4">
-                  <strong>ينتهي في:</strong>{" "}
-                  {new Date(announcement.end_date).toLocaleDateString("ar-SA")}
+                {/* Content */}
+                <h3 className="text-lg md:text-xl font-black text-gray-900 mb-2 leading-snug">
+                  {a.title}
+                </h3>
+
+                <p className="text-gray-600 mb-4 line-clamp-3 leading-relaxed">
+                  {a.description}
                 </p>
-              )}
 
-              {announcement.registration_open && announcement.type === "competition" && (
-                <button
-                  onClick={() => setSelectedAnnouncement(announcement)}
-                  className="w-full bg-gradient-to-r from-emerald-600 to-cyan-600 text-white py-3 rounded-lg font-bold hover:shadow-lg transition"
-                >
-                  سجّل الآن
-                </button>
-              )}
+                {/* Footer ثابت: زر أو رسالة */}
+                <div className="mt-auto pt-4">
+                  {canRegister(a) ? (
+                    <button
+                      onClick={() => setSelectedAnnouncement(a)}
+                      className={`
+                        w-full py-3 rounded-xl font-black text-white
+                        bg-gradient-to-r ${tone.btn}
+                        shadow-md hover:shadow-lg transition
+                        active:scale-[0.99]
+                      `}
+                    >
+                      سجّل الآن
+                    </button>
+                  ) : (
+                    <div
+                      className={`
+                        w-full py-3 rounded-xl text-center
+                        bg-white/70 text-slate-700
+                        text-sm font-bold
+                        border border-white/60
+                        ring-1 ${tone.ring}
+                      `}
+                    >
+                      {isComp
+                        ? "انتهى التسجيل — تابعنا للمسابقات القادمة"
+                        : "تابعنا للمزيد من التحديثات"}
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
+      {/* Modal تسجيل */}
       {selectedAnnouncement && (
         <div
           className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4"
           onClick={() => setSelectedAnnouncement(null)}
         >
           <div
-            className="bg-white rounded-3xl shadow-2xl w-full max-w-md p-8"
+            className="bg-white rounded-3xl shadow-2xl w-full max-w-md p-7"
             onClick={(e) => e.stopPropagation()}
             dir="rtl"
           >
-            <h2 className="text-2xl font-black text-teal-700 mb-4">
+            <h2 className="text-xl md:text-2xl font-black text-teal-700 mb-2">
               التسجيل في {selectedAnnouncement.title}
             </h2>
+            <p className="text-sm text-gray-500 mb-5">
+              سيتم إرسال طلبك للمراجعة.
+            </p>
 
             <div className="space-y-4">
               <div>
@@ -204,16 +290,16 @@ export default function AnnouncementsPage({
                 <textarea
                   value={registrationNote}
                   onChange={(e) => setRegistrationNote(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8A1538]"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#8A1538]"
                   rows={4}
                   placeholder="أضف أي ملاحظات أو معلومات إضافية"
                 />
               </div>
 
-              <div className="flex gap-4">
+              <div className="flex gap-3">
                 <button
                   onClick={() => setSelectedAnnouncement(null)}
-                  className="flex-1 bg-gray-200 py-3 rounded-lg font-bold"
+                  className="flex-1 bg-gray-100 hover:bg-gray-200 py-3 rounded-xl font-bold transition"
                 >
                   إلغاء
                 </button>
@@ -221,11 +307,17 @@ export default function AnnouncementsPage({
                 <button
                   onClick={() => handleRegister(selectedAnnouncement.id)}
                   disabled={registering}
-                  className="flex-1 bg-gradient-to-r from-emerald-600 to-cyan-600 text-white py-3 rounded-lg font-bold disabled:opacity-50"
+                  className="flex-1 bg-gradient-to-r from-emerald-600 to-cyan-600 text-white py-3 rounded-xl font-black disabled:opacity-50 hover:shadow-lg transition"
                 >
                   {registering ? "جارٍ التسجيل..." : "تأكيد التسجيل"}
                 </button>
               </div>
+
+              {!user?.id && (
+                <div className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-xl p-3">
+                  ملاحظة: يجب تسجيل الدخول أولاً لإكمال التسجيل.
+                </div>
+              )}
             </div>
           </div>
         </div>
