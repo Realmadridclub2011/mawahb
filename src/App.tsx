@@ -120,8 +120,8 @@ function ToastProvider({ children }: { children: React.ReactNode }) {
   );
 }
 
-const useAuth = () => useContext(AuthContext)!;
-const useToast = () => useContext(ToastContext)!;
+export const useAuth = () => useContext(AuthContext)!;
+export const useToast = () => useContext(ToastContext)!;
 
 function Header({ showLogin, setShowLogin }: { showLogin?: boolean; setShowLogin?: (show: boolean) => void }) {
   const { user, logout } = useAuth();
