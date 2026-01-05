@@ -49,7 +49,6 @@ export default function TalentsPage({ initialPage = "talents" }: TalentsPageProp
         />
       )}
 
-      {page === "mypage" && <MyPage setPage={setPage} />}
     </>
   );
 }
