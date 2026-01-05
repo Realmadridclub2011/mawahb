@@ -589,8 +589,19 @@ function MainApp() {
 
           {currentSection === "mypage" && <MyPage onBackHome={() => setCurrentSection("home")} />}
 
-          {currentSection === "announcements" && <AnnouncementsPage />}
-          {currentSection === "honors" && <HonorsPage />}
+          {currentSection === "announcements" && (
+  <AnnouncementsPage
+    onBackHome={() => setCurrentSection("home")}
+    user={user}
+    showSuccess={useToast().showSuccess}
+    showError={useToast().showError}
+  />
+)}
+
+{currentSection === "honors" && (
+  <HonorsPage onBackHome={() => setCurrentSection("home")} />
+)}
+
         </div>
 
         {/* ✅ سيب ناف الادمن زي ما هو عندك */}
