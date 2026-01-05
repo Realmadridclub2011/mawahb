@@ -64,11 +64,8 @@ export default function TalentsPage({
   />
 )}
 
-      {page === "mypage" && (
-  <MyPage
-    setPage={setPage}
-    onBackHome={onBackHome}
-  />
+      {page === "mypage" && <MyPage setPage={setPage} onBackHome={onBackHome} />}
+    </>
   );
 }
 
