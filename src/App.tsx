@@ -1,9 +1,12 @@
-import HomePage from "./components/HomePage";
 import { useState, useEffect, createContext, useContext } from 'react';
 import { UiCard, UiIconCircle } from "./components/ui/UiCard";
-import { createClient } from '@supabase/supabase-js';
+import { supabase } from "./lib/supabaseClient";
 import { LogIn, LogOut, User, FileText, Users, LayoutDashboard, ArrowRight, CheckCircle, XCircle, Clock, TrendingUp, Plus, MessageSquare, Search, Download, X, Info, Award, Dumbbell, Palette, BookOpen, Microscope, Cpu, Home, Megaphone, Trophy, Star, CreditCard as Edit, Trash2, Settings, Image } from 'lucide-react';
-import AnnouncementsPage from "./pages/AnnouncementsPage";
+
+const supabase = createClient(
+  import.meta.env.VITE_SUPABASE_URL,
+  import.meta.env.VITE_SUPABASE_ANON_KEY
+);
 
 interface UserType {
   id: string;
@@ -510,48 +513,19 @@ function MainApp() {
         <Header />
         <div className="pb-20">
           {currentSection === 'admin-dashboard' && <AdminDashboard />}
-          {currentSection === "home" && (
-  <HomePage
-    onGoHonors={() => setCurrentSection("honors")}
-    onGoAnnouncements={() => setCurrentSection("announcements")}
-    onGoTalents={() => {
-      setCurrentSection("talents");
-      setPage("talents");
-    }}
-    showMyPageButton={!!user}
-    onGoMyPage={() => {
-      setCurrentSection("talents");
-      setPage("mypage");
-    }}
-  />
-)}
-
-{currentSection === "talents" && (
-  <>
-    {page === "talents" && (
-      <TalentsHomePage setPage={setPage} setSelectedCategory={setSelectedCategory} />
-    )}
-    {page === "subcategories" && (
-      <SubcategoriesPage
-        categoryId={selectedCategory!}
-        setPage={setPage}
-        setSelectedSubcategory={setSelectedSubcategory}
-        setSelectedCategory={setSelectedCategory}
-      />
-    )}
-    {page === "register" && (
-      <RegisterPage
-        categoryId={selectedCategory!}
-        subcategoryId={selectedSubcategory!}
-        setPage={setPage}
-      />
-    )}
-    {page === "mypage" && <MyPage setPage={setPage} />}
-  </>
-)}
-         {currentSection === "announcements" && (
-  <AnnouncementsPage onBackHome={() => setCurrentSection("home")} />
-)}
+          {currentSection === 'home' && <HomePage setCurrentSection={(section) => {
+            setCurrentSection(section);
+            if (section === 'talents') setPage('talents');
+          }} />}
+          {currentSection === 'talents' && (
+            <>
+              {page === 'talents' && <TalentsHomePage setPage={setPage} setSelectedCategory={setSelectedCategory} />}
+              {page === 'subcategories' && <SubcategoriesPage categoryId={selectedCategory!} setPage={setPage} setSelectedSubcategory={setSelectedSubcategory} setSelectedCategory={setSelectedCategory} />}
+              {page === 'register' && <RegisterPage categoryId={selectedCategory!} subcategoryId={selectedSubcategory!} setPage={setPage} />}
+              {page === 'mypage' && <MyPage setPage={setPage} />}
+            </>
+          )}
+          {currentSection === 'announcements' && <AnnouncementsPage />}
           {currentSection === 'honors' && <HonorsPage />}
         </div>
         <nav className="fixed bottom-0 left-0 right-0 bg-gradient-to-r from-slate-50 via-teal-50 to-cyan-50 border-t-2 md:border-t-4 border-teal-600 shadow-2xl z-40" dir="rtl">
@@ -668,6 +642,71 @@ function MainApp() {
         setCurrentSection(section);
         if (section === 'talents') setPage('talents');
       }} />
+    </div>
+  );
+}
+
+function HomePage({ setCurrentSection }: { setCurrentSection: (section: string) => void }) {
+  return (
+    <div className="container mx-auto px-3 py-6" dir="rtl">
+      <div className="text-center mb-6">
+        <h1 className="text-2xl md:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 mb-2 drop-shadow-sm">مرحباً بك في كنوز قطر</h1>
+        <p className="text-sm md:text-lg text-gray-600 font-semibold mb-4">اكتشف مواهبك، سجل في المسابقات، واحتفل بالإنجازات</p>
+      </div>
+
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-3 max-w-4xl mx-auto mb-6">
+        <button
+          onClick={() => setCurrentSection('talents')}
+          className="group ui-card ui-card-hover ui-card-amber overflow-hidden h-32 md:h-40 active:scale-[0.99]"
+        >
+          <div className="h-full flex flex-col items-center justify-center p-3">
+            <div className="mb-2 w-12 h-12 rounded-full bg-gradient-to-br from-amber-400 to-yellow-500 flex items-center justify-center shadow-md">
+              <Star className="w-6 h-6 text-white" />
+            </div>
+
+            <h3 className="text-base md:text-xl font-black text-slate-900 mb-1">اكتشف موهبتك</h3>
+            <p className="text-slate-500 text-xs md:text-sm font-semibold hidden md:block">سجل موهبتك الآن</p>
+          </div>
+        </button>
+
+        <button
+          onClick={() => setCurrentSection('announcements')}
+          className="group ui-card ui-card-hover ui-card-cyan overflow-hidden h-32 md:h-40 active:scale-[0.99]"
+        >
+          <div className="h-full flex flex-col items-center justify-center p-3">
+            <div className="mb-2 w-12 h-12 rounded-full bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center shadow-md">
+              <Megaphone className="w-6 h-6 text-white" />
+            </div>
+
+            <h3 className="text-base md:text-xl font-black text-slate-900 mb-1">الإعلانات</h3>
+            <p className="text-slate-500 text-xs md:text-sm font-semibold hidden md:block">تابع الأخبار</p>
+          </div>
+        </button>
+
+        <button
+          onClick={() => setCurrentSection('honors')}
+          className="group ui-card ui-card-hover ui-card-rose overflow-hidden h-32 md:h-40 col-span-2 md:col-span-1 active:scale-[0.99]"
+        >
+          <div className="h-full flex flex-col items-center justify-center p-3">
+            <div className="mb-2 w-12 h-12 rounded-full bg-gradient-to-br from-rose-400 to-pink-500 flex items-center justify-center shadow-md">
+              <Trophy className="w-6 h-6 text-white" />
+            </div>
+
+            <h3 className="text-base md:text-xl font-black text-slate-900 mb-1">التكريمات</h3>
+            <p className="text-slate-500 text-xs md:text-sm font-semibold hidden md:block">إنجازات مدرستنا</p>
+          </div>
+        </button>
+      </div>
+
+      <div className="mt-6 bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 rounded-2xl shadow-lg p-4 md:p-6 text-center text-white max-w-4xl mx-auto">
+        <h2 className="text-lg md:text-2xl font-black mb-2">ابدأ رحلتك الآن</h2>
+        <p className="text-sm md:text-lg mb-3">استخدم الشريط السفلي للتنقل بين الأقسام</p>
+        <div className="flex items-center justify-center gap-2 md:gap-4 text-emerald-200">
+          <ArrowRight className="w-4 h-4 md:w-6 md:h-6 animate-bounce rotate-180" />
+          <span className="font-bold text-xs md:text-base">اضغط على الأيقونات بالأسفل</span>
+          <ArrowRight className="w-4 h-4 md:w-6 md:h-6 animate-bounce rotate-180" />
+        </div>
+      </div>
     </div>
   );
 }
@@ -1033,6 +1072,160 @@ function MyPage({ setPage }: any) {
               </div>
             </div>
           ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function AnnouncementsPage() {
+  const { user } = useAuth();
+  const { showSuccess, showError } = useToast();
+  const [announcements, setAnnouncements] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedAnnouncement, setSelectedAnnouncement] = useState<any>(null);
+  const [registrationNote, setRegistrationNote] = useState('');
+  const [registering, setRegistering] = useState(false);
+
+  useEffect(() => {
+    loadAnnouncements();
+
+    const channel = supabase
+      .channel('announcements-changes')
+      .on('postgres_changes',
+        { event: '*', schema: 'public', table: 'announcements' },
+        () => {
+          loadAnnouncements();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
+
+  const loadAnnouncements = async () => {
+    const { data } = await supabase
+      .from('announcements')
+      .select('*')
+      .eq('is_published', true)
+      .order('created_at', { ascending: false });
+    setAnnouncements(data || []);
+    setLoading(false);
+  };
+
+  const handleRegister = async (announcementId: string) => {
+    if (!user) {
+      showError('يجب تسجيل الدخول أولاً');
+      return;
+    }
+
+    setRegistering(true);
+    try {
+      const { error } = await supabase.from('announcement_registrations').insert({
+        announcement_id: announcementId,
+        student_id: user.id,
+        notes: registrationNote,
+        status: 'pending'
+      });
+
+      if (error) {
+        if (error.code === '23505') {
+          showError('أنت مسجل بالفعل في هذه المسابقة');
+        } else {
+          throw error;
+        }
+      } else {
+        showSuccess('تم التسجيل بنجاح! جارٍ المراجعة');
+        setSelectedAnnouncement(null);
+        setRegistrationNote('');
+      }
+    } catch (err) {
+      showError('حدث خطأ أثناء التسجيل');
+    } finally {
+      setRegistering(false);
+    }
+  };
+
+  if (loading) return <div className="flex items-center justify-center min-h-screen"><div className="animate-spin rounded-full h-16 w-16 border-4 border-[#8A1538] border-t-transparent"></div></div>;
+
+  return (
+    <div className="container mx-auto px-4 py-12" dir="rtl">
+      <button onClick={() => window.location.href = '/'} className="flex items-center gap-3 bg-white text-emerald-600 hover:text-white hover:bg-gradient-to-r hover:from-emerald-600 hover:to-cyan-600 px-6 py-3 rounded-xl font-bold mb-8 shadow-lg hover:shadow-xl transition-all transform hover:scale-105 border-2 border-emerald-600">
+        <ArrowRight className="w-5 h-5" />
+        <span>العودة للرئيسية</span>
+      </button>
+
+      <div className="text-center mb-12">
+        <h1 className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 mb-4">الإعلانات والمسابقات</h1>
+        <p className="text-xl text-gray-600 font-semibold">تابع آخر الأخبار والمسابقات</p>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+        {announcements.map(announcement => (
+          <div key={announcement.id} className="ui-card ui-card-hover ui-card-blue overflow-hidden border-t-4 border-blue-500">
+            {announcement.image_url && (
+              <img src={announcement.image_url} alt={announcement.title} className="w-full h-48 object-cover" />
+            )}
+            <div className="p-6">
+              <div className="flex items-center gap-2 mb-3">
+                {announcement.type === 'competition' ? (
+                  <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs font-bold">مسابقة</span>
+                ) : (
+                  <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-xs font-bold">إعلان</span>
+                )}
+                {announcement.registration_open && (
+                  <span className="bg-amber-100 text-amber-800 px-3 py-1 rounded-full text-xs font-bold">التسجيل مفتوح</span>
+                )}
+              </div>
+              <h3 className="text-xl font-black text-gray-800 mb-2">{announcement.title}</h3>
+              <p className="text-gray-600 mb-4 line-clamp-3">{announcement.description}</p>
+              {announcement.end_date && (
+                <p className="text-sm text-gray-500 mb-4">
+                  <strong>ينتهي في:</strong> {new Date(announcement.end_date).toLocaleDateString('ar-SA')}
+                </p>
+              )}
+              {announcement.registration_open && announcement.type === 'competition' && (
+                <button
+                  onClick={() => setSelectedAnnouncement(announcement)}
+                  className="w-full bg-gradient-to-r from-emerald-600 to-cyan-600 text-white py-3 rounded-lg font-bold hover:shadow-lg transition"
+                >
+                  سجّل الآن
+                </button>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {selectedAnnouncement && (
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4" onClick={() => setSelectedAnnouncement(null)}>
+          <div className="bg-white rounded-3xl shadow-2xl w-full max-w-md p-8" onClick={(e) => e.stopPropagation()} dir="rtl">
+            <h2 className="text-2xl font-black text-teal-700 mb-4">التسجيل في {selectedAnnouncement.title}</h2>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-gray-700 font-semibold mb-2">ملاحظات (اختياري)</label>
+                <textarea
+                  value={registrationNote}
+                  onChange={(e) => setRegistrationNote(e.target.value)}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8A1538]"
+                  rows={4}
+                  placeholder="أضف أي ملاحظات أو معلومات إضافية"
+                />
+              </div>
+              <div className="flex gap-4">
+                <button onClick={() => setSelectedAnnouncement(null)} className="flex-1 bg-gray-200 py-3 rounded-lg font-bold">إلغاء</button>
+                <button
+                  onClick={() => handleRegister(selectedAnnouncement.id)}
+                  disabled={registering}
+                  className="flex-1 bg-gradient-to-r from-emerald-600 to-cyan-600 text-white py-3 rounded-lg font-bold disabled:opacity-50"
+                >
+                  {registering ? 'جارٍ التسجيل...' : 'تأكيد التسجيل'}
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       )}
     </div>
