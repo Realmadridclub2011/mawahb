@@ -69,7 +69,6 @@ export default function TalentsPage({
     setPage={setPage}
     onBackHome={onBackHome}
   />
-)}
   );
 }
 
