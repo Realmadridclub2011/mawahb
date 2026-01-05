@@ -22,7 +22,7 @@ type TalentsPageProps = {
 
 type PageId = "talents" | "subcategories" | "register" | "mypage";
 
-eexport default function TalentsPage({
+export default function TalentsPage({
   initialPage = "talents",
   onBackHome,
   onGoMyPage,
