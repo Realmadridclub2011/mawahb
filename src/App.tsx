@@ -222,39 +222,100 @@ function BottomNav({
     ...(isAdmin ? [{ id: "admin-dashboard", label: "لوحة الإدارة", icon: Settings }] : []),
   ];
 
+  const cols =
+    navItems.length === 5
+      ? "grid-cols-5"
+      : navItems.length === 4
+      ? "grid-cols-4"
+      : "grid-cols-3";
+
   return (
     <nav
-      className="fixed bottom-0 left-0 right-0 bg-gradient-to-r from-slate-50 via-teal-50 to-cyan-50 border-t-2 md:border-t-4 border-teal-600 shadow-2xl z-40"
+      className={[
+        "fixed bottom-0 left-0 right-0 z-40",
+        // glass + soft border
+        "border-t border-teal-200/60",
+        "bg-white/70 backdrop-blur-xl",
+        "shadow-[0_-10px_30px_rgba(0,0,0,0.06)]",
+      ].join(" ")}
       dir="rtl"
     >
-      <div className="container mx-auto px-1">
-        <div className={`grid ${isAdmin ? "grid-cols-5" : "grid-cols-4"} gap-0.5`}>
-          {navItems.map((item) => (
-            <button
-              key={item.id}
-              onClick={() => setCurrentSection(item.id)}
-              className={`flex flex-col items-center justify-center py-2 transition-all duration-300 ease-in-out transform ${
-                currentSection === item.id
-                  ? "text-teal-700 bg-gradient-to-b from-teal-100 to-teal-50 shadow-inner scale-95"
-                  : "text-gray-600 hover:text-teal-700 hover:bg-teal-50 hover:scale-110 active:scale-95 hover:shadow-lg"
-              }`}
-            >
-              <item.icon
-                className={`w-5 h-5 md:w-6 md:h-6 mb-0.5 transition-all duration-300 ${
-                  currentSection === item.id ? "scale-110 drop-shadow-md" : ""
-                }`}
-              />
-              <span
-                className={`text-[9px] md:text-xs font-bold leading-tight transition-all duration-300 ${
-                  currentSection === item.id ? "scale-105" : ""
-                }`}
+      {/* خط علوي لطيف */}
+      <div className="h-[2px] bg-gradient-to-r from-transparent via-teal-400/50 to-transparent" />
+
+      <div className="container mx-auto px-2">
+        <div className={`grid ${cols} gap-1 py-1.5`}>
+          {navItems.map((item) => {
+            const active = currentSection === item.id;
+
+            return (
+              <button
+                key={item.id}
+                onClick={() => setCurrentSection(item.id)}
+                className={[
+                  "relative flex flex-col items-center justify-center",
+                  "py-2.5 md:py-3",
+                  "rounded-2xl",
+                  "transition-all duration-200",
+                  "active:scale-[0.98]",
+                  active
+                    ? "text-teal-800"
+                    : "text-slate-600 hover:text-teal-700 hover:bg-teal-50/60",
+                ].join(" ")}
               >
-                {item.label}
-              </span>
-            </button>
-          ))}
+                {/* Active pill خلف الأيقونة بشكل هادي */}
+                {active && (
+                  <span
+                    className={[
+                      "absolute inset-x-2 top-1 bottom-1",
+                      "rounded-2xl",
+                      "bg-gradient-to-b from-teal-100/80 to-white/40",
+                      "shadow-[inset_0_1px_0_rgba(255,255,255,0.7),0_6px_16px_rgba(13,148,136,0.12)]",
+                      "border border-teal-200/60",
+                    ].join(" ")}
+                  />
+                )}
+
+                {/* المحتوى */}
+                <span className="relative flex flex-col items-center">
+                  <span
+                    className={[
+                      "w-10 h-10 md:w-11 md:h-11",
+                      "rounded-2xl",
+                      "flex items-center justify-center",
+                      "transition-all duration-200",
+                      active
+                        ? "bg-white/70 shadow-[0_8px_18px_rgba(2,132,199,0.10)]"
+                        : "bg-transparent",
+                    ].join(" ")}
+                  >
+                    <item.icon
+                      className={[
+                        "w-5 h-5 md:w-[22px] md:h-[22px]",
+                        "transition-all duration-200",
+                        active ? "scale-110 drop-shadow-[0_6px_10px_rgba(13,148,136,0.18)]" : "",
+                      ].join(" ")}
+                    />
+                  </span>
+
+                  <span
+                    className={[
+                      "mt-0.5 text-[10px] md:text-xs font-bold leading-tight",
+                      "transition-all duration-200",
+                      active ? "opacity-100" : "opacity-80",
+                    ].join(" ")}
+                  >
+                    {item.label}
+                  </span>
+                </span>
+              </button>
+            );
+          })}
         </div>
       </div>
+
+      {/* safe area لطيف للموبايلات */}
+      <div className="h-[max(8px,env(safe-area-inset-bottom))]" />
     </nav>
   );
 }
