@@ -118,15 +118,6 @@ function TalentsHomePage({ setPage, setSelectedCategory }: any) {
           نور مستقبلك بموهبتك الفريدة
         </p>
 
-        {user && (
-          <button
-            onClick={() => setPage("mypage")}
-            className="inline-flex items-center gap-2 bg-gradient-to-r from-emerald-600 to-cyan-600 text-white px-4 py-2 md:px-6 md:py-3 rounded-xl font-bold shadow-lg active:scale-95 transition-all text-sm md:text-base"
-          >
-            <FileText className="w-4 h-4 md:w-5 md:h-5" />
-            <span>صفحتي</span>
-          </button>
-        )}
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
