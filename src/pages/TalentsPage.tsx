@@ -15,7 +15,9 @@ import { useAuth, useToast } from "../App";
 
 type TalentsPageProps = {
   initialPage?: "talents" | "subcategories" | "register" | "mypage";
-  onBackHome?: () => void; // اختياري لو حبيت تضيف زر رجوع للرئيسية
+  onBackHome?: () => void;
+  onGoMyPage?: () => void;
+  onRequestLogin?: () => void;
 };
 
 type PageId = "talents" | "subcategories" | "register" | "mypage";
