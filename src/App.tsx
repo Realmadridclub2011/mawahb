@@ -1,15 +1,47 @@
+// App.tsx
+
+import { useState, useEffect, createContext, useContext } from "react";
+import { supabase } from "./lib/supabaseClient";
+
 import AnnouncementsPage from "./pages/AnnouncementsPage";
 import HonorsPage from "./pages/HonorsPage";
 import TalentsPage from "./pages/TalentsPage";
-import { useState, useEffect, createContext, useContext } from 'react';
-import { UiCard, UiIconCircle } from "./components/ui/UiCard";
-import { supabase } from "./lib/supabaseClient";
-import { LogIn, LogOut, User, FileText, Users, LayoutDashboard, ArrowRight, CheckCircle, XCircle, Clock, TrendingUp, Plus, MessageSquare, Search, Download, X, Info, Award, Dumbbell, Palette, BookOpen, Microscope, Cpu, Home, Megaphone, Trophy, Star, CreditCard as Edit, Trash2, Settings, Image } from 'lucide-react';
+
+// ✅ استخدم HomePage الحقيقي اللي عملناه قبل كده (اللي فيه زر صفحتي)
+import HomePage from "./components/HomePage";
+
+import {
+  LogIn,
+  LogOut,
+  User,
+  FileText,
+  Users,
+  LayoutDashboard,
+  ArrowRight,
+  CheckCircle,
+  XCircle,
+  Clock,
+  TrendingUp,
+  Plus,
+  MessageSquare,
+  Search,
+  Download,
+  X,
+  Info,
+  Award,
+  Home,
+  Megaphone,
+  Trophy,
+  Star,
+  CreditCard as Edit,
+  Trash2,
+  Settings,
+} from "lucide-react";
 
 interface UserType {
   id: string;
   full_name: string;
-  role: 'student' | 'guardian' | 'teacher' | 'admin';
+  role: "student" | "guardian" | "teacher" | "admin";
   grade?: string;
   class?: string;
   phone?: string;
