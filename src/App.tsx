@@ -215,78 +215,48 @@ function BottomNav({
   isAdmin?: boolean;
 }) {
   const navItems = [
-    { id: "home", label: "الرئيسية", icon: Home, tone: "teal" },
-    { id: "talents", label: "اكتشف موهبتك", icon: Star, tone: "amber" },
-    { id: "announcements", label: "الإعلانات", icon: Megaphone, tone: "cyan" },
-    { id: "honors", label: "التكريمات", icon: Trophy, tone: "rose" },
-    ...(isAdmin
-      ? [{ id: "admin-dashboard", label: "لوحة الإدارة", icon: Settings, tone: "slate" }]
-      : []),
-  ] as const;
-
-  const toneOrb: Record<string, string> = {
-    teal: "bg-teal-50/70 ring-1 ring-teal-200/80 shadow-[0_14px_40px_rgba(20,184,166,0.18)]",
-    amber: "bg-amber-50/70 ring-1 ring-amber-200/80 shadow-[0_14px_40px_rgba(245,158,11,0.18)]",
-    cyan: "bg-cyan-50/70 ring-1 ring-cyan-200/80 shadow-[0_14px_40px_rgba(34,211,238,0.18)]",
-    rose: "bg-rose-50/70 ring-1 ring-rose-200/80 shadow-[0_14px_40px_rgba(244,63,94,0.18)]",
-    slate: "bg-slate-50/70 ring-1 ring-slate-200/80 shadow-[0_14px_40px_rgba(15,23,42,0.12)]",
-  };
-
-  const activePill: Record<string, string> = {
-    teal: "bg-teal-100/70 text-teal-800",
-    amber: "bg-amber-100/70 text-amber-800",
-    cyan: "bg-cyan-100/70 text-cyan-800",
-    rose: "bg-rose-100/70 text-rose-800",
-    slate: "bg-slate-100/70 text-slate-800",
-  };
-
-  const gridCols = isAdmin ? "grid-cols-5" : "grid-cols-4";
+    { id: "home", label: "الرئيسية", emoji: "🏠" },
+    { id: "talents", label: "اكتشف موهبتك", emoji: "✨" },
+    { id: "announcements", label: "الإعلانات", emoji: "📣" },
+    { id: "honors", label: "التكريمات", emoji: "🏆" },
+    ...(isAdmin ? [{ id: "admin-dashboard", label: "لوحة الإدارة", emoji: "⚙️" }] : []),
+  ];
 
   return (
     <nav
-      className={[
-        "fixed bottom-0 left-0 right-0 z-40",
-        "bg-gradient-to-r from-slate-50/90 via-teal-50/90 to-cyan-50/90",
-        "backdrop-blur-md border-t border-teal-200/70 shadow-[0_-10px_30px_rgba(0,0,0,0.08)]",
-        "pb-[env(safe-area-inset-bottom)]",
-      ].join(" ")}
+      className="fixed bottom-0 left-0 right-0 z-40 border-t border-teal-200/70 bg-white/70 backdrop-blur-xl shadow-[0_-10px_35px_-25px_rgba(0,0,0,0.4)]"
       dir="rtl"
     >
       <div className="container mx-auto px-2">
-        <div className={`grid ${gridCols} gap-1 py-1.5`}>
+        <div className={`grid ${isAdmin ? "grid-cols-5" : "grid-cols-4"} py-1`}>
           {navItems.map((item) => {
-            const isActive = currentSection === item.id;
-            const Icon = item.icon as any;
-
+            const active = currentSection === item.id;
             return (
               <button
                 key={item.id}
                 onClick={() => setCurrentSection(item.id)}
-                className={[
-                  "relative flex flex-col items-center justify-center",
-                  "rounded-2xl transition-all duration-200",
-                  "h-14 md:h-15",
-                  isActive
-                    ? `${activePill[item.tone]} shadow-sm`
-                    : "text-gray-600 hover:bg-white/60 hover:text-teal-800",
-                ].join(" ")}
+                className={`flex flex-col items-center justify-center rounded-2xl transition-all duration-200 px-1
+                  ${active ? "bg-teal-50" : "hover:bg-slate-50"}
+                `}
+                style={{
+                  paddingTop: 6,
+                  paddingBottom: 6,
+                }}
               >
-                {/* orb 3D (هادئ) */}
+                {/* bubble 3d خفيفة */}
                 <div
-                  className={[
-                    "relative w-9 h-9 md:w-10 md:h-10 rounded-2xl flex items-center justify-center",
-                    "backdrop-blur",
-                    toneOrb[item.tone],
-                    isActive ? "scale-[1.02]" : "scale-100",
-                  ].join(" ")}
+                  className={`w-9 h-9 md:w-10 md:h-10 rounded-2xl flex items-center justify-center
+                    ${active ? "bg-gradient-to-br from-teal-200 via-white to-cyan-200 shadow-md" : "bg-white/60 shadow-sm"}
+                    ring-1 ring-teal-200/60`}
                 >
-                  <span className="pointer-events-none absolute -top-1 -left-1 w-5 h-5 rounded-full bg-white/60 blur-[1px]" />
-                  <div className="w-7 h-7 md:w-8 md:h-8 rounded-xl bg-white/70 ring-1 ring-white/60 shadow-inner flex items-center justify-center">
-                    <Icon className="w-4.5 h-4.5 md:w-5 md:h-5" />
-                  </div>
+                  <span className="text-lg md:text-xl">{item.emoji}</span>
                 </div>
 
-                <span className="mt-1 text-[10px] md:text-[11px] font-bold leading-none">
+                <span
+                  className={`mt-1 text-[10px] md:text-[11px] font-bold leading-tight ${
+                    active ? "text-teal-800" : "text-slate-600"
+                  }`}
+                >
                   {item.label}
                 </span>
               </button>
