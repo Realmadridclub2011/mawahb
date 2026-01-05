@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { ArrowRight } from "lucide-react";
 
 // ✅ عدّل المسارات حسب مشروعك لو مختلفة
-import { supabase } from "../supabase/client"; // أو "../lib/supabase" حسب عندك
+import { supabase } from "../lib/supabaseClient"; // أو "../lib/supabase" حسب عندك
 import { useAuth } from "../contexts/AuthContext"; // أو المسار الحقيقي عندك
 import { useToast } from "../components/ui/useToast"; // أو المسار الحقيقي عندك
 
