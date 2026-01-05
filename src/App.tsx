@@ -215,39 +215,48 @@ function BottomNav({
   isAdmin?: boolean;
 }) {
   const navItems = [
-    { id: "home", label: "الرئيسية", icon: Home, grad: "from-slate-600 to-slate-800" },
-    { id: "talents", label: "اكتشف موهبتك", icon: Star, grad: "from-amber-400 to-orange-500" },
-    { id: "announcements", label: "الإعلانات", icon: Megaphone, grad: "from-cyan-400 to-blue-500" },
-    { id: "honors", label: "التكريمات", icon: Trophy, grad: "from-rose-400 to-pink-500" },
+    { id: "home", label: "الرئيسية", icon: Home, tone: "teal" },
+    { id: "talents", label: "اكتشف موهبتك", icon: Star, tone: "amber" },
+    { id: "announcements", label: "الإعلانات", icon: Megaphone, tone: "cyan" },
+    { id: "honors", label: "التكريمات", icon: Trophy, tone: "rose" },
     ...(isAdmin
-      ? [{ id: "admin-dashboard", label: "لوحة الإدارة", icon: Settings, grad: "from-teal-500 to-emerald-600" }]
+      ? [{ id: "admin-dashboard", label: "لوحة الإدارة", icon: Settings, tone: "slate" }]
       : []),
-  ];
+  ] as const;
 
-  const cols =
-    navItems.length === 5
-      ? "grid-cols-5"
-      : navItems.length === 4
-      ? "grid-cols-4"
-      : "grid-cols-3";
+  const toneOrb: Record<string, string> = {
+    teal: "bg-teal-50/70 ring-1 ring-teal-200/80 shadow-[0_14px_40px_rgba(20,184,166,0.18)]",
+    amber: "bg-amber-50/70 ring-1 ring-amber-200/80 shadow-[0_14px_40px_rgba(245,158,11,0.18)]",
+    cyan: "bg-cyan-50/70 ring-1 ring-cyan-200/80 shadow-[0_14px_40px_rgba(34,211,238,0.18)]",
+    rose: "bg-rose-50/70 ring-1 ring-rose-200/80 shadow-[0_14px_40px_rgba(244,63,94,0.18)]",
+    slate: "bg-slate-50/70 ring-1 ring-slate-200/80 shadow-[0_14px_40px_rgba(15,23,42,0.12)]",
+  };
+
+  const activePill: Record<string, string> = {
+    teal: "bg-teal-100/70 text-teal-800",
+    amber: "bg-amber-100/70 text-amber-800",
+    cyan: "bg-cyan-100/70 text-cyan-800",
+    rose: "bg-rose-100/70 text-rose-800",
+    slate: "bg-slate-100/70 text-slate-800",
+  };
+
+  const gridCols = isAdmin ? "grid-cols-5" : "grid-cols-4";
 
   return (
     <nav
       className={[
         "fixed bottom-0 left-0 right-0 z-40",
-        "bg-white/75 backdrop-blur-xl",
-        "border-t border-teal-200/60",
-        "shadow-[0_-10px_25px_rgba(0,0,0,0.05)]",
+        "bg-gradient-to-r from-slate-50/90 via-teal-50/90 to-cyan-50/90",
+        "backdrop-blur-md border-t border-teal-200/70 shadow-[0_-10px_30px_rgba(0,0,0,0.08)]",
+        "pb-[env(safe-area-inset-bottom)]",
       ].join(" ")}
       dir="rtl"
     >
-      <div className="h-[2px] bg-gradient-to-r from-transparent via-teal-400/40 to-transparent" />
-
       <div className="container mx-auto px-2">
-        {/* ✅ أقل ارتفاع */}
-        <div className={`grid ${cols} gap-1 py-1`}>
+        <div className={`grid ${gridCols} gap-1 py-1.5`}>
           {navItems.map((item) => {
-            const active = currentSection === item.id;
+            const isActive = currentSection === item.id;
+            const Icon = item.icon as any;
 
             return (
               <button
@@ -255,88 +264,36 @@ function BottomNav({
                 onClick={() => setCurrentSection(item.id)}
                 className={[
                   "relative flex flex-col items-center justify-center",
-                  "rounded-xl",
-                  "py-1.5 md:py-2", // ✅ أقل
-                  "transition-all duration-200",
-                  "active:scale-[0.98]",
-                  active ? "text-teal-800" : "text-slate-600 hover:text-teal-700 hover:bg-teal-50/60",
+                  "rounded-2xl transition-all duration-200",
+                  "h-14 md:h-15",
+                  isActive
+                    ? `${activePill[item.tone]} shadow-sm`
+                    : "text-gray-600 hover:bg-white/60 hover:text-teal-800",
                 ].join(" ")}
               >
-                {/* Active pill خلفية خفيفة */}
-                {active && (
-                  <span
-                    className={[
-                      "absolute inset-x-1.5 top-0.5 bottom-0.5",
-                      "rounded-xl",
-                      "bg-gradient-to-b from-teal-100/70 to-white/40",
-                      "border border-teal-200/60",
-                      "shadow-[0_6px_14px_rgba(13,148,136,0.10)]",
-                    ].join(" ")}
-                  />
-                )}
+                {/* orb 3D (هادئ) */}
+                <div
+                  className={[
+                    "relative w-9 h-9 md:w-10 md:h-10 rounded-2xl flex items-center justify-center",
+                    "backdrop-blur",
+                    toneOrb[item.tone],
+                    isActive ? "scale-[1.02]" : "scale-100",
+                  ].join(" ")}
+                >
+                  <span className="pointer-events-none absolute -top-1 -left-1 w-5 h-5 rounded-full bg-white/60 blur-[1px]" />
+                  <div className="w-7 h-7 md:w-8 md:h-8 rounded-xl bg-white/70 ring-1 ring-white/60 shadow-inner flex items-center justify-center">
+                    <Icon className="w-4.5 h-4.5 md:w-5 md:h-5" />
+                  </div>
+                </div>
 
-                <span className="relative flex flex-col items-center">
-                  {/* ✅ أيقونة 3D ملونة */}
-                  <span
-                    className={[
-                      "relative",
-                      "w-8 h-8 md:w-9 md:h-9", // ✅ أصغر
-                      "rounded-2xl",
-                      "flex items-center justify-center",
-                      active ? "scale-[1.02]" : "",
-                      "transition-transform duration-200",
-                    ].join(" ")}
-                  >
-                    {/* الطبقة الأساسية المتدرجة */}
-                    <span
-                      className={[
-                        "absolute inset-0 rounded-2xl",
-                        "bg-gradient-to-br",
-                        item.grad,
-                        active ? "opacity-95" : "opacity-70",
-                        "shadow-[0_10px_18px_rgba(0,0,0,0.10)]",
-                      ].join(" ")}
-                    />
-                    {/* لمعة 3D */}
-                    <span
-                      className={[
-                        "absolute inset-[1px] rounded-2xl",
-                        "bg-gradient-to-b from-white/35 to-transparent",
-                        active ? "opacity-100" : "opacity-70",
-                      ].join(" ")}
-                    />
-                    {/* نقطة ضوء صغيرة */}
-                    <span className="absolute top-1 left-1 w-2 h-2 rounded-full bg-white/55 blur-[0.5px]" />
-
-                    <item.icon
-                      className={[
-                        "relative",
-                        "w-[18px] h-[18px] md:w-[20px] md:h-[20px]", // ✅ أصغر
-                        "text-white",
-                        active ? "drop-shadow-[0_6px_10px_rgba(0,0,0,0.18)]" : "opacity-95",
-                        "transition-all duration-200",
-                      ].join(" ")}
-                    />
-                  </span>
-
-                  {/* ✅ اللابل صغير وهادئ */}
-                  <span
-                    className={[
-                      "mt-0.5 text-[9px] md:text-[10px] font-bold leading-tight",
-                      active ? "opacity-100" : "opacity-75",
-                    ].join(" ")}
-                  >
-                    {item.label}
-                  </span>
+                <span className="mt-1 text-[10px] md:text-[11px] font-bold leading-none">
+                  {item.label}
                 </span>
               </button>
             );
           })}
         </div>
       </div>
-
-      {/* safe area صغيرة */}
-      <div className="h-[max(6px,env(safe-area-inset-bottom))]" />
     </nav>
   );
 }
