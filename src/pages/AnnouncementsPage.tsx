@@ -5,6 +5,7 @@ import { supabase } from "../lib/supabaseClient";
 
 type AnnouncementsPageProps = {
   onBackHome?: () => void;
+
   user?: { id: string } | null;
   showSuccess?: (msg: string) => void;
   showError?: (msg: string) => void;
@@ -103,64 +104,41 @@ export default function AnnouncementsPage({
 
   const canRegister = (a: any) => a?.type === "competition" && !!a?.registration_open;
 
-  /**
-   * 🎨 Visual tone system:
-   * - Keeps your current gradient style, but makes closed CTA darker (readable).
-   * - Unifies CTA sizing and look across cards.
-   */
+  // نغمة ألوان الكروت (خفيفة ومريحة)
   const getTone = (a: any) => {
     const isComp = a?.type === "competition";
     const open = !!a?.registration_open;
 
-    // Announcement
+    // إعلان
     if (!isComp) {
       return {
         card: "border-sky-200/70 bg-gradient-to-b from-sky-50/70 to-white/60",
-        chip: "bg-sky-100/80 text-sky-800 ring-1 ring-sky-200/70",
-        statusChipOpen: "",
-        statusChipClosed: "",
-        ctaOpen:
-          "bg-gradient-to-r from-sky-600 to-cyan-600 hover:from-sky-700 hover:to-cyan-700",
-        ctaClosed:
-          "bg-gradient-to-r from-slate-200 to-slate-100 text-slate-700 border border-slate-300/70",
-        footerClosed:
-          "bg-slate-100/80 text-slate-700 border border-slate-200 ring-1 ring-white/70",
+        chip: "bg-sky-100/85 text-sky-900 ring-1 ring-sky-200/70",
+        statusChip: "",
       };
     }
 
-    // Competition - Open
+    // مسابقة مفتوحة
     if (open) {
       return {
         card: "border-emerald-200/70 bg-gradient-to-b from-emerald-50/70 to-white/60",
-        chip: "bg-emerald-100/80 text-emerald-800 ring-1 ring-emerald-200/70",
-        statusChipOpen: "bg-emerald-100/90 text-emerald-900 ring-1 ring-emerald-200/70",
-        statusChipClosed: "",
-        ctaOpen:
-          "bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700",
-        // not used
-        ctaClosed: "",
-        footerClosed:
-          "bg-slate-100/80 text-slate-800 border border-slate-200 ring-1 ring-white/70",
+        chip: "bg-emerald-100/85 text-emerald-900 ring-1 ring-emerald-200/70",
+        statusChip: "bg-emerald-100/90 text-emerald-900 ring-1 ring-emerald-200/70",
       };
     }
 
-    // Competition - Closed (أغمق ومتناسق)
+    // مسابقة مغلقة
     return {
       card: "border-slate-200 bg-gradient-to-b from-slate-100/90 to-white/55",
-      chip: "bg-slate-200/90 text-slate-800 ring-1 ring-slate-300/70",
-      statusChipOpen: "",
-      statusChipClosed: "bg-slate-200/95 text-slate-900 ring-1 ring-slate-300/70",
-      // not used
-      ctaOpen: "",
-      // closed CTA: darker but not harsh
-      ctaClosed:
-        "bg-gradient-to-r from-slate-300 to-slate-200 text-slate-800 border border-slate-300/80",
-      footerClosed:
-        "bg-gradient-to-r from-slate-200/90 to-slate-100/80 text-slate-800 border border-slate-300/70 ring-1 ring-white/70",
+      chip: "bg-slate-200/90 text-slate-900 ring-1 ring-slate-300/70",
+      statusChip: "bg-slate-200/95 text-slate-900 ring-1 ring-slate-300/70",
     };
   };
 
   const cards = useMemo(() => announcements || [], [announcements]);
+
+  const isSelectedCompetition = selectedAnnouncement?.type === "competition";
+  const selectedIsOpen = !!selectedAnnouncement?.registration_open;
 
   if (loading)
     return (
@@ -231,12 +209,11 @@ export default function AnnouncementsPage({
                       {isComp ? "مسابقة" : "إعلان"}
                     </span>
 
-                    {/* التسجيل مفتوح/مغلق مع أيقونة */}
                     {isComp && (
                       <span
                         className={[
                           "flex items-center gap-1 px-3 py-1 rounded-full text-xs font-black",
-                          open ? tone.statusChipOpen : tone.statusChipClosed,
+                          open ? tone.statusChip : tone.statusChip,
                         ].join(" ")}
                       >
                         {open ? (
@@ -275,38 +252,53 @@ export default function AnnouncementsPage({
                   {a?.description || "—"}
                 </p>
 
-                {/* Footer ثابت: زر أو شريط */}
+                {/* CTA موحّد */}
                 <div className="mt-auto pt-4">
+                  {/* مسابقة مفتوحة */}
                   {canRegister(a) ? (
                     <button
                       onClick={() => setSelectedAnnouncement(a)}
                       className={[
                         "w-full h-12 rounded-2xl font-black text-white",
                         "shadow-md hover:shadow-lg transition active:scale-[0.99]",
-                        tone.ctaOpen,
+                        "bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700",
                       ].join(" ")}
                     >
                       سجّل الآن
                     </button>
                   ) : (
-                    <div
-                      className={[
-                        "w-full h-12 rounded-2xl flex items-center justify-center gap-2",
-                        "text-center text-sm font-black",
-                        "select-none",
-                        isComp ? tone.footerClosed : tone.footerClosed,
-                      ].join(" ")}
-                      aria-disabled="true"
-                    >
-                      {isComp ? (
-                        <>
+                    <>
+                      {/* إعلان: زر ثانوي (قابل للنقر) يفتح تفاصيل */}
+                      {!isComp ? (
+                        <button
+                          onClick={() => setSelectedAnnouncement(a)}
+                          className={[
+                            "w-full h-12 rounded-2xl font-extrabold",
+                            "border border-emerald-200/70",
+                            "bg-gradient-to-r from-emerald-50 to-teal-50",
+                            "text-emerald-800",
+                            "hover:from-emerald-100 hover:to-teal-100",
+                            "shadow-sm hover:shadow-md transition active:scale-[0.99]",
+                          ].join(" ")}
+                        >
+                          تابعنا للمزيد من التحديثات
+                        </button>
+                      ) : (
+                        /* مسابقة مغلقة: شريط Disabled واضح */
+                        <div
+                          className={[
+                            "w-full h-12 rounded-2xl flex items-center justify-center gap-2",
+                            "text-center text-sm font-black select-none",
+                            "bg-gradient-to-r from-slate-200/90 to-slate-100/80",
+                            "text-slate-800 border border-slate-300/70 ring-1 ring-white/70",
+                          ].join(" ")}
+                          aria-disabled="true"
+                        >
                           <Lock className="w-4 h-4" />
                           انتهى التسجيل — تابعنا للمسابقات القادمة
-                        </>
-                      ) : (
-                        <>تابعنا للمزيد من التحديثات</>
+                        </div>
                       )}
-                    </div>
+                    </>
                   )}
                 </div>
               </div>
@@ -315,7 +307,7 @@ export default function AnnouncementsPage({
         })}
       </div>
 
-      {/* Modal تسجيل */}
+      {/* Modal تفاصيل/تسجيل */}
       {selectedAnnouncement && (
         <div
           className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4"
@@ -327,44 +319,87 @@ export default function AnnouncementsPage({
             dir="rtl"
           >
             <h2 className="text-xl md:text-2xl font-black text-teal-700 mb-2">
-              التسجيل في {selectedAnnouncement?.title || "المسابقة"}
+              {isSelectedCompetition ? "التسجيل في " : "تفاصيل: "}
+              {selectedAnnouncement?.title || "—"}
             </h2>
-            <p className="text-sm text-gray-500 mb-5">سيتم إرسال طلبك للمراجعة.</p>
 
-            <div className="space-y-4">
-              <div>
-                <label className="block text-gray-700 font-semibold mb-2">
-                  ملاحظات (اختياري)
-                </label>
-                <textarea
-                  value={registrationNote}
-                  onChange={(e) => setRegistrationNote(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-2xl focus:ring-2 focus:ring-[#8A1538] outline-none"
-                  rows={4}
-                  placeholder="أضف أي ملاحظات أو معلومات إضافية"
+            <p className="text-sm text-gray-500 mb-5">
+              {isSelectedCompetition
+                ? "سيتم إرسال طلبك للمراجعة."
+                : "تابع التفاصيل الخاصة بهذا الإعلان."}
+            </p>
+
+            {/* صورة داخل المودال لو موجودة */}
+            {selectedAnnouncement?.image_url && (
+              <div className="mb-4 overflow-hidden rounded-2xl border border-slate-200">
+                <img
+                  src={selectedAnnouncement.image_url}
+                  alt={selectedAnnouncement?.title || "img"}
+                  className="w-full h-44 object-cover"
                 />
               </div>
+            )}
 
-              <div className="flex gap-3">
-                <button
-                  onClick={() => setSelectedAnnouncement(null)}
-                  className="flex-1 bg-gray-100 hover:bg-gray-200 py-3 rounded-2xl font-extrabold transition"
-                >
-                  إلغاء
-                </button>
-
-                <button
-                  onClick={() => handleRegister(selectedAnnouncement.id)}
-                  disabled={registering}
-                  className="flex-1 bg-gradient-to-r from-emerald-600 to-cyan-600 text-white py-3 rounded-2xl font-black disabled:opacity-50 hover:shadow-lg transition"
-                >
-                  {registering ? "جارٍ التسجيل..." : "تأكيد التسجيل"}
-                </button>
+            <div className="space-y-4">
+              {/* وصف كامل */}
+              <div className="text-sm leading-relaxed text-slate-700 bg-slate-50 border border-slate-200 rounded-2xl p-4">
+                {selectedAnnouncement?.description || "—"}
               </div>
 
-              {!user?.id && (
-                <div className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-2xl p-3">
-                  ملاحظة: يجب تسجيل الدخول أولاً لإكمال التسجيل.
+              {/* لو مسابقة مفتوحة: إظهار حقل الملاحظات + أزرار التسجيل */}
+              {isSelectedCompetition && selectedIsOpen ? (
+                <>
+                  <div>
+                    <label className="block text-gray-700 font-semibold mb-2">
+                      ملاحظات (اختياري)
+                    </label>
+                    <textarea
+                      value={registrationNote}
+                      onChange={(e) => setRegistrationNote(e.target.value)}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-2xl focus:ring-2 focus:ring-[#8A1538] outline-none"
+                      rows={4}
+                      placeholder="أضف أي ملاحظات أو معلومات إضافية"
+                    />
+                  </div>
+
+                  <div className="flex gap-3">
+                    <button
+                      onClick={() => setSelectedAnnouncement(null)}
+                      className="flex-1 bg-gray-100 hover:bg-gray-200 py-3 rounded-2xl font-extrabold transition"
+                    >
+                      إلغاء
+                    </button>
+
+                    <button
+                      onClick={() => handleRegister(selectedAnnouncement.id)}
+                      disabled={registering}
+                      className="flex-1 bg-gradient-to-r from-emerald-600 to-cyan-600 text-white py-3 rounded-2xl font-black disabled:opacity-50 hover:shadow-lg transition"
+                    >
+                      {registering ? "جارٍ التسجيل..." : "تأكيد التسجيل"}
+                    </button>
+                  </div>
+
+                  {!user?.id && (
+                    <div className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-2xl p-3">
+                      ملاحظة: يجب تسجيل الدخول أولاً لإكمال التسجيل.
+                    </div>
+                  )}
+                </>
+              ) : (
+                /* إعلان أو مسابقة مغلقة: زر إغلاق بسيط */
+                <button
+                  onClick={() => setSelectedAnnouncement(null)}
+                  className="w-full h-12 rounded-2xl font-extrabold bg-slate-100 hover:bg-slate-200 transition"
+                >
+                  إغلاق
+                </button>
+              )}
+
+              {/* لو مسابقة لكنها مغلقة داخل المودال */}
+              {isSelectedCompetition && !selectedIsOpen && (
+                <div className="text-xs text-slate-700 bg-slate-50 border border-slate-200 rounded-2xl p-3 flex items-center gap-2">
+                  <Lock className="w-4 h-4" />
+                  التسجيل مغلق حالياً — تابعنا للمسابقات القادمة.
                 </div>
               )}
             </div>
