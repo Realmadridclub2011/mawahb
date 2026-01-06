@@ -104,7 +104,12 @@ export default function AnnouncementsPage({
 
   const canRegister = (a: any) => a?.type === "competition" && !!a?.registration_open;
 
-  // نغمة ألوان الكروت (خفيفة ومريحة)
+  /**
+   * 🎨 Visual system (متناسق وهادئ):
+   * - Primary (سجّل الآن): Teal عميق (أهدى من الأخضر الفاقع)
+   * - Secondary (تابعنا): Cyan/Teal أغمق شوية وواضح
+   * - Closed: Slate أغمق وواضح كـ disabled
+   */
   const getTone = (a: any) => {
     const isComp = a?.type === "competition";
     const open = !!a?.registration_open;
@@ -112,8 +117,8 @@ export default function AnnouncementsPage({
     // إعلان
     if (!isComp) {
       return {
-        card: "border-sky-200/70 bg-gradient-to-b from-sky-50/70 to-white/60",
-        chip: "bg-sky-100/85 text-sky-900 ring-1 ring-sky-200/70",
+        card: "border-sky-200/70 bg-gradient-to-b from-sky-50/70 to-white/65",
+        chip: "bg-sky-100/90 text-sky-900 ring-1 ring-sky-200/70",
         statusChip: "",
       };
     }
@@ -121,15 +126,15 @@ export default function AnnouncementsPage({
     // مسابقة مفتوحة
     if (open) {
       return {
-        card: "border-emerald-200/70 bg-gradient-to-b from-emerald-50/70 to-white/60",
-        chip: "bg-emerald-100/85 text-emerald-900 ring-1 ring-emerald-200/70",
-        statusChip: "bg-emerald-100/90 text-emerald-900 ring-1 ring-emerald-200/70",
+        card: "border-teal-200/70 bg-gradient-to-b from-teal-50/70 to-white/65",
+        chip: "bg-teal-100/90 text-teal-950 ring-1 ring-teal-200/70",
+        statusChip: "bg-teal-100/95 text-teal-950 ring-1 ring-teal-200/70",
       };
     }
 
     // مسابقة مغلقة
     return {
-      card: "border-slate-200 bg-gradient-to-b from-slate-100/90 to-white/55",
+      card: "border-slate-200 bg-gradient-to-b from-slate-100/90 to-white/60",
       chip: "bg-slate-200/90 text-slate-900 ring-1 ring-slate-300/70",
       statusChip: "bg-slate-200/95 text-slate-900 ring-1 ring-slate-300/70",
     };
@@ -151,14 +156,14 @@ export default function AnnouncementsPage({
     <div className="container mx-auto px-4 py-12" dir="rtl">
       <button
         onClick={() => onBackHome?.()}
-        className="flex items-center gap-3 bg-white text-emerald-700 hover:text-white hover:bg-gradient-to-r hover:from-emerald-600 hover:to-cyan-600 px-6 py-3 rounded-2xl font-extrabold mb-8 shadow-lg hover:shadow-xl transition-all transform hover:scale-[1.02] border border-emerald-200"
+        className="flex items-center gap-3 bg-white text-teal-700 hover:text-white hover:bg-gradient-to-r hover:from-teal-700 hover:to-cyan-700 px-6 py-3 rounded-2xl font-extrabold mb-8 shadow-lg hover:shadow-xl transition-all transform hover:scale-[1.02] border border-teal-200"
       >
         <ArrowRight className="w-5 h-5" />
         <span>العودة للرئيسية</span>
       </button>
 
       <div className="text-center mb-10">
-        <h1 className="text-3xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 mb-3">
+        <h1 className="text-3xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-teal-700 via-teal-600 to-cyan-700 mb-3">
           الإعلانات والمسابقات
         </h1>
         <p className="text-sm md:text-lg text-gray-600 font-semibold">
@@ -200,12 +205,7 @@ export default function AnnouncementsPage({
                 {/* Chips + تاريخ */}
                 <div className="flex items-center justify-between gap-2 mb-4">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <span
-                      className={[
-                        "px-3 py-1 rounded-full text-xs font-black",
-                        tone.chip,
-                      ].join(" ")}
-                    >
+                    <span className={["px-3 py-1 rounded-full text-xs font-black", tone.chip].join(" ")}>
                       {isComp ? "مسابقة" : "إعلان"}
                     </span>
 
@@ -213,7 +213,7 @@ export default function AnnouncementsPage({
                       <span
                         className={[
                           "flex items-center gap-1 px-3 py-1 rounded-full text-xs font-black",
-                          open ? tone.statusChip : tone.statusChip,
+                          tone.statusChip,
                         ].join(" ")}
                       >
                         {open ? (
@@ -252,45 +252,46 @@ export default function AnnouncementsPage({
                   {a?.description || "—"}
                 </p>
 
-                {/* CTA موحّد */}
+                {/* CTA موحّد: نفس الارتفاع / نفس الروند / ألوان مريحة */}
                 <div className="mt-auto pt-4">
-                  {/* مسابقة مفتوحة */}
+                  {/* ✅ مسابقة مفتوحة: سجّل الآن (أهدى من الأخضر القوي) */}
                   {canRegister(a) ? (
                     <button
                       onClick={() => setSelectedAnnouncement(a)}
                       className={[
                         "w-full h-12 rounded-2xl font-black text-white",
                         "shadow-md hover:shadow-lg transition active:scale-[0.99]",
-                        "bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700",
+                        "bg-gradient-to-r from-teal-700 to-cyan-700",
+                        "hover:from-teal-800 hover:to-cyan-800",
                       ].join(" ")}
                     >
                       سجّل الآن
                     </button>
                   ) : (
                     <>
-                      {/* إعلان: زر ثانوي (قابل للنقر) يفتح تفاصيل */}
+                      {/* ✅ إعلان: تابعنا (لون مختلف لكن أغمق وواضح) */}
                       {!isComp ? (
                         <button
                           onClick={() => setSelectedAnnouncement(a)}
                           className={[
                             "w-full h-12 rounded-2xl font-extrabold",
-                            "border border-emerald-200/70",
-                            "bg-gradient-to-r from-emerald-50 to-teal-50",
-                            "text-emerald-800",
-                            "hover:from-emerald-100 hover:to-teal-100",
+                            "border border-cyan-200/70",
+                            "bg-gradient-to-r from-cyan-100/90 to-teal-100/90",
+                            "text-cyan-900",
+                            "hover:from-cyan-200 hover:to-teal-200",
                             "shadow-sm hover:shadow-md transition active:scale-[0.99]",
                           ].join(" ")}
                         >
                           تابعنا للمزيد من التحديثات
                         </button>
                       ) : (
-                        /* مسابقة مغلقة: شريط Disabled واضح */
+                        /* ✅ مسابقة مغلقة: أغمق من تابعنا وواضح */
                         <div
                           className={[
                             "w-full h-12 rounded-2xl flex items-center justify-center gap-2",
                             "text-center text-sm font-black select-none",
-                            "bg-gradient-to-r from-slate-200/90 to-slate-100/80",
-                            "text-slate-800 border border-slate-300/70 ring-1 ring-white/70",
+                            "bg-gradient-to-r from-slate-300/95 to-slate-200/90",
+                            "text-slate-900 border border-slate-400/60 ring-1 ring-white/70",
                           ].join(" ")}
                           aria-disabled="true"
                         >
@@ -318,7 +319,7 @@ export default function AnnouncementsPage({
             onClick={(e) => e.stopPropagation()}
             dir="rtl"
           >
-            <h2 className="text-xl md:text-2xl font-black text-teal-700 mb-2">
+            <h2 className="text-xl md:text-2xl font-black text-teal-800 mb-2">
               {isSelectedCompetition ? "التسجيل في " : "تفاصيل: "}
               {selectedAnnouncement?.title || "—"}
             </h2>
@@ -346,7 +347,7 @@ export default function AnnouncementsPage({
                 {selectedAnnouncement?.description || "—"}
               </div>
 
-              {/* لو مسابقة مفتوحة: إظهار حقل الملاحظات + أزرار التسجيل */}
+              {/* لو مسابقة مفتوحة: تسجيل */}
               {isSelectedCompetition && selectedIsOpen ? (
                 <>
                   <div>
@@ -373,7 +374,7 @@ export default function AnnouncementsPage({
                     <button
                       onClick={() => handleRegister(selectedAnnouncement.id)}
                       disabled={registering}
-                      className="flex-1 bg-gradient-to-r from-emerald-600 to-cyan-600 text-white py-3 rounded-2xl font-black disabled:opacity-50 hover:shadow-lg transition"
+                      className="flex-1 bg-gradient-to-r from-teal-700 to-cyan-700 hover:from-teal-800 hover:to-cyan-800 text-white py-3 rounded-2xl font-black disabled:opacity-50 hover:shadow-lg transition"
                     >
                       {registering ? "جارٍ التسجيل..." : "تأكيد التسجيل"}
                     </button>
@@ -386,7 +387,6 @@ export default function AnnouncementsPage({
                   )}
                 </>
               ) : (
-                /* إعلان أو مسابقة مغلقة: زر إغلاق بسيط */
                 <button
                   onClick={() => setSelectedAnnouncement(null)}
                   className="w-full h-12 rounded-2xl font-extrabold bg-slate-100 hover:bg-slate-200 transition"
@@ -395,9 +395,9 @@ export default function AnnouncementsPage({
                 </button>
               )}
 
-              {/* لو مسابقة لكنها مغلقة داخل المودال */}
+              {/* لو مسابقة مغلقة داخل المودال */}
               {isSelectedCompetition && !selectedIsOpen && (
-                <div className="text-xs text-slate-700 bg-slate-50 border border-slate-200 rounded-2xl p-3 flex items-center gap-2">
+                <div className="text-xs text-slate-800 bg-slate-50 border border-slate-200 rounded-2xl p-3 flex items-center gap-2">
                   <Lock className="w-4 h-4" />
                   التسجيل مغلق حالياً — تابعنا للمسابقات القادمة.
                 </div>
