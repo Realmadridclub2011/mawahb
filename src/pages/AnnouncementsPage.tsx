@@ -261,7 +261,7 @@ export default function AnnouncementsPage({
                         text-sm font-black
                         bg-white/70
                         border border-white/60
-                        ring-1 ${tone.ring}
+                        ring-1 ring-emerald-300/60
                         ${isComp(a) && !isOpen(a) ? "text-slate-800" : "text-slate-700"}
                       `}
                     >
