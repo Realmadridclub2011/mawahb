@@ -106,8 +106,8 @@ export default function AnnouncementsPage({
 
   /**
    * 🎨 Visual system (متناسق وهادئ):
-   * - Primary (سجّل الآن): Teal عميق (أهدى من الأخضر الفاقع)
-   * - Secondary (تابعنا): Cyan/Teal أغمق شوية وواضح
+   * - Primary (سجّل الآن): نفس منطق "تابعنا" (فاتح + بوردر + نص غامق)
+   * - Secondary (تابعنا): Cyan/Teal فاتح وواضح
    * - Closed: Slate أغمق وواضح كـ disabled
    */
   const getTone = (a: any) => {
@@ -205,7 +205,12 @@ export default function AnnouncementsPage({
                 {/* Chips + تاريخ */}
                 <div className="flex items-center justify-between gap-2 mb-4">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <span className={["px-3 py-1 rounded-full text-xs font-black", tone.chip].join(" ")}>
+                    <span
+                      className={[
+                        "px-3 py-1 rounded-full text-xs font-black",
+                        tone.chip,
+                      ].join(" ")}
+                    >
                       {isComp ? "مسابقة" : "إعلان"}
                     </span>
 
@@ -254,22 +259,24 @@ export default function AnnouncementsPage({
 
                 {/* CTA موحّد: نفس الارتفاع / نفس الروند / ألوان مريحة */}
                 <div className="mt-auto pt-4">
-                  {/* ✅ مسابقة مفتوحة: سجّل الآن (أهدى من الأخضر القوي) */}
+                  {/* ✅ مسابقة مفتوحة: سجّل الآن (نفس هدوء "تابعنا") */}
                   {canRegister(a) ? (
                     <button
                       onClick={() => setSelectedAnnouncement(a)}
                       className={[
-                        "w-full h-12 rounded-2xl font-black text-white",
-                        "shadow-md hover:shadow-lg transition active:scale-[0.99]",
-                        "bg-gradient-to-r from-teal-700 to-cyan-700",
-                        "hover:from-teal-800 hover:to-cyan-800",
+                        "w-full h-12 rounded-2xl font-extrabold",
+                        "border border-teal-200/70",
+                        "bg-gradient-to-r from-teal-100/90 to-cyan-100/90",
+                        "text-teal-900",
+                        "hover:from-teal-200 hover:to-cyan-200",
+                        "shadow-sm hover:shadow-md transition active:scale-[0.99]",
                       ].join(" ")}
                     >
                       سجّل الآن
                     </button>
                   ) : (
                     <>
-                      {/* ✅ إعلان: تابعنا (لون مختلف لكن أغمق وواضح) */}
+                      {/* ✅ إعلان: تابعنا */}
                       {!isComp ? (
                         <button
                           onClick={() => setSelectedAnnouncement(a)}
@@ -285,7 +292,7 @@ export default function AnnouncementsPage({
                           تابعنا للمزيد من التحديثات
                         </button>
                       ) : (
-                        /* ✅ مسابقة مغلقة: أغمق من تابعنا وواضح */
+                        /* ✅ مسابقة مغلقة */
                         <div
                           className={[
                             "w-full h-12 rounded-2xl flex items-center justify-center gap-2",
