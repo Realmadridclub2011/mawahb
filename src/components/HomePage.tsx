@@ -51,19 +51,6 @@ function Icon3D({
 }
 
 /* =========================
-   Soft Brand Badge (Top)
-========================= */
-function Brand3DBadge() {
-  return (
-    <div className="relative w-11 h-11 rounded-2xl bg-white/70 backdrop-blur-md ring-1 ring-slate-200 shadow-[0_12px_28px_-18px_rgba(2,6,23,0.35)] flex items-center justify-center overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-br from-teal-200/40 via-white/30 to-cyan-200/40" />
-      <div className="absolute -top-6 -right-6 w-16 h-16 rounded-full bg-white/40 blur-2xl" />
-      <div className="relative text-xl">🇶🇦</div>
-    </div>
-  );
-}
-
-/* =========================
    Action Card
 ========================= */
 function ActionCard({
@@ -135,28 +122,6 @@ export default function HomePage({
 }: HomePageProps) {
   return (
     <div className="container mx-auto px-3 py-6" dir="rtl">
-      {/* ✅ شريط علوي هادي */}
-      <div className="max-w-6xl mx-auto mb-5">
-        <div className="rounded-3xl border border-slate-200/70 bg-white/70 backdrop-blur-md shadow-[0_12px_28px_-20px_rgba(2,6,23,0.35)] px-4 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Brand3DBadge />
-            <div className="leading-tight">
-              <div className="font-black text-slate-900">كنوز قطر</div>
-              <div className="text-xs text-slate-600 font-semibold">
-                منصة المواهب والمسابقات
-              </div>
-            </div>
-          </div>
-
-          <button
-            onClick={onGoTalents}
-            className="hidden md:inline-flex rounded-2xl px-4 py-2 font-extrabold text-teal-900 border border-teal-200/60 bg-teal-100/80 hover:bg-teal-200/80 transition"
-          >
-            ابدأ الآن
-          </button>
-        </div>
-      </div>
-
       {/* Header */}
       <div className="text-center mb-6">
         <h1 className="text-3xl md:text-4xl font-extrabold text-slate-900 mb-2 tracking-tight">
@@ -206,7 +171,7 @@ export default function HomePage({
           </div>
         )}
 
-        {/* ✅ Banner هادي */}
+        {/* Banner الهادي */}
         <div className="mt-6 rounded-3xl p-6 border border-teal-200/50 bg-gradient-to-r from-teal-100/80 to-cyan-100/80 shadow-[0_14px_34px_-22px_rgba(2,6,23,0.35)]">
           <div className="text-center">
             <h3 className="text-xl md:text-2xl font-extrabold text-teal-900 mb-2">
