@@ -259,7 +259,7 @@ export default function AnnouncementsPage({
                       className={`
                         w-full py-3 rounded-xl text-center
                         text-sm font-black
-                        bg-white/70
+                        bg-emerald-50
                         border border-white/60
                         ring-1 ring-emerald-300/60
                         ${isComp(a) && !isOpen(a) ? "text-slate-800" : "text-slate-700"}
