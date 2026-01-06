@@ -2,32 +2,38 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ✅ Responsive Typography + Arabic Font System (Global) */
+/* ✅ Global Responsive Typography + Font (Arabic) */
 :root{
-  /* اختر واحد فقط: Tajawal أو IBM Plex Arabic */
+  /* Typography */
   --font-sans: "Tajawal", ui-sans-serif, system-ui, -apple-system, "Segoe UI",
     Roboto, Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
-  /* لو اخترت IBM Plex Arabic بدل Tajawal:
-  --font-sans: "IBM Plex Sans Arabic", ui-sans-serif, system-ui, -apple-system, "Segoe UI",
-    Roboto, Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
-  */
-
-  /* ✅ أهم سطر: يصغّر كل الـ rem على الموبايل */
-  /* 14.6px على الموبايل تقريباً → 16px على الشاشات الأكبر */
   --root-font: clamp(14.6px, 1.15vw + 10.6px, 16px);
-
-  /* Line-height عام مريح للعربي */
   --base-leading: 1.7;
+
+  /* === Gym Pro-ish design system (Style ONLY) === */
+  --bg: #f6fbfb;
+  --card: #ffffff;
+  --text: #0f172a;
+  --muted: #64748b;
+
+  --border: rgba(15, 23, 42, 0.10);
+  --border2: rgba(15, 23, 42, 0.14);
+
+  --shadow: 0 10px 26px rgba(2, 6, 23, 0.06);
+  --shadow2: 0 16px 40px rgba(2, 6, 23, 0.10);
+
+  --radius: 18px;
 }
 
-/* خلي rem يطلع من هنا */
 html{
   font-size: var(--root-font);
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
 }
 
-html, body { height: 100%; }
+html, body{
+  height: 100%;
+}
 
 body{
   font-family: var(--font-sans);
@@ -36,10 +42,126 @@ body{
   background: var(--bg);
 }
 
-/* ✅ تحسين العناوين بدون كسر Tailwind classes الحالية */
+/* ✅ تحسين العناوين عالميًا بدون ما نكسر Tailwind */
 @layer base{
   h1, h2, h3{
     line-height: 1.25;
     letter-spacing: -0.01em;
   }
+}
+
+/* خلفية ناعمة زي الصورة الثانية */
+.app-bg{
+  background:
+    radial-gradient(1200px 600px at 18% 0%, rgba(16,185,129,.10), transparent 60%),
+    radial-gradient(900px 520px at 82% 14%, rgba(59,130,246,.10), transparent 55%),
+    radial-gradient(900px 520px at 40% 100%, rgba(20,184,166,.08), transparent 55%),
+    var(--bg);
+  min-height: 100vh;
+}
+
+/* Card base */
+.ui-card{
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+/* Card hover */
+.ui-card-hover{
+  transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease, background-color .18s ease;
+}
+.ui-card-hover:hover{
+  transform: translateY(-3px);
+  box-shadow: var(--shadow2);
+  border-color: var(--border2);
+}
+
+/* Card color variants */
+.ui-card-teal{
+  background: linear-gradient(135deg, rgba(20,184,166,0.06), rgba(16,185,129,0.09));
+  border-color: rgba(20,184,166,0.15);
+}
+.ui-card-teal:hover{
+  background: linear-gradient(135deg, rgba(20,184,166,0.12), rgba(16,185,129,0.16));
+  border-color: rgba(20,184,166,0.25);
+}
+
+.ui-card-blue{
+  background: linear-gradient(135deg, rgba(59,130,246,0.06), rgba(96,165,250,0.09));
+  border-color: rgba(59,130,246,0.15);
+}
+.ui-card-blue:hover{
+  background: linear-gradient(135deg, rgba(59,130,246,0.12), rgba(96,165,250,0.16));
+  border-color: rgba(59,130,246,0.25);
+}
+
+.ui-card-purple{
+  background: linear-gradient(135deg, rgba(168,85,247,0.06), rgba(192,132,252,0.09));
+  border-color: rgba(168,85,247,0.15);
+}
+.ui-card-purple:hover{
+  background: linear-gradient(135deg, rgba(168,85,247,0.12), rgba(192,132,252,0.16));
+  border-color: rgba(168,85,247,0.25);
+}
+
+.ui-card-amber{
+  background: linear-gradient(135deg, rgba(251,191,36,0.06), rgba(252,211,77,0.09));
+  border-color: rgba(251,191,36,0.15);
+}
+.ui-card-amber:hover{
+  background: linear-gradient(135deg, rgba(251,191,36,0.12), rgba(252,211,77,0.16));
+  border-color: rgba(251,191,36,0.25);
+}
+
+.ui-card-rose{
+  background: linear-gradient(135deg, rgba(244,63,94,0.06), rgba(251,113,133,0.09));
+  border-color: rgba(244,63,94,0.15);
+}
+.ui-card-rose:hover{
+  background: linear-gradient(135deg, rgba(244,63,94,0.12), rgba(251,113,133,0.16));
+  border-color: rgba(244,63,94,0.25);
+}
+
+.ui-card-cyan{
+  background: linear-gradient(135deg, rgba(6,182,212,0.06), rgba(34,211,238,0.09));
+  border-color: rgba(6,182,212,0.15);
+}
+.ui-card-cyan:hover{
+  background: linear-gradient(135deg, rgba(6,182,212,0.12), rgba(34,211,238,0.16));
+  border-color: rgba(6,182,212,0.25);
+}
+
+/* Pills (chips / badge style) */
+.ui-pill{
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,.75);
+  backdrop-filter: blur(10px);
+}
+
+/* Icon circle */
+.ui-icon-circle{
+  width: 46px;
+  height: 46px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--border);
+  background: linear-gradient(180deg, rgba(255,255,255,.95), rgba(255,255,255,.78));
+  box-shadow: 0 10px 22px rgba(2,6,23,.07);
+}
+
+/* Small helper */
+.soft-muted{
+  color: var(--muted);
+}
+
+@layer utilities{
+  @keyframes slide-in{
+    from { transform: translateX(-100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+  }
+  .animate-slide-in{ animation: slide-in 0.3s ease-out; }
 }
