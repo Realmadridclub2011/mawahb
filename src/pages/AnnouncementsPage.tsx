@@ -1,11 +1,10 @@
 // src/pages/AnnouncementsPage.tsx
 import React, { useEffect, useMemo, useState } from "react";
-import { ArrowRight, Lock, Unlock } from "lucide-react";
+import { ArrowRight, Lock, UnlockKeyhole } from "lucide-react";
 import { supabase } from "../lib/supabaseClient";
 
 type AnnouncementsPageProps = {
   onBackHome?: () => void;
-
   user?: { id: string } | null;
   showSuccess?: (msg: string) => void;
   showError?: (msg: string) => void;
@@ -102,43 +101,62 @@ export default function AnnouncementsPage({
     }
   };
 
-  const canRegister = (a: any) =>
-    a?.type === "competition" && !!a?.registration_open;
+  const canRegister = (a: any) => a?.type === "competition" && !!a?.registration_open;
 
+  /**
+   * 🎨 Visual tone system:
+   * - Keeps your current gradient style, but makes closed CTA darker (readable).
+   * - Unifies CTA sizing and look across cards.
+   */
   const getTone = (a: any) => {
     const isComp = a?.type === "competition";
     const open = !!a?.registration_open;
 
-    // إعلان
+    // Announcement
     if (!isComp) {
       return {
-        card: "border-sky-200 bg-gradient-to-b from-sky-50/70 to-white/50",
-        chip: "bg-sky-100 text-sky-800",
-        btn: "from-sky-600 to-cyan-600 hover:from-sky-700 hover:to-cyan-700",
-        footer:
-          "bg-white/70 text-slate-700 border border-white/60 ring-1 ring-sky-200/60",
+        card: "border-sky-200/70 bg-gradient-to-b from-sky-50/70 to-white/60",
+        chip: "bg-sky-100/80 text-sky-800 ring-1 ring-sky-200/70",
+        statusChipOpen: "",
+        statusChipClosed: "",
+        ctaOpen:
+          "bg-gradient-to-r from-sky-600 to-cyan-600 hover:from-sky-700 hover:to-cyan-700",
+        ctaClosed:
+          "bg-gradient-to-r from-slate-200 to-slate-100 text-slate-700 border border-slate-300/70",
+        footerClosed:
+          "bg-slate-100/80 text-slate-700 border border-slate-200 ring-1 ring-white/70",
       };
     }
 
-    // مسابقة - مفتوح
+    // Competition - Open
     if (open) {
       return {
-        card: "border-emerald-200 bg-gradient-to-b from-emerald-50/70 to-white/50",
-        chip: "bg-emerald-100 text-emerald-800",
-        btn:
-          "from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700",
-        footer:
-          "bg-white/70 text-slate-700 border border-white/60 ring-1 ring-emerald-200/60",
+        card: "border-emerald-200/70 bg-gradient-to-b from-emerald-50/70 to-white/60",
+        chip: "bg-emerald-100/80 text-emerald-800 ring-1 ring-emerald-200/70",
+        statusChipOpen: "bg-emerald-100/90 text-emerald-900 ring-1 ring-emerald-200/70",
+        statusChipClosed: "",
+        ctaOpen:
+          "bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700",
+        // not used
+        ctaClosed: "",
+        footerClosed:
+          "bg-slate-100/80 text-slate-800 border border-slate-200 ring-1 ring-white/70",
       };
     }
 
-    // مسابقة - مغلق (أغمق)
+    // Competition - Closed (أغمق ومتناسق)
     return {
-      card: "border-slate-300 bg-gradient-to-b from-slate-100/80 to-white/40",
-      chip: "bg-slate-200 text-slate-800",
-      btn: "from-slate-700 to-slate-600 hover:from-slate-700 hover:to-slate-600",
-      footer:
-        "bg-slate-100 text-slate-800 border border-slate-300 ring-1 ring-slate-400/60",
+      card: "border-slate-200 bg-gradient-to-b from-slate-100/90 to-white/55",
+      chip: "bg-slate-200/90 text-slate-800 ring-1 ring-slate-300/70",
+      statusChipOpen: "",
+      statusChipClosed: "bg-slate-200/95 text-slate-900 ring-1 ring-slate-300/70",
+      // not used
+      ctaOpen: "",
+      // closed CTA: darker but not harsh
+      ctaClosed:
+        "bg-gradient-to-r from-slate-300 to-slate-200 text-slate-800 border border-slate-300/80",
+      footerClosed:
+        "bg-gradient-to-r from-slate-200/90 to-slate-100/80 text-slate-800 border border-slate-300/70 ring-1 ring-white/70",
     };
   };
 
@@ -155,17 +173,17 @@ export default function AnnouncementsPage({
     <div className="container mx-auto px-4 py-12" dir="rtl">
       <button
         onClick={() => onBackHome?.()}
-        className="flex items-center gap-3 bg-white text-emerald-600 hover:text-white hover:bg-gradient-to-r hover:from-emerald-600 hover:to-cyan-600 px-6 py-3 rounded-xl font-bold mb-8 shadow-lg hover:shadow-xl transition-all transform hover:scale-105 border-2 border-emerald-600"
+        className="flex items-center gap-3 bg-white text-emerald-700 hover:text-white hover:bg-gradient-to-r hover:from-emerald-600 hover:to-cyan-600 px-6 py-3 rounded-2xl font-extrabold mb-8 shadow-lg hover:shadow-xl transition-all transform hover:scale-[1.02] border border-emerald-200"
       >
         <ArrowRight className="w-5 h-5" />
         <span>العودة للرئيسية</span>
       </button>
 
       <div className="text-center mb-10">
-        <h1 className="text-4xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 mb-3">
+        <h1 className="text-3xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 mb-3">
           الإعلانات والمسابقات
         </h1>
-        <p className="text-base md:text-xl text-gray-600 font-semibold">
+        <p className="text-sm md:text-lg text-gray-600 font-semibold">
           تابع آخر الأخبار والمسابقات
         </p>
       </div>
@@ -197,14 +215,19 @@ export default function AnnouncementsPage({
                   <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-black/0 to-black/0" />
                 </div>
               ) : (
-                <div className="h-20 bg-gradient-to-r from-white/50 to-white/10" />
+                <div className="h-20 bg-gradient-to-r from-white/55 to-white/10" />
               )}
 
               <div className="p-6 flex flex-col min-h-[280px]">
                 {/* Chips + تاريخ */}
                 <div className="flex items-center justify-between gap-2 mb-4">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <span className={`px-3 py-1 rounded-full text-xs font-black ${tone.chip}`}>
+                    <span
+                      className={[
+                        "px-3 py-1 rounded-full text-xs font-black",
+                        tone.chip,
+                      ].join(" ")}
+                    >
                       {isComp ? "مسابقة" : "إعلان"}
                     </span>
 
@@ -213,12 +236,12 @@ export default function AnnouncementsPage({
                       <span
                         className={[
                           "flex items-center gap-1 px-3 py-1 rounded-full text-xs font-black",
-                          open ? "bg-emerald-100 text-emerald-800" : "bg-slate-200 text-slate-800",
+                          open ? tone.statusChipOpen : tone.statusChipClosed,
                         ].join(" ")}
                       >
                         {open ? (
                           <>
-                            <Unlock className="w-3.5 h-3.5" />
+                            <UnlockKeyhole className="w-3.5 h-3.5" />
                             التسجيل مفتوح
                           </>
                         ) : (
@@ -258,10 +281,9 @@ export default function AnnouncementsPage({
                     <button
                       onClick={() => setSelectedAnnouncement(a)}
                       className={[
-                        "w-full py-3 rounded-xl font-black text-white",
-                        "bg-gradient-to-r",
-                        tone.btn,
+                        "w-full h-12 rounded-2xl font-black text-white",
                         "shadow-md hover:shadow-lg transition active:scale-[0.99]",
+                        tone.ctaOpen,
                       ].join(" ")}
                     >
                       سجّل الآن
@@ -269,10 +291,12 @@ export default function AnnouncementsPage({
                   ) : (
                     <div
                       className={[
-                        "w-full py-3 rounded-xl flex items-center justify-center gap-2",
+                        "w-full h-12 rounded-2xl flex items-center justify-center gap-2",
                         "text-center text-sm font-black",
-                        tone.footer,
+                        "select-none",
+                        isComp ? tone.footerClosed : tone.footerClosed,
                       ].join(" ")}
+                      aria-disabled="true"
                     >
                       {isComp ? (
                         <>
@@ -315,7 +339,7 @@ export default function AnnouncementsPage({
                 <textarea
                   value={registrationNote}
                   onChange={(e) => setRegistrationNote(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#8A1538]"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-2xl focus:ring-2 focus:ring-[#8A1538] outline-none"
                   rows={4}
                   placeholder="أضف أي ملاحظات أو معلومات إضافية"
                 />
@@ -324,7 +348,7 @@ export default function AnnouncementsPage({
               <div className="flex gap-3">
                 <button
                   onClick={() => setSelectedAnnouncement(null)}
-                  className="flex-1 bg-gray-100 hover:bg-gray-200 py-3 rounded-xl font-bold transition"
+                  className="flex-1 bg-gray-100 hover:bg-gray-200 py-3 rounded-2xl font-extrabold transition"
                 >
                   إلغاء
                 </button>
@@ -332,14 +356,14 @@ export default function AnnouncementsPage({
                 <button
                   onClick={() => handleRegister(selectedAnnouncement.id)}
                   disabled={registering}
-                  className="flex-1 bg-gradient-to-r from-emerald-600 to-cyan-600 text-white py-3 rounded-xl font-black disabled:opacity-50 hover:shadow-lg transition"
+                  className="flex-1 bg-gradient-to-r from-emerald-600 to-cyan-600 text-white py-3 rounded-2xl font-black disabled:opacity-50 hover:shadow-lg transition"
                 >
                   {registering ? "جارٍ التسجيل..." : "تأكيد التسجيل"}
                 </button>
               </div>
 
               {!user?.id && (
-                <div className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-xl p-3">
+                <div className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-2xl p-3">
                   ملاحظة: يجب تسجيل الدخول أولاً لإكمال التسجيل.
                 </div>
               )}
