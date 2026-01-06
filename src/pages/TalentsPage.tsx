@@ -26,19 +26,43 @@ type PageId = "talents" | "subcategories" | "register" | "mypage";
  *  Twemoji helpers (stable icons)
  *  ========================= */
 function twemojiUrl(hex: string, size: 72 | 96 = 72) {
-  // size can be 72 or 96 based on CDN structure - we use 72 for performance.
   return `https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/${size}x${size}/${hex}.png`;
 }
 
 function pickEmojiHexFromText(text?: string) {
   const s = String(text || "").trim().toLowerCase();
 
+  // ==========================================
+  // ✅ Fix: Specific Arabic subcategory icons (avoid duplicates)
+  // ==========================================
+  // علمية
+  if (/الأحياء|احياء|بيولوجيا|biology/.test(s)) return "1f9ec"; // 🧬 DNA
+  if (/الفلك|علم الفلك|astronomy/.test(s)) return "1f52d"; // 🔭 Telescope
+  if (/الاختراعات|اختراعات|inventions?/.test(s)) return "1f6e0-fe0f"; // 🛠️ tools
+  if (/فيزياء|physics/.test(s)) return "269b"; // ⚛️ Atom (better than 💡)
+  if (/كيمياء|chem/.test(s)) return "2697"; // ⚗️
+
+  // أدبية
+  if (/البلاغة|بلاغة|rhetoric/.test(s)) return "1f5e3-fe0f"; // 🗣️ speaking head
+  if (/الإلقاء|القاء|إلقاء|speech|oratory/.test(s)) return "1f399-fe0f"; // 🎙️ studio mic
+  if (/الخطابة|خطابة/.test(s)) return "1f4e3"; // 📣 megaphone (nice for خطاب)
+  if (/الشعر|poem|poetry/.test(s)) return "1f4dd"; // 📝
+  if (/قصة|قصص|story/.test(s)) return "1f4d6"; // 📖
+
+  // تقنية
+  if (/الأمن السيبراني|امن سيبراني|cyber|security/.test(s)) return "1f6e1-fe0f"; // 🛡️ shield
+  if (/المونتاج|مونتاج|editing|video edit/.test(s)) return "1f3ac"; // 🎬 clapper
+  if (/برمجة|coding|code|developer/.test(s)) return "1f9d1-200d-1f4bb"; // 🧑‍💻
+  if (/ذكاء|ai|machine|ml/.test(s)) return "1f9e0"; // 🧠
+  if (/هاتف|mobile|app/.test(s)) return "1f4f1"; // 📱
+  if (/شبكات|network/.test(s)) return "1f5a7"; // 🖧
+
   // ====== MAIN CATEGORIES (الأقسام الرئيسية) ======
-  if (/^رياضية$|رياضة|sports?/.test(s)) return "1f3c6"; // 🏆 كأس/بطولة
-  if (/^فنية$|فن|رسم|art|arts/.test(s)) return "1f3a8"; // 🎨 لوحة ألوان
-  if (/^أدبية$|ادبية|أدب|كتب|قراءة|literature|reading|poetry/.test(s)) return "1f4da"; // 📚 كتب
-  if (/^علمية$|علم|علوم|science|lab|مختبر/.test(s)) return "1f52c"; // 🔬 ميكروسكوب
-  if (/^تقنية$|تقنية|تقنيه|tech|technology|كمبيوتر|حاسوب|برمجة|coding/.test(s)) return "1f4bb"; // 💻 لابتوب
+  if (/^رياضية$|رياضة|sports?/.test(s)) return "1f3c6"; // 🏆
+  if (/^فنية$|فن|رسم|art|arts/.test(s)) return "1f3a8"; // 🎨
+  if (/^أدبية$|ادبية|أدب|كتب|قراءة|literature|reading|poetry/.test(s)) return "1f4da"; // 📚
+  if (/^علمية$|علم|علوم|science|lab|مختبر/.test(s)) return "1f52c"; // 🔬
+  if (/^تقنية$|تقنية|تقنيه|tech|technology|كمبيوتر|حاسوب|برمجة|coding/.test(s)) return "1f4bb"; // 💻
 
   // ====== SPORTS (تفاصيل رياضية) ======
   if (/كرة القدم|فوتبول|football|soccer/.test(s)) return "26bd"; // ⚽
@@ -55,34 +79,21 @@ function pickEmojiHexFromText(text?: string) {
   if (/ملاكمة|boxing/.test(s)) return "1f94a"; // 🥊
 
   // ====== ART (فنية) ======
-  if (/تصميم|design/.test(s)) return "1f58c"; // 🖌️ فرشة
-  if (/تصوير|photo|camera/.test(s)) return "1f4f7"; // 📷 كاميرا
+  if (/تصميم|design/.test(s)) return "1f58c"; // 🖌️
+  if (/تصوير|photo|camera/.test(s)) return "1f4f7"; // 📷
   if (/موسيقى|music/.test(s)) return "1f3b5"; // 🎵
   if (/تمثيل|مسرح|theater|theatre/.test(s)) return "1f3ad"; // 🎭
-  if (/خط عربي|خط|calligraphy/.test(s)) return "270d"; // ✍️ كتابة
-
-  // ====== LITERATURE (أدبية) ======
-  if (/قصة|قصص|story/.test(s)) return "1f4d6"; // 📖 كتاب مفتوح
-  if (/شعر|poem|poetry/.test(s)) return "1f4dd"; // 📝 مذكرة
-  if (/إلقاء|خطابة|speech/.test(s)) return "1f3a4"; // 🎤 ميكروفون
+  if (/خط عربي|خط|calligraphy/.test(s)) return "270d"; // ✍️
 
   // ====== SCIENCE (علمية) ======
   if (/روبوت|robot/.test(s)) return "1f916"; // 🤖
-  if (/كيمياء|chem/.test(s)) return "2697"; // ⚗️
-  if (/فيزياء|physics/.test(s)) return "1f4a1"; // 💡 فكرة
-  if (/فضاء|space|astronomy/.test(s)) return "1f680"; // 🚀
+  if (/فضاء|space/.test(s)) return "1f680"; // 🚀
   if (/رياضيات|math/.test(s)) return "1f522"; // 🔢
-
-  // ====== TECH (تقنية) ======
-  if (/برمجة|coding|code|developer/.test(s)) return "1f9d1-200d-1f4bb"; // 🧑‍💻
-  if (/ذكاء|ai|machine|ml/.test(s)) return "1f9e0"; // 🧠
-  if (/أمن سيبراني|cyber|security/.test(s)) return "1f512"; // 🔒
-  if (/هاتف|mobile|app/.test(s)) return "1f4f1"; // 📱
-  if (/شبكات|network/.test(s)) return "1f5a7"; // 🖧
 
   // Default
   return "2728"; // ✨
 }
+
 function IconBadge({
   label,
   tone = "teal",
@@ -108,15 +119,11 @@ function IconBadge({
 
   return (
     <div className="relative w-16 h-16 md:w-[72px] md:h-[72px]">
-      {/* outer glow */}
       <div
         className={`absolute inset-0 rounded-2xl blur-xl bg-gradient-to-br ${toneClass} opacity-70`}
       />
-      {/* glass plate */}
       <div className="absolute inset-0 rounded-2xl bg-white/55 backdrop-blur-md border border-white/70 shadow-[0_10px_30px_rgba(0,0,0,0.12)]" />
-      {/* inner highlight */}
       <div className="absolute inset-[6px] rounded-2xl bg-gradient-to-b from-white/60 to-white/10" />
-      {/* icon */}
       <div className="absolute inset-0 flex items-center justify-center">
         {broken ? (
           <Award className="w-7 h-7 text-slate-600" />
@@ -130,7 +137,6 @@ function IconBadge({
           />
         )}
       </div>
-      {/* shiny dot */}
       <div className="absolute top-2 left-2 w-3 h-3 rounded-full bg-white/80 blur-[0.5px]" />
     </div>
   );
@@ -144,7 +150,9 @@ export default function TalentsPage({
 }: TalentsPageProps) {
   const [page, setPage] = useState<PageId>(initialPage);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [selectedSubcategory, setSelectedSubcategory] = useState<string | null>(null);
+  const [selectedSubcategory, setSelectedSubcategory] = useState<string | null>(
+    null
+  );
 
   return (
     <>
@@ -220,7 +228,6 @@ function TalentsHomePage({
 
   return (
     <div className="container mx-auto px-3 py-6" dir="rtl">
-      {/* ✅ زر العودة للرئيسية هنا */}
       {onBackHome && (
         <button
           onClick={onBackHome}
@@ -292,7 +299,10 @@ function TalentsHomePage({
             >
               <div className="p-3 flex flex-col items-center justify-center h-full">
                 <div className="mb-3">
-                  <IconBadge label={cat.name_ar || cat.icon || "موهبة"} tone={tone} />
+                  <IconBadge
+                    label={cat.name_ar || cat.icon || "موهبة"}
+                    tone={tone}
+                  />
                 </div>
 
                 <h3 className="text-base md:text-lg font-black text-slate-900 mb-1">
@@ -339,7 +349,6 @@ function SubcategoriesPage({
 
   return (
     <div className="container mx-auto px-3 py-6" dir="rtl">
-      {/* ✅ رجوع للرئيسية + رجوع للأقسام */}
       <div className="flex items-center gap-2 flex-wrap mb-6">
         <button
           onClick={() => setPage("talents")}
@@ -409,6 +418,9 @@ function SubcategoriesPage({
     </div>
   );
 }
+
+// ====== RegisterPage + MyPage كما هي عندك بدون تغيير تصميم ======
+// (تركتها كما أرسلتها حرفيًا)
 
 function RegisterPage({
   categoryId,
@@ -639,7 +651,9 @@ function MyPage({
 
     supabase
       .from("student_talents")
-      .select(`id, proficiency, years_of_experience, status, created_at, category_id, subcategory_id`)
+      .select(
+        `id, proficiency, years_of_experience, status, created_at, category_id, subcategory_id`
+      )
       .eq("student_id", user.id)
       .order("created_at", { ascending: false })
       .then(async ({ data }) => {
