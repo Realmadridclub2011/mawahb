@@ -105,10 +105,10 @@ export default function AnnouncementsPage({
   const canRegister = (a: any) => a?.type === "competition" && !!a?.registration_open;
 
   /**
-   * 🎨 Visual system (متناسق وهادئ):
-   * - Primary (سجّل الآن): نفس منطق "تابعنا" (فاتح + بوردر + نص غامق)
-   * - Secondary (تابعنا): Cyan/Teal فاتح وواضح
-   * - Closed: Slate أغمق وواضح كـ disabled
+   * 🎨 Card colors only (نفس التصميم زي ما هو + اختلاف ألوان لطيف)
+   * - اعلان: sky/cyan
+   * - مسابقة مفتوحة: teal/cyan
+   * - مسابقة مغلقة: slate
    */
   const getTone = (a: any) => {
     const isComp = a?.type === "competition";
@@ -117,7 +117,9 @@ export default function AnnouncementsPage({
     // إعلان
     if (!isComp) {
       return {
-        card: "border-sky-200/70 bg-gradient-to-b from-sky-50/70 to-white/65",
+        // ✅ هنا اللون بقى زي كروت الهوم (تدرج + حافة بسيطة)
+        card: "border-sky-200/70 bg-gradient-to-br from-sky-50/85 via-white/70 to-cyan-50/80",
+        halo: "bg-gradient-to-br from-sky-200/40 via-cyan-200/25 to-blue-200/35",
         chip: "bg-sky-100/90 text-sky-900 ring-1 ring-sky-200/70",
         statusChip: "",
       };
@@ -126,7 +128,8 @@ export default function AnnouncementsPage({
     // مسابقة مفتوحة
     if (open) {
       return {
-        card: "border-teal-200/70 bg-gradient-to-b from-teal-50/70 to-white/65",
+        card: "border-teal-200/70 bg-gradient-to-br from-teal-50/85 via-white/70 to-cyan-50/80",
+        halo: "bg-gradient-to-br from-emerald-200/35 via-teal-200/25 to-cyan-200/35",
         chip: "bg-teal-100/90 text-teal-950 ring-1 ring-teal-200/70",
         statusChip: "bg-teal-100/95 text-teal-950 ring-1 ring-teal-200/70",
       };
@@ -134,7 +137,8 @@ export default function AnnouncementsPage({
 
     // مسابقة مغلقة
     return {
-      card: "border-slate-200 bg-gradient-to-b from-slate-100/90 to-white/60",
+      card: "border-slate-200/80 bg-gradient-to-br from-slate-50/90 via-white/75 to-slate-100/70",
+      halo: "bg-gradient-to-br from-slate-200/35 via-slate-200/20 to-slate-300/25",
       chip: "bg-slate-200/90 text-slate-900 ring-1 ring-slate-300/70",
       statusChip: "bg-slate-200/95 text-slate-900 ring-1 ring-slate-300/70",
     };
@@ -182,11 +186,15 @@ export default function AnnouncementsPage({
             <div
               key={a?.id || `${a?.title}-${a?.created_at}`}
               className={[
-                "ui-card ui-card-hover overflow-hidden rounded-3xl border",
+                "relative ui-card ui-card-hover overflow-hidden rounded-3xl border",
                 tone.card,
                 "shadow-[0_10px_30px_rgba(2,6,23,0.08)] transition-transform duration-200 hover:-translate-y-0.5",
               ].join(" ")}
             >
+              {/* ✅ هالة لون خفيفة (زي بطاقات الهوم) */}
+              <div className={`pointer-events-none absolute -top-20 -left-16 w-64 h-64 rounded-full blur-3xl opacity-70 ${tone.halo}`} />
+              <div className={`pointer-events-none absolute -bottom-24 -right-20 w-72 h-72 rounded-full blur-3xl opacity-60 ${tone.halo}`} />
+
               {/* صورة اختيارية */}
               {hasImage ? (
                 <div className="relative">
@@ -201,16 +209,11 @@ export default function AnnouncementsPage({
                 <div className="h-20 bg-gradient-to-r from-white/55 to-white/10" />
               )}
 
-              <div className="p-6 flex flex-col min-h-[280px]">
+              <div className="relative p-6 flex flex-col min-h-[280px]">
                 {/* Chips + تاريخ */}
                 <div className="flex items-center justify-between gap-2 mb-4">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <span
-                      className={[
-                        "px-3 py-1 rounded-full text-xs font-black",
-                        tone.chip,
-                      ].join(" ")}
-                    >
+                    <span className={["px-3 py-1 rounded-full text-xs font-black", tone.chip].join(" ")}>
                       {isComp ? "مسابقة" : "إعلان"}
                     </span>
 
@@ -236,7 +239,6 @@ export default function AnnouncementsPage({
                     )}
                   </div>
 
-                  {/* تاريخ النهاية */}
                   {a?.end_date ? (
                     <span className="text-[11px] font-semibold text-gray-500 whitespace-nowrap">
                       ينتهي: {fmtDateAr(a.end_date)}
@@ -248,7 +250,6 @@ export default function AnnouncementsPage({
                   )}
                 </div>
 
-                {/* محتوى البطاقة */}
                 <h3 className="text-lg md:text-xl font-black text-gray-900 mb-2 leading-snug">
                   {a?.title || "بدون عنوان"}
                 </h3>
@@ -257,9 +258,8 @@ export default function AnnouncementsPage({
                   {a?.description || "—"}
                 </p>
 
-                {/* CTA موحّد: نفس الارتفاع / نفس الروند / ألوان مريحة */}
                 <div className="mt-auto pt-4">
-                  {/* ✅ مسابقة مفتوحة: سجّل الآن (نفس هدوء "تابعنا") */}
+                  {/* ✅ مسابقة مفتوحة */}
                   {canRegister(a) ? (
                     <button
                       onClick={() => setSelectedAnnouncement(a)}
@@ -276,7 +276,7 @@ export default function AnnouncementsPage({
                     </button>
                   ) : (
                     <>
-                      {/* ✅ إعلان: تابعنا */}
+                      {/* ✅ إعلان */}
                       {!isComp ? (
                         <button
                           onClick={() => setSelectedAnnouncement(a)}
@@ -292,7 +292,6 @@ export default function AnnouncementsPage({
                           تابعنا للمزيد من التحديثات
                         </button>
                       ) : (
-                        /* ✅ مسابقة مغلقة */
                         <div
                           className={[
                             "w-full h-12 rounded-2xl flex items-center justify-center gap-2",
@@ -337,7 +336,6 @@ export default function AnnouncementsPage({
                 : "تابع التفاصيل الخاصة بهذا الإعلان."}
             </p>
 
-            {/* صورة داخل المودال لو موجودة */}
             {selectedAnnouncement?.image_url && (
               <div className="mb-4 overflow-hidden rounded-2xl border border-slate-200">
                 <img
@@ -349,12 +347,10 @@ export default function AnnouncementsPage({
             )}
 
             <div className="space-y-4">
-              {/* وصف كامل */}
               <div className="text-sm leading-relaxed text-slate-700 bg-slate-50 border border-slate-200 rounded-2xl p-4">
                 {selectedAnnouncement?.description || "—"}
               </div>
 
-              {/* لو مسابقة مفتوحة: تسجيل */}
               {isSelectedCompetition && selectedIsOpen ? (
                 <>
                   <div>
@@ -402,7 +398,6 @@ export default function AnnouncementsPage({
                 </button>
               )}
 
-              {/* لو مسابقة مغلقة داخل المودال */}
               {isSelectedCompetition && !selectedIsOpen && (
                 <div className="text-xs text-slate-800 bg-slate-50 border border-slate-200 rounded-2xl p-3 flex items-center gap-2">
                   <Lock className="w-4 h-4" />
