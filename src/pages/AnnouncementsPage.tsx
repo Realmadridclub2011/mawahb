@@ -1,12 +1,10 @@
 // src/pages/AnnouncementsPage.tsx
 import React, { useEffect, useMemo, useState } from "react";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, CalendarDays } from "lucide-react";
 import { supabase } from "../lib/supabaseClient";
 
 type AnnouncementsPageProps = {
   onBackHome?: () => void;
-
-  // ✅ نستقبل المستخدم و التوست من App بدل import hooks غير موجودة
   user?: { id: string } | null;
   showSuccess?: (msg: string) => void;
   showError?: (msg: string) => void;
@@ -104,26 +102,48 @@ export default function AnnouncementsPage({
     }
   };
 
+  const isComp = (a: any) => a?.type === "competition";
+  const isOpen = (a: any) => !!a?.registration_open;
+  const canRegister = (a: any) => isComp(a) && isOpen(a);
+
   const getTone = (a: any) => {
-    // ألوان هادية حسب النوع
-    if (a?.type === "competition") {
+    // ✅ مسابقة مغلقة: لون أغمق (مش أبيض)
+    if (isComp(a) && !isOpen(a)) {
       return {
-        card: "border-emerald-200 bg-emerald-50/35",
-        chip: "bg-emerald-100 text-emerald-800",
-        ring: "ring-emerald-200/60",
-        btn: "from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700",
+        card: "border-slate-300 bg-slate-100/70",
+        header: "from-slate-900/10 via-slate-900/0 to-slate-900/0",
+        chipMain: "bg-slate-200 text-slate-800",
+        chipStatus: "bg-slate-800 text-white",
+        ring: "ring-slate-300/60",
+        btn: "from-slate-700 to-slate-600 hover:from-slate-800 hover:to-slate-700",
+        accent: "from-slate-500 to-slate-400",
       };
     }
+
+    // ✅ مسابقة مفتوحة
+    if (isComp(a)) {
+      return {
+        card: "border-emerald-200 bg-emerald-50/40",
+        header: "from-black/35 via-black/0 to-black/0",
+        chipMain: "bg-emerald-100 text-emerald-900",
+        chipStatus: "bg-amber-100 text-amber-800",
+        ring: "ring-emerald-200/60",
+        btn: "from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700",
+        accent: "from-emerald-500 to-cyan-500",
+      };
+    }
+
+    // ✅ إعلان
     return {
-      card: "border-sky-200 bg-sky-50/35",
-      chip: "bg-sky-100 text-sky-800",
+      card: "border-sky-200 bg-sky-50/40",
+      header: "from-black/30 via-black/0 to-black/0",
+      chipMain: "bg-sky-100 text-sky-900",
+      chipStatus: "bg-slate-100 text-slate-700",
       ring: "ring-sky-200/60",
       btn: "from-sky-600 to-cyan-600 hover:from-sky-700 hover:to-cyan-700",
+      accent: "from-sky-500 to-cyan-500",
     };
   };
-
-  const canRegister = (a: any) =>
-    a?.type === "competition" && !!a?.registration_open;
 
   const cards = useMemo(() => announcements || [], [announcements]);
 
@@ -153,73 +173,60 @@ export default function AnnouncementsPage({
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7 max-w-6xl mx-auto">
         {cards.map((a) => {
           const tone = getTone(a);
           const hasImage = !!a.image_url;
-          const open = !!a.registration_open;
-          const isComp = a.type === "competition";
 
           return (
             <div
               key={a.id}
               className={`
-                ui-card ui-card-hover overflow-hidden
-                rounded-3xl border ${tone.card}
-                shadow-[0_10px_30px_rgba(2,6,23,0.08)]
+                overflow-hidden rounded-[26px]
+                border ${tone.card}
+                bg-white/60 backdrop-blur
+                shadow-[0_14px_40px_rgba(2,6,23,0.08)]
+                hover:shadow-[0_18px_55px_rgba(2,6,23,0.12)]
+                transition
               `}
             >
-              {/* صورة اختيارية */}
+              {/* ✅ صورة نظيفة: بدون تاريخ أو "صورة" فوقها */}
               {hasImage ? (
                 <div className="relative">
                   <img
                     src={a.image_url}
                     alt={a.title}
-                    className="w-full h-48 object-cover"
+                    className="w-full h-52 object-cover"
+                    loading="lazy"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-black/0 to-black/0" />
+                  <div className={`absolute inset-0 bg-gradient-to-t ${tone.header}`} />
                 </div>
               ) : (
-                // Placeholder بسيط بدل الفراغ
-                <div className="h-20 bg-gradient-to-r from-white/40 to-white/10" />
+                <div className="h-24 bg-gradient-to-r from-white/60 to-white/10" />
               )}
 
-              <div className="p-6 flex flex-col min-h-[280px]">
-                {/* Chips */}
+              <div className="p-6 flex flex-col min-h-[290px]">
+                {/* ✅ بادجات تحت الصورة (مش فوقها) */}
                 <div className="flex items-center justify-between gap-2 mb-4">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <span
-                      className={`px-3 py-1 rounded-full text-xs font-black ${tone.chip}`}
-                    >
-                      {isComp ? "مسابقة" : "إعلان"}
+                    <span className={`px-3 py-1 rounded-full text-xs font-black ${tone.chipMain}`}>
+                      {isComp(a) ? "مسابقة" : "إعلان"}
                     </span>
 
-                    {isComp && (
-                      <span
-                        className={`px-3 py-1 rounded-full text-xs font-bold ${
-                          open
-                            ? "bg-amber-100 text-amber-800"
-                            : "bg-slate-100 text-slate-700"
-                        }`}
-                      >
-                        {open ? "التسجيل مفتوح" : "التسجيل مغلق"}
+                    {isComp(a) && (
+                      <span className={`px-3 py-1 rounded-full text-xs font-black ${tone.chipStatus}`}>
+                        {isOpen(a) ? "التسجيل مفتوح" : "التسجيل مغلق"}
                       </span>
                     )}
                   </div>
 
-                  {/* تاريخ/نهاية */}
-                  {a.end_date ? (
-                    <span className="text-[11px] font-semibold text-gray-500 whitespace-nowrap">
-                      ينتهي: {fmtDateAr(a.end_date)}
-                    </span>
-                  ) : (
-                    <span className="text-[11px] font-semibold text-gray-400 whitespace-nowrap">
-                      —
-                    </span>
-                  )}
+                  {/* التاريخ في الركن لكن داخل المحتوى */}
+                  <span className="inline-flex items-center gap-2 text-[11px] font-semibold text-gray-500 whitespace-nowrap">
+                    <CalendarDays className="w-4 h-4" />
+                    {a.end_date ? fmtDateAr(a.end_date) : "—"}
+                  </span>
                 </div>
 
-                {/* Content */}
                 <h3 className="text-lg md:text-xl font-black text-gray-900 mb-2 leading-snug">
                   {a.title}
                 </h3>
@@ -228,8 +235,13 @@ export default function AnnouncementsPage({
                   {a.description}
                 </p>
 
-                {/* Footer ثابت: زر أو رسالة */}
-                <div className="mt-auto pt-4">
+                {/* خط أكسنت زي تصميمك */}
+                <div className="mt-1 mb-5">
+                  <div className={`h-[3px] w-14 rounded-full bg-gradient-to-r ${tone.accent}`} />
+                </div>
+
+                {/* ✅ Footer ثابت: زر أو رسالة (مفيش فراغ) */}
+                <div className="mt-auto pt-2">
                   {canRegister(a) ? (
                     <button
                       onClick={() => setSelectedAnnouncement(a)}
@@ -246,14 +258,17 @@ export default function AnnouncementsPage({
                     <div
                       className={`
                         w-full py-3 rounded-xl text-center
-                        bg-white/70 text-slate-700
-                        text-sm font-bold
+                        text-sm font-black
+                        bg-white/70
                         border border-white/60
                         ring-1 ${tone.ring}
+                        ${isComp(a) && !isOpen(a) ? "text-slate-800" : "text-slate-700"}
                       `}
                     >
-                      {isComp
-                        ? "انتهى التسجيل — تابعنا للمسابقات القادمة"
+                      {isComp(a)
+                        ? isOpen(a)
+                          ? "التسجيل متاح الآن"
+                          : "انتهى التسجيل — تابعنا للمسابقات القادمة"
                         : "تابعنا للمزيد من التحديثات"}
                     </div>
                   )}
