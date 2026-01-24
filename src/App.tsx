@@ -212,7 +212,7 @@ function Header({ showLogin, setShowLogin }: { showLogin?: boolean; setShowLogin
                 className="flex items-center gap-1 md:gap-2 bg-white/20 hover:bg-white/30 px-2.5 py-1.5 md:px-4 md:py-2 rounded-lg font-bold shadow-lg transition-all border border-white/30"
               >
                 <LogIn className="w-3.5 h-3.5 md:w-4 md:h-4" />
-                <span className="text-xs md:text-sm">دخول</span>
+                <span className="text-xs md:text-sm">دخول اهو يا تامر </span>
               </button>
             )}
           </div>
