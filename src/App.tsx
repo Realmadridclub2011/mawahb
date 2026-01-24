@@ -159,13 +159,20 @@ function Header({ showLogin, setShowLogin }: { showLogin?: boolean; setShowLogin
   const { user, logout } = useAuth();
 
   const getRoleName = (role: string) => {
-    const names: Record<string, string> = { student: 'طالب', guardian: 'ولي أمر', teacher: 'معلم', admin: 'إداري' };
+    const names: Record<string, string> = { student: "طالب", guardian: "ولي أمر", teacher: "معلم", admin: "إداري" };
     return names[role] || role;
   };
 
   return (
-    <header className="bg-gradient-to-r from-slate-800 via-teal-700 to-cyan-700 text-white shadow-2xl border-b-2 md:border-b-4 border-teal-400" dir="rtl">
-      <div className="container mx-auto px-3 py-3 md:px-4 md:py-4">
+    <header
+      className="
+        bg-gradient-to-r from-slate-800 via-teal-700 to-cyan-700
+        text-white shadow-2xl border-b-2 md:border-b-4 border-teal-400
+        pt-[env(safe-area-inset-top)]
+      "
+      dir="rtl"
+    >
+      <div className="container mx-auto px-3 pb-3 md:px-4 md:pb-4">
         <div className="flex items-center justify-between gap-2">
           <div className="flex items-center">
             {user ? (
@@ -185,15 +192,25 @@ function Header({ showLogin, setShowLogin }: { showLogin?: boolean; setShowLogin
               </div>
             )}
           </div>
-          <h1 className="text-xs md:text-xl lg:text-2xl font-black drop-shadow-lg text-center flex-1 mx-2">كنوز قطر</h1>
+
+          <h1 className="text-xs md:text-xl lg:text-2xl font-black drop-shadow-lg text-center flex-1 mx-2">
+            كنوز قطر
+          </h1>
+
           <div className="flex items-center">
             {user ? (
-              <button onClick={logout} className="flex items-center gap-1 md:gap-2 bg-white/20 hover:bg-white/30 px-2 py-1.5 md:px-4 md:py-2 rounded-lg font-bold shadow-lg transition-all border border-white/30">
+              <button
+                onClick={logout}
+                className="flex items-center gap-1 md:gap-2 bg-white/20 hover:bg-white/30 px-2 py-1.5 md:px-4 md:py-2 rounded-lg font-bold shadow-lg transition-all border border-white/30"
+              >
                 <LogOut className="w-3.5 h-3.5 md:w-4 md:h-4" />
                 <span className="hidden md:inline text-xs md:text-sm">خروج</span>
               </button>
             ) : (
-              <button onClick={() => setShowLogin?.(true)} className="flex items-center gap-1 md:gap-2 bg-white/20 hover:bg-white/30 px-2.5 py-1.5 md:px-4 md:py-2 rounded-lg font-bold shadow-lg transition-all border border-white/30">
+              <button
+                onClick={() => setShowLogin?.(true)}
+                className="flex items-center gap-1 md:gap-2 bg-white/20 hover:bg-white/30 px-2.5 py-1.5 md:px-4 md:py-2 rounded-lg font-bold shadow-lg transition-all border border-white/30"
+              >
                 <LogIn className="w-3.5 h-3.5 md:w-4 md:h-4" />
                 <span className="text-xs md:text-sm">دخول</span>
               </button>
@@ -224,7 +241,12 @@ function BottomNav({
 
   return (
     <nav
-      className="fixed bottom-0 left-0 right-0 z-40 border-t border-teal-200/70 bg-white/70 backdrop-blur-xl shadow-[0_-10px_35px_-25px_rgba(0,0,0,0.4)]"
+      className="
+        fixed left-0 right-0 z-40 border-t border-teal-200/70 bg-white/70
+        backdrop-blur-xl shadow-[0_-10px_35px_-25px_rgba(0,0,0,0.4)]
+        pb-[calc(env(safe-area-inset-bottom)+4px)]
+        bottom-0
+      "
       dir="rtl"
     >
       <div className="container mx-auto px-2">
@@ -243,7 +265,6 @@ function BottomNav({
                   paddingBottom: 6,
                 }}
               >
-                {/* bubble 3d خفيفة */}
                 <div
                   className={`w-9 h-9 md:w-10 md:h-10 rounded-2xl flex items-center justify-center
                     ${active ? "bg-gradient-to-br from-teal-200 via-white to-cyan-200 shadow-md" : "bg-white/60 shadow-sm"}
@@ -267,7 +288,6 @@ function BottomNav({
     </nav>
   );
 }
-
 function LoginModal({ showLogin, setShowLogin }: { showLogin: boolean; setShowLogin: (show: boolean) => void }) {
   const [isRegisterMode, setIsRegisterMode] = useState(false);
   const [email, setEmail] = useState('');
