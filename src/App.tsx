@@ -194,7 +194,7 @@ function Header({ showLogin, setShowLogin }: { showLogin?: boolean; setShowLogin
           </div>
 
           <h1 className="text-xs md:text-xl lg:text-2xl font-black drop-shadow-lg text-center flex-1 mx-2">
-            كنوز قطر
+      تامرررررررررر
           </h1>
 
           <div className="flex items-center">
