@@ -165,3 +165,10 @@ body{
   }
   .animate-slide-in{ animation: slide-in 0.3s ease-out; }
 }
+
+/* ✅ منع الزوم في الفورم على iOS WebView/Safari */
+input,
+select,
+textarea {
+  font-size: 16px !important;
+}
