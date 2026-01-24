@@ -168,7 +168,7 @@ function Header({ showLogin, setShowLogin }: { showLogin?: boolean; setShowLogin
       className="
         bg-gradient-to-r from-slate-800 via-teal-700 to-cyan-700
         text-white shadow-2xl border-b-2 md:border-b-4 border-teal-400
-        pt-[env(safe-area-inset-top)]
+        pt-[calc(env(safe-area-inset-top)+12px)]
       "
       dir="rtl"
     >
@@ -242,10 +242,10 @@ function BottomNav({
   return (
     <nav
       className="
-        fixed left-0 right-0 z-40 border-t border-teal-200/70 bg-white/70
-        backdrop-blur-xl shadow-[0_-10px_35px_-25px_rgba(0,0,0,0.4)]
+        fixed left-0 right-0 bottom-0 z-40
+        border-t border-teal-200/70 bg-white/70 backdrop-blur-xl
+        shadow-[0_-10px_35px_-25px_rgba(0,0,0,0.4)]
         pb-[calc(env(safe-area-inset-bottom)+4px)]
-        bottom-0
       "
       dir="rtl"
     >
