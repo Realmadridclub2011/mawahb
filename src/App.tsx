@@ -1883,53 +1883,44 @@ function AdminDashboard() {
               <div>
                 <label className="block text-gray-700 font-semibold mb-2">العنوان *</label>
                 <input
-                  type="text"
-                  value={newAnnouncement.title}
-                  onChange={(e) => setNewAnnouncement({ ...newAnnouncement, title: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8A1538]"
-                  placeholder="عنوان الإعلان"
-                />
-              </div>
-              <div>
-                <label className="block text-gray-700 font-semibold mb-2">الوصف *</label>
-                <textarea
-                  value={newAnnouncement.description}
-                  onChange={(e) => setNewAnnouncement({ ...newAnnouncement, description: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8A1538]"
-                  rows={4}
-                  placeholder="وصف الإعلان"
-                />
-              </div>
-              <div>
-                <label className="block text-gray-700 font-semibold mb-2">رابط الصورة</label>
-                <input
-                  type="url"
-                  value={newAnnouncement.image_url}
-                  onChange={(e) => setNewAnnouncement({ ...newAnnouncement, image_url: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8A1538]"
-                  placeholder="https://example.com/image.jpg"
-                />
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-gray-700 font-semibold mb-2">النوع</label>
-                  <select
-                    value={newAnnouncement.type}
-                    onChange={(e) => setNewAnnouncement({ ...newAnnouncement, type: e.target.value })}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8A1538]"
-                  >
-                    <option value="announcement">إعلان</option>
-                    <option value="competition">مسابقة</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-gray-700 font-semibold mb-2">تاريخ الانتهاء</label>
-                  <input
-                    type="date"
-                    value={newAnnouncement.end_date}
-                    onChange={(e) => setNewAnnouncement({ ...newAnnouncement, end_date: e.target.value })}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8A1538]"
-                  />
+  type="text"
+  value={newAnnouncement.title}
+  onChange={(e) => setNewAnnouncement({ ...newAnnouncement, title: e.target.value })}
+  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8A1538] text-[16px]"
+  placeholder="عنوان الإعلان"
+/>
+
+<textarea
+  value={newAnnouncement.description}
+  onChange={(e) => setNewAnnouncement({ ...newAnnouncement, description: e.target.value })}
+  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8A1538] text-[16px]"
+  rows={4}
+  placeholder="وصف الإعلان"
+/>
+
+<input
+  type="url"
+  value={newAnnouncement.image_url}
+  onChange={(e) => setNewAnnouncement({ ...newAnnouncement, image_url: e.target.value })}
+  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8A1538] text-[16px]"
+  placeholder="https://example.com/image.jpg"
+/>
+
+<select
+  value={newAnnouncement.type}
+  onChange={(e) => setNewAnnouncement({ ...newAnnouncement, type: e.target.value })}
+  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8A1538] text-[16px]"
+>
+  <option value="announcement">إعلان</option>
+  <option value="competition">مسابقة</option>
+</select>
+
+<input
+  type="date"
+  value={newAnnouncement.end_date}
+  onChange={(e) => setNewAnnouncement({ ...newAnnouncement, end_date: e.target.value })}
+  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8A1538] text-[16px]"
+/>
                 </div>
               </div>
               <div className="space-y-3">
