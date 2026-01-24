@@ -159,20 +159,13 @@ function Header({ showLogin, setShowLogin }: { showLogin?: boolean; setShowLogin
   const { user, logout } = useAuth();
 
   const getRoleName = (role: string) => {
-    const names: Record<string, string> = { student: "طالب", guardian: "ولي أمر", teacher: "معلم", admin: "إداري" };
+    const names: Record<string, string> = { student: 'طالب', guardian: 'ولي أمر', teacher: 'معلم', admin: 'إداري' };
     return names[role] || role;
   };
 
   return (
-    <header
-      className="
-        bg-gradient-to-r from-slate-800 via-teal-700 to-cyan-700
-        text-white shadow-2xl border-b-2 md:border-b-4 border-teal-400
-        pt-[calc(env(safe-area-inset-top)+12px)]
-      "
-      dir="rtl"
-    >
-      <div className="container mx-auto px-3 pb-3 md:px-4 md:pb-4">
+    <header className="bg-gradient-to-r from-slate-800 via-teal-700 to-cyan-700 text-white shadow-2xl border-b-2 md:border-b-4 border-teal-400" dir="rtl">
+      <div className="container mx-auto px-3 py-3 md:px-4 md:py-4">
         <div className="flex items-center justify-between gap-2">
           <div className="flex items-center">
             {user ? (
@@ -192,25 +185,15 @@ function Header({ showLogin, setShowLogin }: { showLogin?: boolean; setShowLogin
               </div>
             )}
           </div>
-
-          <h1 className="text-xs md:text-xl lg:text-2xl font-black drop-shadow-lg text-center flex-1 mx-2">
-      كنوز قطر
-          </h1>
-
+          <h1 className="text-xs md:text-xl lg:text-2xl font-black drop-shadow-lg text-center flex-1 mx-2">كنوز قطر</h1>
           <div className="flex items-center">
             {user ? (
-              <button
-                onClick={logout}
-                className="flex items-center gap-1 md:gap-2 bg-white/20 hover:bg-white/30 px-2 py-1.5 md:px-4 md:py-2 rounded-lg font-bold shadow-lg transition-all border border-white/30"
-              >
+              <button onClick={logout} className="flex items-center gap-1 md:gap-2 bg-white/20 hover:bg-white/30 px-2 py-1.5 md:px-4 md:py-2 rounded-lg font-bold shadow-lg transition-all border border-white/30">
                 <LogOut className="w-3.5 h-3.5 md:w-4 md:h-4" />
                 <span className="hidden md:inline text-xs md:text-sm">خروج</span>
               </button>
             ) : (
-              <button
-                onClick={() => setShowLogin?.(true)}
-                className="flex items-center gap-1 md:gap-2 bg-white/20 hover:bg-white/30 px-2.5 py-1.5 md:px-4 md:py-2 rounded-lg font-bold shadow-lg transition-all border border-white/30"
-              >
+              <button onClick={() => setShowLogin?.(true)} className="flex items-center gap-1 md:gap-2 bg-white/20 hover:bg-white/30 px-2.5 py-1.5 md:px-4 md:py-2 rounded-lg font-bold shadow-lg transition-all border border-white/30">
                 <LogIn className="w-3.5 h-3.5 md:w-4 md:h-4" />
                 <span className="text-xs md:text-sm">دخول</span>
               </button>
@@ -241,12 +224,7 @@ function BottomNav({
 
   return (
     <nav
-      className="
-        fixed left-0 right-0 bottom-0 z-40
-        border-t border-teal-200/70 bg-white/70 backdrop-blur-xl
-        shadow-[0_-10px_35px_-25px_rgba(0,0,0,0.4)]
-        pb-[calc(env(safe-area-inset-bottom)+4px)]
-      "
+      className="fixed bottom-0 left-0 right-0 z-40 border-t border-teal-200/70 bg-white/70 backdrop-blur-xl shadow-[0_-10px_35px_-25px_rgba(0,0,0,0.4)]"
       dir="rtl"
     >
       <div className="container mx-auto px-2">
@@ -265,6 +243,7 @@ function BottomNav({
                   paddingBottom: 6,
                 }}
               >
+                {/* bubble 3d خفيفة */}
                 <div
                   className={`w-9 h-9 md:w-10 md:h-10 rounded-2xl flex items-center justify-center
                     ${active ? "bg-gradient-to-br from-teal-200 via-white to-cyan-200 shadow-md" : "bg-white/60 shadow-sm"}
@@ -288,6 +267,7 @@ function BottomNav({
     </nav>
   );
 }
+
 function LoginModal({ showLogin, setShowLogin }: { showLogin: boolean; setShowLogin: (show: boolean) => void }) {
   const [isRegisterMode, setIsRegisterMode] = useState(false);
   const [email, setEmail] = useState('');
@@ -1876,233 +1856,314 @@ function AdminDashboard() {
       )}
 
       {showAnnouncementModal && (
-        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4" onClick={() => setShowAnnouncementModal(false)}>
-          <div className="bg-white rounded-3xl shadow-2xl w-full max-w-2xl p-8 max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()} dir="rtl">
-            <h2 className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-cyan-600 mb-6">{editingItem ? 'تعديل الإعلان' : 'إضافة إعلان جديد'}</h2>
-            <div className="space-y-4">
-              <div>
-                <label className="block text-gray-700 font-semibold mb-2">العنوان *</label>
-                <input
-  type="text"
-  value={newAnnouncement.title}
-  onChange={(e) => setNewAnnouncement({ ...newAnnouncement, title: e.target.value })}
-  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8A1538] text-[16px]"
-  placeholder="عنوان الإعلان"
-/>
-
-<textarea
-  value={newAnnouncement.description}
-  onChange={(e) => setNewAnnouncement({ ...newAnnouncement, description: e.target.value })}
-  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8A1538] text-[16px]"
-  rows={4}
-  placeholder="وصف الإعلان"
-/>
-
-<input
-  type="url"
-  value={newAnnouncement.image_url}
-  onChange={(e) => setNewAnnouncement({ ...newAnnouncement, image_url: e.target.value })}
-  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8A1538] text-[16px]"
-  placeholder="https://example.com/image.jpg"
-/>
-
-<select
-  value={newAnnouncement.type}
-  onChange={(e) => setNewAnnouncement({ ...newAnnouncement, type: e.target.value })}
-  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8A1538] text-[16px]"
->
-  <option value="announcement">إعلان</option>
-  <option value="competition">مسابقة</option>
-</select>
-
-<input
-  type="date"
-  value={newAnnouncement.end_date}
-  onChange={(e) => setNewAnnouncement({ ...newAnnouncement, end_date: e.target.value })}
-  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8A1538] text-[16px]"
-/>
-                </div>
-              </div>
-              <div className="space-y-3">
-                <div className="flex items-center gap-3">
-                  <input
-                    type="checkbox"
-                    checked={newAnnouncement.registration_open}
-                    onChange={(e) => setNewAnnouncement({ ...newAnnouncement, registration_open: e.target.checked })}
-                    className="w-5 h-5 text-[#8A1538] focus:ring-[#8A1538]"
-                    id="registration-open"
-                  />
-                  <label htmlFor="registration-open" className="text-gray-700 font-semibold">التسجيل مفتوح</label>
-                </div>
-                <div className="flex items-center gap-3">
-                  <input
-                    type="checkbox"
-                    checked={newAnnouncement.is_published}
-                    onChange={(e) => setNewAnnouncement({ ...newAnnouncement, is_published: e.target.checked })}
-                    className="w-5 h-5 text-[#8A1538] focus:ring-[#8A1538]"
-                    id="is-published"
-                  />
-                  <label htmlFor="is-published" className="text-gray-700 font-semibold">نشر الإعلان</label>
-                </div>
-              </div>
-              <div className="flex gap-4 pt-4">
-                <button onClick={() => setShowAnnouncementModal(false)} className="flex-1 bg-gray-200 py-3 rounded-lg font-bold">إلغاء</button>
-                <button onClick={handleSaveAnnouncement} className="flex-1 bg-gradient-to-r from-emerald-600 to-cyan-600 text-white py-3 rounded-lg font-bold">
-                  {editingItem ? 'تحديث' : 'إضافة'}
-                </button>
-              </div>
-            </div>
+      {showAnnouncementModal && (
+  <div
+    className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4"
+    onClick={() => setShowAnnouncementModal(false)}
+  >
+    <div
+      className="bg-white rounded-3xl shadow-2xl w-full max-w-2xl p-8 max-h-[90vh] overflow-y-auto"
+      onClick={(e) => e.stopPropagation()}
+      dir="rtl"
+    >
+      <h2 className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-cyan-600 mb-6">
+        {editingItem ? "تعديل الإعلان" : "إضافة إعلان جديد"}
+      </h2>
+      <div className="space-y-4">
+        <div>
+          <label className="block text-gray-700 font-semibold mb-2">العنوان *</label>
+          <input
+            type="text"
+            value={newAnnouncement.title}
+            onChange={(e) => setNewAnnouncement({ ...newAnnouncement, title: e.target.value })}
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8A1538] text-[16px]"
+            placeholder="عنوان الإعلان"
+          />
+        </div>
+        <div>
+          <label className="block text-gray-700 font-semibold mb-2">الوصف *</label>
+          <textarea
+            value={newAnnouncement.description}
+            onChange={(e) => setNewAnnouncement({ ...newAnnouncement, description: e.target.value })}
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8A1538] text-[16px]"
+            rows={4}
+            placeholder="وصف الإعلان"
+          />
+        </div>
+        <div>
+          <label className="block text-gray-700 font-semibold mb-2">رابط الصورة</label>
+          <input
+            type="url"
+            value={newAnnouncement.image_url}
+            onChange={(e) => setNewAnnouncement({ ...newAnnouncement, image_url: e.target.value })}
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8A1538] text-[16px]"
+            placeholder="https://example.com/image.jpg"
+          />
+        </div>
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block text-gray-700 font-semibold mb-2">النوع</label>
+            <select
+              value={newAnnouncement.type}
+              onChange={(e) => setNewAnnouncement({ ...newAnnouncement, type: e.target.value })}
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8A1538] text-[16px]"
+            >
+              <option value="announcement">إعلان</option>
+              <option value="competition">مسابقة</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-gray-700 font-semibold mb-2">تاريخ الانتهاء</label>
+            <input
+              type="date"
+              value={newAnnouncement.end_date}
+              onChange={(e) => setNewAnnouncement({ ...newAnnouncement, end_date: e.target.value })}
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8A1538] text-[16px]"
+            />
           </div>
         </div>
-      )}
-
-      {showHonorModal && (
-        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4" onClick={() => setShowHonorModal(false)}>
-          <div className="bg-white rounded-3xl shadow-2xl w-full max-w-2xl p-8 max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()} dir="rtl">
-            <h2 className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-cyan-600 mb-6">{editingItem ? 'تعديل التكريم' : 'إضافة تكريم جديد'}</h2>
-            <div className="space-y-4">
-              <div>
-                <label className="block text-gray-700 font-semibold mb-2">العنوان *</label>
-                <input
-                  type="text"
-                  value={newHonor.title}
-                  onChange={(e) => setNewHonor({ ...newHonor, title: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8A1538]"
-                  placeholder="عنوان التكريم"
-                />
-              </div>
-              <div>
-                <label className="block text-gray-700 font-semibold mb-2">الوصف *</label>
-                <textarea
-                  value={newHonor.description}
-                  onChange={(e) => setNewHonor({ ...newHonor, description: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8A1538]"
-                  rows={4}
-                  placeholder="وصف التكريم"
-                />
-              </div>
-              <div>
-                <label className="block text-gray-700 font-semibold mb-2">تاريخ التكريم</label>
-                <input
-                  type="date"
-                  value={newHonor.honor_date}
-                  onChange={(e) => setNewHonor({ ...newHonor, honor_date: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8A1538]"
-                />
-              </div>
-              <div>
-                <label className="block text-gray-700 font-semibold mb-2">نوع الوسائط</label>
-                <select
-                  value={newHonor.media_type}
-                  onChange={(e) => setNewHonor({ ...newHonor, media_type: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8A1538]"
-                >
-                  <option value="image">صورة</option>
-                  <option value="video">فيديو</option>
-                </select>
-              </div>
-              {newHonor.media_type === 'image' ? (
-                <div>
-                  <label className="block text-gray-700 font-semibold mb-2">رابط الصورة</label>
-                  <input
-                    type="url"
-                    value={newHonor.image_url}
-                    onChange={(e) => setNewHonor({ ...newHonor, image_url: e.target.value })}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8A1538]"
-                    placeholder="https://example.com/image.jpg"
-                  />
-                </div>
-              ) : (
-                <div>
-                  <label className="block text-gray-700 font-semibold mb-2">رابط الفيديو</label>
-                  <input
-                    type="url"
-                    value={newHonor.video_url}
-                    onChange={(e) => setNewHonor({ ...newHonor, video_url: e.target.value })}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8A1538]"
-                    placeholder="https://youtube.com/embed/..."
-                  />
-                </div>
-              )}
-              <div className="flex gap-4 pt-4">
-                <button onClick={() => setShowHonorModal(false)} className="flex-1 bg-gray-200 py-3 rounded-lg font-bold">إلغاء</button>
-                <button onClick={handleSaveHonor} className="flex-1 bg-gradient-to-r from-emerald-600 to-cyan-600 text-white py-3 rounded-lg font-bold">
-                  {editingItem ? 'تحديث' : 'إضافة'}
-                </button>
-              </div>
-            </div>
+        <div className="space-y-3">
+          <div className="flex items-center gap-3">
+            <input
+              type="checkbox"
+              checked={newAnnouncement.registration_open}
+              onChange={(e) => setNewAnnouncement({ ...newAnnouncement, registration_open: e.target.checked })}
+              className="w-5 h-5 text-[#8A1538] focus:ring-[#8A1538]"
+              id="registration-open"
+            />
+            <label htmlFor="registration-open" className="text-gray-700 font-semibold">
+              التسجيل مفتوح
+            </label>
+          </div>
+          <div className="flex items-center gap-3">
+            <input
+              type="checkbox"
+              checked={newAnnouncement.is_published}
+              onChange={(e) => setNewAnnouncement({ ...newAnnouncement, is_published: e.target.checked })}
+              className="w-5 h-5 text-[#8A1538] focus:ring-[#8A1538]"
+              id="is-published"
+            />
+            <label htmlFor="is-published" className="text-gray-700 font-semibold">
+              نشر الإعلان
+            </label>
           </div>
         </div>
-      )}
-
-      {showResetPasswordModal && (
-        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4" onClick={() => setShowResetPasswordModal(false)}>
-          <div className="bg-white rounded-3xl shadow-2xl w-full max-w-md p-8" onClick={(e) => e.stopPropagation()} dir="rtl">
-            <h2 className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-cyan-600 mb-6">إعادة تعيين كلمة المرور</h2>
-            <div className="space-y-4">
-              <div>
-                <label className="block text-gray-700 font-semibold mb-2">الحساب</label>
-                <input
-                  type="text"
-                  value={selectedAccount?.email || ''}
-                  disabled
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-100 text-gray-600"
-                />
-              </div>
-              <div>
-                <label className="block text-gray-700 font-semibold mb-2">كلمة المرور الجديدة *</label>
-                <input
-                  type="password"
-                  value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8A1538]"
-                  placeholder="أدخل كلمة المرور الجديدة (6 أحرف على الأقل)"
-                />
-              </div>
-              <div className="flex gap-4 pt-4">
-                <button onClick={() => {
-                  setShowResetPasswordModal(false);
-                  setNewPassword('');
-                  setSelectedAccount(null);
-                }} className="flex-1 bg-gray-200 py-3 rounded-lg font-bold hover:bg-gray-300">إلغاء</button>
-                <button onClick={handleResetPassword} className="flex-1 bg-gradient-to-r from-orange-500 to-red-500 text-white py-3 rounded-lg font-bold hover:from-orange-600 hover:to-red-600">
-                  إعادة تعيين
-                </button>
-              </div>
-            </div>
-          </div>
+        <div className="flex gap-4 pt-4">
+          <button
+            onClick={() => setShowAnnouncementModal(false)}
+            className="flex-1 bg-gray-200 py-3 rounded-lg font-bold"
+          >
+            إلغاء
+          </button>
+          <button
+            onClick={handleSaveAnnouncement}
+            className="flex-1 bg-gradient-to-r from-emerald-600 to-cyan-600 text-white py-3 rounded-lg font-bold"
+          >
+            {editingItem ? "تحديث" : "إضافة"}
+          </button>
         </div>
-      )}
-
-      {showDeleteUserModal && (
-        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4" onClick={() => setShowDeleteUserModal(false)}>
-          <div className="bg-white rounded-3xl shadow-2xl w-full max-w-md p-8" onClick={(e) => e.stopPropagation()} dir="rtl">
-            <h2 className="text-2xl font-black text-red-600 mb-4">تأكيد حذف الحساب</h2>
-            <div className="space-y-4">
-              <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-                <p className="text-gray-800 font-semibold mb-2">هل أنت متأكد من حذف هذا الحساب؟</p>
-                <div className="text-sm text-gray-600 space-y-1">
-                  <p><strong>الاسم:</strong> {selectedAccount?.full_name || '-'}</p>
-                  <p><strong>البريد الإلكتروني:</strong> {selectedAccount?.email}</p>
-                </div>
-                <p className="text-red-600 font-bold text-sm mt-3">تحذير: هذا الإجراء لا يمكن التراجع عنه!</p>
-              </div>
-              <div className="flex gap-4 pt-4">
-                <button onClick={() => {
-                  setShowDeleteUserModal(false);
-                  setSelectedAccount(null);
-                }} className="flex-1 bg-gray-200 py-3 rounded-lg font-bold hover:bg-gray-300">إلغاء</button>
-                <button onClick={handleDeleteUser} className="flex-1 bg-red-500 text-white py-3 rounded-lg font-bold hover:bg-red-600 flex items-center justify-center gap-2">
-                  <Trash2 className="w-4 h-4" />
-                  حذف الحساب
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      </div>
     </div>
-  );
-}
+  </div>
+)}
 
-export default App;
+{showHonorModal && (
+  <div
+    className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4"
+    onClick={() => setShowHonorModal(false)}
+  >
+    <div
+      className="bg-white rounded-3xl shadow-2xl w-full max-w-2xl p-8 max-h-[90vh] overflow-y-auto"
+      onClick={(e) => e.stopPropagation()}
+      dir="rtl"
+    >
+      <h2 className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-cyan-600 mb-6">
+        {editingItem ? "تعديل التكريم" : "إضافة تكريم جديد"}
+      </h2>
+      <div className="space-y-4">
+        <div>
+          <label className="block text-gray-700 font-semibold mb-2">العنوان *</label>
+          <input
+            type="text"
+            value={newHonor.title}
+            onChange={(e) => setNewHonor({ ...newHonor, title: e.target.value })}
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8A1538] text-[16px]"
+            placeholder="عنوان التكريم"
+          />
+        </div>
+        <div>
+          <label className="block text-gray-700 font-semibold mb-2">الوصف *</label>
+          <textarea
+            value={newHonor.description}
+            onChange={(e) => setNewHonor({ ...newHonor, description: e.target.value })}
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8A1538] text-[16px]"
+            rows={4}
+            placeholder="وصف التكريم"
+          />
+        </div>
+        <div>
+          <label className="block text-gray-700 font-semibold mb-2">تاريخ التكريم</label>
+          <input
+            type="date"
+            value={newHonor.honor_date}
+            onChange={(e) => setNewHonor({ ...newHonor, honor_date: e.target.value })}
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8A1538] text-[16px]"
+          />
+        </div>
+        <div>
+          <label className="block text-gray-700 font-semibold mb-2">نوع الوسائط</label>
+          <select
+            value={newHonor.media_type}
+            onChange={(e) => setNewHonor({ ...newHonor, media_type: e.target.value })}
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8A1538] text-[16px]"
+          >
+            <option value="image">صورة</option>
+            <option value="video">فيديو</option>
+          </select>
+        </div>
+        {newHonor.media_type === "image" ? (
+          <div>
+            <label className="block text-gray-700 font-semibold mb-2">رابط الصورة</label>
+            <input
+              type="url"
+              value={newHonor.image_url}
+              onChange={(e) => setNewHonor({ ...newHonor, image_url: e.target.value })}
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8A1538] text-[16px]"
+              placeholder="https://example.com/image.jpg"
+            />
+          </div>
+        ) : (
+          <div>
+            <label className="block text-gray-700 font-semibold mb-2">رابط الفيديو</label>
+            <input
+              type="url"
+              value={newHonor.video_url}
+              onChange={(e) => setNewHonor({ ...newHonor, video_url: e.target.value })}
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8A1538] text-[16px]"
+              placeholder="https://youtube.com/embed/..."
+            />
+          </div>
+        )}
+        <div className="flex gap-4 pt-4">
+          <button
+            onClick={() => setShowHonorModal(false)}
+            className="flex-1 bg-gray-200 py-3 rounded-lg font-bold"
+          >
+            إلغاء
+          </button>
+          <button
+            onClick={handleSaveHonor}
+            className="flex-1 bg-gradient-to-r from-emerald-600 to-cyan-600 text-white py-3 rounded-lg font-bold"
+          >
+            {editingItem ? "تحديث" : "إضافة"}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
+
+{showResetPasswordModal && (
+  <div
+    className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4"
+    onClick={() => setShowResetPasswordModal(false)}
+  >
+    <div
+      className="bg-white rounded-3xl shadow-2xl w-full max-w-md p-8"
+      onClick={(e) => e.stopPropagation()}
+      dir="rtl"
+    >
+      <h2 className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-cyan-600 mb-6">
+        إعادة تعيين كلمة المرور
+      </h2>
+      <div className="space-y-4">
+        <div>
+          <label className="block text-gray-700 font-semibold mb-2">الحساب</label>
+          <input
+            type="text"
+            value={selectedAccount?.email || ""}
+            disabled
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-100 text-gray-600 text-[16px]"
+          />
+        </div>
+        <div>
+          <label className="block text-gray-700 font-semibold mb-2">كلمة المرور الجديدة *</label>
+          <input
+            type="password"
+            value={newPassword}
+            onChange={(e) => setNewPassword(e.target.value)}
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8A1538] text-[16px]"
+            placeholder="أدخل كلمة المرور الجديدة (6 أحرف على الأقل)"
+          />
+        </div>
+        <div className="flex gap-4 pt-4">
+          <button
+            onClick={() => {
+              setShowResetPasswordModal(false);
+              setNewPassword("");
+              setSelectedAccount(null);
+            }}
+            className="flex-1 bg-gray-200 py-3 rounded-lg font-bold hover:bg-gray-300"
+          >
+            إلغاء
+          </button>
+          <button
+            onClick={handleResetPassword}
+            className="flex-1 bg-gradient-to-r from-orange-500 to-red-500 text-white py-3 rounded-lg font-bold hover:from-orange-600 hover:to-red-600"
+          >
+            إعادة تعيين
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
+
+{showDeleteUserModal && (
+  <div
+    className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4"
+    onClick={() => setShowDeleteUserModal(false)}
+  >
+    <div
+      className="bg-white rounded-3xl shadow-2xl w-full max-w-md p-8"
+      onClick={(e) => e.stopPropagation()}
+      dir="rtl"
+    >
+      <h2 className="text-2xl font-black text-red-600 mb-4">تأكيد حذف الحساب</h2>
+      <div className="space-y-4">
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+          <p className="text-gray-800 font-semibold mb-2">هل أنت متأكد من حذف هذا الحساب؟</p>
+          <div className="text-sm text-gray-600 space-y-1">
+            <p>
+              <strong>الاسم:</strong> {selectedAccount?.full_name || "-"}
+            </p>
+            <p>
+              <strong>البريد الإلكتروني:</strong> {selectedAccount?.email}
+            </p>
+          </div>
+          <p className="text-red-600 font-bold text-sm mt-3">
+            تحذير: هذا الإجراء لا يمكن التراجع عنه!
+          </p>
+        </div>
+        <div className="flex gap-4 pt-4">
+          <button
+            onClick={() => {
+              setShowDeleteUserModal(false);
+              setSelectedAccount(null);
+            }}
+            className="flex-1 bg-gray-200 py-3 rounded-lg font-bold hover:bg-gray-300"
+          >
+            إلغاء
+          </button>
+          <button
+            onClick={handleDeleteUser}
+            className="flex-1 bg-red-500 text-white py-3 rounded-lg font-bold hover:bg-red-600 flex items-center justify-center gap-2"
+          >
+            <Trash2 className="w-4 h-4" />
+            حذف الحساب
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
