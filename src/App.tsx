@@ -831,6 +831,8 @@ function MyPage({ onBackHome }: { onBackHome: () => void }) {
   const { user } = useAuth();
   const [talents, setTalents] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadingDelete, setLoadingDelete] = useState(false);
+  const { showError, showSuccess } = useToast();
 
   useEffect(() => {
     if (!user) {
@@ -840,7 +842,9 @@ function MyPage({ onBackHome }: { onBackHome: () => void }) {
 
     supabase
       .from("student_talents")
-      .select(`id, proficiency, years_of_experience, status, created_at, category_id, subcategory_id`)
+      .select(
+        `id, proficiency, years_of_experience, status, created_at, category_id, subcategory_id`
+      )
       .eq("student_id", user.id)
       .order("created_at", { ascending: false })
       .then(async ({ data }) => {
@@ -849,8 +853,14 @@ function MyPage({ onBackHome }: { onBackHome: () => void }) {
           const subIds = [...new Set(data.map((t) => t.subcategory_id))];
 
           const [cats, subs] = await Promise.all([
-            supabase.from("talent_categories").select("id, name_ar").in("id", catIds),
-            supabase.from("talent_subcategories").select("id, name_ar").in("id", subIds),
+            supabase
+              .from("talent_categories")
+              .select("id, name_ar")
+              .in("id", catIds),
+            supabase
+              .from("talent_subcategories")
+              .select("id, name_ar")
+              .in("id", subIds),
           ]);
 
           const catsMap = new Map(cats.data?.map((c) => [c.id, c.name_ar]));
@@ -868,6 +878,41 @@ function MyPage({ onBackHome }: { onBackHome: () => void }) {
       });
   }, [user]);
 
+  const handleDeleteAccount = async () => {
+    if (!user) {
+      showError("يجب تسجيل الدخول أولاً.");
+      return;
+    }
+
+    const confirmed = window.confirm(
+      "هل أنت متأكد أنك تريد حذف حسابك نهائيًا؟ سيتم حذف جميع بياناتك ولن يمكنك استرجاعها."
+    );
+    if (!confirmed) return;
+
+    try {
+      setLoadingDelete(true);
+
+      const { error } = await supabase.functions.invoke("delete-account", {
+        body: {},
+      });
+
+      if (error) {
+        console.error(error);
+        showError("حدث خطأ أثناء حذف الحساب، حاول مرة أخرى.");
+        return;
+      }
+
+      showSuccess("تم حذف حسابك بنجاح.");
+      await supabase.auth.signOut();
+      window.location.href = "/";
+    } catch (err) {
+      console.error(err);
+      showError("حدث خطأ غير متوقع.");
+    } finally {
+      setLoadingDelete(false);
+    }
+  };
+
   if (!user) {
     return (
       <div className="container mx-auto px-4 py-16" dir="rtl">
@@ -875,8 +920,12 @@ function MyPage({ onBackHome }: { onBackHome: () => void }) {
           <div className="bg-gradient-to-br from-teal-100 to-cyan-100 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-5">
             <LogIn className="w-10 h-10 text-teal-700" />
           </div>
-          <h2 className="text-2xl font-black text-gray-800 mb-3">سجّل دخول أولاً</h2>
-          <p className="text-gray-600 mb-6">علشان تشوف “صفحتي” ومواهبي المسجلة</p>
+          <h2 className="text-2xl font-black text-gray-800 mb-3">
+            سجّل دخول أولاً
+          </h2>
+          <p className="text-gray-600 mb-6">
+            علشان تشوف “صفحتي” ومواهبي المسجلة
+          </p>
           <button
             onClick={onBackHome}
             className="bg-gradient-to-r from-teal-600 to-cyan-600 text-white px-8 py-3 rounded-xl font-bold shadow-xl hover:shadow-2xl active:scale-95"
@@ -910,14 +959,20 @@ function MyPage({ onBackHome }: { onBackHome: () => void }) {
         <h1 className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 mb-3">
           صفحتي
         </h1>
-        <p className="text-lg text-gray-600 font-semibold">مواهبك المسجلة وحالة الطلبات</p>
+        <p className="text-lg text-gray-600 font-semibold">
+          مواهبك المسجلة وحالة الطلبات
+        </p>
       </div>
 
       {talents.length === 0 ? (
         <div className="ui-card p-12 text-center border-t-4 border-emerald-600 max-w-2xl mx-auto">
           <FileText className="w-20 h-20 text-gray-400 mx-auto mb-5" />
-          <h2 className="text-2xl font-black text-gray-800 mb-3">لم تسجل أي موهبة بعد</h2>
-          <p className="text-gray-600 mb-6">ابدأ رحلتك في اكتشاف مواهبك الآن</p>
+          <h2 className="text-2xl font-black text-gray-800 mb-3">
+            لم تسجل أي موهبة بعد
+          </h2>
+          <p className="text-gray-600 mb-6">
+            ابدأ رحلتك في اكتشاف مواهبك الآن
+          </p>
           <button
             onClick={() => (window.location.hash = "#talents")}
             className="bg-gradient-to-r from-emerald-600 to-cyan-600 text-white px-10 py-4 rounded-xl font-black shadow-xl"
@@ -940,8 +995,12 @@ function MyPage({ onBackHome }: { onBackHome: () => void }) {
             >
               <div className="flex justify-between items-start mb-4">
                 <div>
-                  <h3 className="text-xl font-black text-[#8A1538] mb-1">{t.subcategory_name}</h3>
-                  <p className="text-gray-600 font-semibold">{t.category_name}</p>
+                  <h3 className="text-xl font-black text-[#8A1538] mb-1">
+                    {t.subcategory_name}
+                  </h3>
+                  <p className="text-gray-600 font-semibold">
+                    {t.category_name}
+                  </p>
                 </div>
                 <span
                   className={`px-4 py-2 rounded-xl font-bold shadow-md text-sm ${
@@ -979,13 +1038,36 @@ function MyPage({ onBackHome }: { onBackHome: () => void }) {
                 </p>
                 <p className="flex items-center gap-2 text-sm">
                   <strong className="text-[#8A1538]">التاريخ:</strong>{" "}
-                  <span className="font-semibold">{new Date(t.created_at).toLocaleDateString("ar-SA")}</span>
+                  <span className="font-semibold">
+                    {new Date(t.created_at).toLocaleDateString("ar-SA")}
+                  </span>
                 </p>
               </div>
             </div>
           ))}
         </div>
       )}
+
+      {/* قسم حذف الحساب */}
+      <div className="max-w-2xl mx-auto mt-10">
+        <div className="ui-card border border-red-200 bg-red-50 p-5 rounded-2xl">
+          <h2 className="text-lg font-black text-red-700 mb-2">
+            حذف الحساب نهائيًا
+          </h2>
+          <p className="text-sm text-red-700 mb-4">
+            عند حذف الحساب سيتم إزالة بياناتك وجميع طلباتك من النظام بشكل دائم،
+            ولا يمكن التراجع عن هذه العملية.
+          </p>
+          <button
+            onClick={handleDeleteAccount}
+            disabled={loadingDelete}
+            className="w-full bg-red-600 hover:bg-red-700 text-white py-3 rounded-xl font-bold text-sm disabled:opacity-60 flex items-center justify-center gap-2"
+          >
+            {loadingDelete ? "جاري حذف الحساب..." : "حذف الحساب نهائيًا"}
+            <Trash2 className="w-4 h-4" />
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
