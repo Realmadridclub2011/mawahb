@@ -2,8 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
-/* === Gym Pro-ish design system (Style ONLY) === */
+/* ✅ Global Responsive Typography + Font (Arabic) */
 :root{
+  /* Typography */
+  --font-sans: "Tajawal", ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+    Roboto, Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+  --root-font: clamp(14.6px, 1.15vw + 10.6px, 16px);
+  --base-leading: 1.7;
+
+  /* === Gym Pro-ish design system (Style ONLY) === */
   --bg: #f6fbfb;
   --card: #ffffff;
   --text: #0f172a;
@@ -18,13 +25,29 @@
   --radius: 18px;
 }
 
-html, body {
+html{
+  font-size: var(--root-font);
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+html, body{
   height: 100%;
 }
 
 body{
+  font-family: var(--font-sans);
+  line-height: var(--base-leading);
   color: var(--text);
   background: var(--bg);
+}
+
+/* ✅ تحسين العناوين عالميًا بدون ما نكسر Tailwind */
+@layer base{
+  h1, h2, h3{
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+  }
 }
 
 /* خلفية ناعمة زي الصورة الثانية */
@@ -47,12 +70,67 @@ body{
 
 /* Card hover */
 .ui-card-hover{
-  transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+  transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease, background-color .18s ease;
 }
 .ui-card-hover:hover{
   transform: translateY(-3px);
   box-shadow: var(--shadow2);
   border-color: var(--border2);
+}
+
+/* Card color variants */
+.ui-card-teal{
+  background: linear-gradient(135deg, rgba(20,184,166,0.06), rgba(16,185,129,0.09));
+  border-color: rgba(20,184,166,0.15);
+}
+.ui-card-teal:hover{
+  background: linear-gradient(135deg, rgba(20,184,166,0.12), rgba(16,185,129,0.16));
+  border-color: rgba(20,184,166,0.25);
+}
+
+.ui-card-blue{
+  background: linear-gradient(135deg, rgba(59,130,246,0.06), rgba(96,165,250,0.09));
+  border-color: rgba(59,130,246,0.15);
+}
+.ui-card-blue:hover{
+  background: linear-gradient(135deg, rgba(59,130,246,0.12), rgba(96,165,250,0.16));
+  border-color: rgba(59,130,246,0.25);
+}
+
+.ui-card-purple{
+  background: linear-gradient(135deg, rgba(168,85,247,0.06), rgba(192,132,252,0.09));
+  border-color: rgba(168,85,247,0.15);
+}
+.ui-card-purple:hover{
+  background: linear-gradient(135deg, rgba(168,85,247,0.12), rgba(192,132,252,0.16));
+  border-color: rgba(168,85,247,0.25);
+}
+
+.ui-card-amber{
+  background: linear-gradient(135deg, rgba(251,191,36,0.06), rgba(252,211,77,0.09));
+  border-color: rgba(251,191,36,0.15);
+}
+.ui-card-amber:hover{
+  background: linear-gradient(135deg, rgba(251,191,36,0.12), rgba(252,211,77,0.16));
+  border-color: rgba(251,191,36,0.25);
+}
+
+.ui-card-rose{
+  background: linear-gradient(135deg, rgba(244,63,94,0.06), rgba(251,113,133,0.09));
+  border-color: rgba(244,63,94,0.15);
+}
+.ui-card-rose:hover{
+  background: linear-gradient(135deg, rgba(244,63,94,0.12), rgba(251,113,133,0.16));
+  border-color: rgba(244,63,94,0.25);
+}
+
+.ui-card-cyan{
+  background: linear-gradient(135deg, rgba(6,182,212,0.06), rgba(34,211,238,0.09));
+  border-color: rgba(6,182,212,0.15);
+}
+.ui-card-cyan:hover{
+  background: linear-gradient(135deg, rgba(6,182,212,0.12), rgba(34,211,238,0.16));
+  border-color: rgba(6,182,212,0.25);
 }
 
 /* Pills (chips / badge style) */
@@ -80,10 +158,17 @@ body{
   color: var(--muted);
 }
 
-@layer utilities {
-  @keyframes slide-in {
+@layer utilities{
+  @keyframes slide-in{
     from { transform: translateX(-100%); opacity: 0; }
     to { transform: translateX(0); opacity: 1; }
   }
-  .animate-slide-in { animation: slide-in 0.3s ease-out; }
+  .animate-slide-in{ animation: slide-in 0.3s ease-out; }
+}
+
+/* ✅ منع الزوم في الفورم على iOS WebView/Safari */
+input,
+select,
+textarea {
+  font-size: 16px !important;
 }
